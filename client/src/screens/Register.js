@@ -5,6 +5,8 @@ import { Button, StyleSheet, Text, View, Image } from 'react-native';
 const MyComponent = ({navigation}) => {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [firstName, setFirstName] = React.useState('');
+  const [lastName, setLastName] = React.useState('');
 
   return (
     <>
@@ -14,11 +16,27 @@ const MyComponent = ({navigation}) => {
             display: 'flex',
             flexDirection: 'row',
             justifyContent: 'center',
-            marginBottom: 100
+            marginBottom: 50
           }}>
             <Image 
             source={require('../../assets/Flipcard.png')}></Image>
           </View>
+          <TextInput
+            style={{
+              marginBottom: 20
+            }}
+            label="First name"
+            value={firstName}
+            onChangeText={text => setFirstName(text)}
+          />
+          <TextInput
+            style={{
+              marginBottom: 20
+            }}
+            label="Last name"
+            value={lastName}
+            onChangeText={text => setLastName(text)}
+          />
           <TextInput
             style={{
               marginBottom: 20
@@ -35,18 +53,18 @@ const MyComponent = ({navigation}) => {
             value={password}
             onChangeText={text => setPassword(text)}
           />
-          <View style={{marginBottom: 20}}>
+          <View style={{
+            marginBottom: 20}}>
             <Button
-            onPress={() => navigation.navigate('Home')}
-              title="Login"></Button>
+            onPress={() => navigation.navigate('Login')}
+              title="Register"></Button>
           </View>
+          <View>
             <Button
               color="#444444"
-              style={{
-                marginBottom: 20
-              }}
-              onPress={() => navigation.navigate('Register')}
-              title="Register"></Button>
+              onPress={() => navigation.navigate('Login')}
+              title="Login"></Button>
+          </View>
         </View>
       </View>
     </>
@@ -57,7 +75,7 @@ export default MyComponent;
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 150,
+    marginTop: 70,
     flex: 1,
     flexDirection: 'column',
     marginLeft: 20,

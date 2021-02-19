@@ -31,6 +31,9 @@ import { NavigationContainer, StackActions } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import Home from './src/screens/Home'
 import Login from './src/screens/Login'
+import Register from './src/screens/Register'
+import Account from './src/screens/Account'
+import Create from './src/screens/Create'
 
 const Stack = createStackNavigator()
 
@@ -41,6 +44,9 @@ export default function App() {
           <Stack.Navigator screenOptions={{headerShown: false}}>
             <Stack.Screen name="Home" component={Home}></Stack.Screen>
             <Stack.Screen name="Login" component={Login}></Stack.Screen>
+            <Stack.Screen name="Register" component={Register}></Stack.Screen>
+            <Stack.Screen name="Account" component={Account}></Stack.Screen>
+            <Stack.Screen name="Create" component={Create}></Stack.Screen>
           </Stack.Navigator>
         </NavigationContainer>
       </PaperProvider>
