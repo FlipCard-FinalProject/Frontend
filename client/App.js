@@ -25,6 +25,7 @@ import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Provider as PaperProvider } from 'react-native-paper';
+import { SafeAreaProvider } from 'react-native-safe-area-context'
 import Appbar from './src/components/Appbar'
 import Header from './src/components/Header'
 import { NavigationContainer, StackActions } from '@react-navigation/native'
@@ -40,15 +41,17 @@ const Stack = createStackNavigator()
 export default function App() {
   return (
       <PaperProvider>
-        <NavigationContainer>
-          <Stack.Navigator screenOptions={{headerShown: false}}>
-            <Stack.Screen name="Home" component={Home}></Stack.Screen>
-            <Stack.Screen name="Login" component={Login}></Stack.Screen>
-            <Stack.Screen name="Register" component={Register}></Stack.Screen>
-            <Stack.Screen name="Account" component={Account}></Stack.Screen>
-            <Stack.Screen name="Create" component={Create}></Stack.Screen>
-          </Stack.Navigator>
-        </NavigationContainer>
+        <SafeAreaProvider>
+          <NavigationContainer>
+            <Stack.Navigator screenOptions={{headerShown: false}}>
+              <Stack.Screen name="Home" component={Home}></Stack.Screen>
+              <Stack.Screen name="Login" component={Login}></Stack.Screen>
+              <Stack.Screen name="Register" component={Register}></Stack.Screen>
+              <Stack.Screen name="Account" component={Account}></Stack.Screen>
+              <Stack.Screen name="Create" component={Create}></Stack.Screen>
+            </Stack.Navigator>
+          </NavigationContainer>
+        </SafeAreaProvider>
       </PaperProvider>
   );
 }

@@ -1,26 +1,45 @@
 import * as React from 'react';
 import { Appbar } from 'react-native-paper';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import {goBack} from '@react-navigation/stack'
+import { SearchBar } from 'react-native-elements';
 
 const Header = ({navigation}) => {
+  const [searchKey, setSearchKey] = React.useState('')
+  const [searchBar, setSearchBar] = React.useState(false)
   const _goBack = () => {
     navigation.goBack()
   };
 
-  const _handleSearch = () => console.log('Searching');
+  const _handleSearch = () => setSearchBar(true);
 
-  const _handleMore = () => console.log('Shown more');
-
+  const handleOnSubmit = () => {
+    setSearchBar(false);
+    console.log(searchKey);
+  }
   return (
-    <Appbar.Header style={styles.header}>
-      <Appbar.BackAction
-      onPress={_goBack}/>
-      <Appbar.Content title="Home"/>
-      <Appbar.Action icon="magnify" onPress={_handleSearch} />
-      <Appbar.Action icon="dots-vertical" onPress={_handleMore} />
-    </Appbar.Header>
-  );
+    <>
+    {searchBar === false ? (
+      <Appbar.Header style={styles.header}>
+        <Appbar.BackAction
+        onPress={_goBack}/>
+        <Appbar.Content title="Home">
+        </Appbar.Content>
+        <Appbar.Action icon="magnify" onPress={_handleSearch} />
+        <Appbar.Action icon="dots-vertical" />
+      </Appbar.Header>
+    ) : (
+      <SearchBar
+      onChangeText={text => {setSearchKey(text)}}
+      onSubmitEditing={handleOnSubmit}
+      inputStyle={{backgroundColor: 'white', paddingLeft: 20, marginLeft: 20, marginRight: 20, height: 20}}
+      inputContainerStyle={{backgroundColor: '#444444'}}
+      containerStyle={{backgroundColor: '#444444', borderWidth: 0, paddingTop: 22}}
+      placeholder="Type Here..."
+      value={searchKey}/>
+    )}
+    </>
+  )
 };
 
 const styles = StyleSheet.create({
