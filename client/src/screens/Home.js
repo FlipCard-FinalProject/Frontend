@@ -1,7 +1,7 @@
 import React from 'react';
 import Appbar from '../components/Appbar'
 import Header from '../components/Header'
-import Card from '../components/Card'
+import SetCard from '../components/SetCard'
 import { StyleSheet, Text, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 export default function Home ({navigation}) {
@@ -9,8 +9,8 @@ export default function Home ({navigation}) {
     <>
       <Header navigation={navigation}></Header>
       <ScrollView>
-        <Card></Card>
-        <Card></Card>
+        <SetCard navigation={navigation}></SetCard>
+        <SetCard navigation={navigation}></SetCard>
       </ScrollView>
       <Appbar navigation={navigation}></Appbar>
     </>
