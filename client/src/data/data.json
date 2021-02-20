@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1,
+    "hint": "ABC",
+    "answer": "A1B1C1"
+  },
+  {
+    "id": 2,
+    "hint": "ABA",
+    "answer": "A2B1C3"
+  },
+  {
+    "id": 3,
+    "hint": "AAB",
+    "answer": "A1B3C1"
+  },
+  {
+    "id": 4,
+    "hint": "AAC",
+    "answer": "A1B1C2"
+  },
+  {
+    "id": 5,
+    "hint": "BAA",
+    "answer": "A2B1C1"
+  },
+  {
+    "id": 6,
+    "hint": "BAC",
+    "answer": "A1B1C3"
+  },
+  {
+    "id": 7,
+    "hint": "ACB",
+    "answer": "A2B2C1"
+  },
+  {
+    "id": 8,
+    "hint": "CAB",
+    "answer": "A1B2C2"
+  },
+  {
+    "id": 9,
+    "hint": "BCC",
+    "answer": "A3B1C3"
+  },
+  {
+    "id": 10,
+    "hint": "CBB",
+    "answer": "A3B3C3"
+  }
+]

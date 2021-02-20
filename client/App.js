@@ -37,6 +37,7 @@ import Login from './src/screens/Login'
 import Register from './src/screens/Register'
 import Account from './src/screens/Account'
 import Create from './src/screens/Create'
+import Flip from './src/screens/Flip'
 
 const Stack = createStackNavigator()
 
@@ -52,6 +53,7 @@ export default function App() {
               <Stack.Screen name="Register" component={Register}></Stack.Screen>
               <Stack.Screen name="Account" component={Account}></Stack.Screen>
               <Stack.Screen name="Create" component={Create}></Stack.Screen>
+              <Stack.Screen name="Flip" component={Flip}></Stack.Screen>
             </Stack.Navigator>
           </NavigationContainer>
         </SafeAreaProvider>
