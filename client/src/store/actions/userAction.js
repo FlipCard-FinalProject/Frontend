@@ -1,78 +1,86 @@
-import axios from 'axios'
+import axios from "axios";
 
 export const fetchingUser = (payload) => {
-  return { type: 'FETCHING_USER', payload }
-}
+  return { type: "FETCHING_USER", payload };
+};
 
 export const fetchingProfile = (payload) => {
-  return { type: 'FETCHING_PROFILE', payload }
-}
+  return { type: "FETCHING_PROFILE", payload };
+};
 
 export const newVal = (payload) => {
-  return { type: 'NEW_VAL_USER', payload }
-}
+  return { type: "NEW_VAL_USER", payload };
+};
 
-export const loading = () => {
-  return { type: 'LOADING_USER' }
-}
+export const loadingStart = () => {
+  return { type: "LOADING_USER_START" };
+};
+
+export const loadingEnd = () => {
+  return { type: "LOADING_USER_END" };
+};
 
 export const sendError = (payload) => {
-  return { type: 'ERROR_USER', payload }
-}
+  return { type: "ERROR_USER", payload };
+};
 
 export const register = (payload) => {
-  return dispatch => {
+  return (dispatch) => {
+    dispatch(sendError([]));
+    dispatch(loadingStart());
     axios({
-      method: 'POST',
-      url: 'http://localhost:3000/register',
-      data: payload
+      method: "POST",
+      url: "http://localhost:3000/register",
+      data: payload,
     })
-      .then(({data}) => {
-        console.log('success register')
-        dispatch(newVal(data))
+      .then(({ data }) => {
+        dispatch(newVal(data));
+        dispatch(loadingEnd());
       })
-      .catch(err => {
-        console.log(err.response)
-        dispatch(sendError(err.response))
-      })
-  }
-}
+      .catch((err) => {
+        console.log(err.response);
+        dispatch(loadingEnd());
+        dispatch(sendError(err.response));
+      });
+  };
+};
 
 export const login = (payload) => {
-  return dispatch => {
+  return (dispatch) => {
     axios({
-      method: 'POST',
-      url: 'http://localhost:3000/login',
-      data: payload
+      method: "POST",
+      url: "http://localhost:3000/login",
+      data: payload,
     })
-      .then(({data}) => { // data { accesstoken, payload }
-        console.log('success login')
+      .then(({ data }) => {
+        // data { accesstoken, payload }
+        console.log("success login");
         dispatch({
-          type: 'SET_ACCESS_TOKEN',
-          payload: data.access_token
-        })
-        dispatch(fetchingUser(data.payload))
+          type: "SET_ACCESS_TOKEN",
+          payload: data.access_token,
+        });
+        dispatch(fetchingUser(data.payload));
       })
-      .catch(err => {
-        console.log(err.response)
-        dispatch(sendError(err.response))
-      })
-  }
-}
+      .catch((err) => {
+        console.log(err.response);
+        dispatch(sendError(err.response));
+      });
+  };
+};
 
 export const getUser = (id) => {
-  return dispatch => {
-    dispatch(loading())
+  return (dispatch) => {
+    dispatch(loading());
     axios({
-      method: 'GET',
-      url: `http://localhost:3000/user/${id}`
+      method: "GET",
+      url: `http://localhost:3000/user/${id}`,
     })
-      .then(({data}) => {
-        dispatch(fetchingProfile(data))
+      .then(({ data }) => {
+        dispatch(fetchingProfile(data));
       })
-      .catch(err => {
-        console.log(err.response)
-        dispatch(sendError(err.response))
-      })
-  }
-}
+      .catch((err) => {
+        console.log(err.response);
+        dispatch(sendError(err.response));
+      });
+  };
+};

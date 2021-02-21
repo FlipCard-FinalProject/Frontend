@@ -1,47 +1,51 @@
 const init = {
   user: {},
   profile: {},
-  access_token: '',
+  access_token: "",
   loading: false,
   errors: [],
-  newVal: {}
-}
+  newVal: {},
+};
 
-function userReducer (state = init, action) {
+function userReducer(state = init, action) {
   switch (action.type) {
-    case 'FETCHING_USER':
+    case "FETCHING_USER":
       return {
         ...state,
-        user: action.payload
-      }
-    case 'FETCHING_PROFILE':
+        user: action.payload,
+      };
+    case "FETCHING_PROFILE":
       return {
         ...state,
         profile: action.payload,
-        loading: false
-      }
-    case 'SET_ACCESS_TOKEN':
+        loading: false,
+      };
+    case "SET_ACCESS_TOKEN":
       return {
         ...state,
-        access_token: action.payload
-      }
-    case 'NEW_VAL_USER':
+        access_token: action.payload,
+      };
+    case "NEW_VAL_USER":
       return {
         ...state,
-        newVal: action.payload
-      }
-    case 'LOADING_USER':
+        newVal: action.payload,
+      };
+    case "LOADING_USER_START":
       return {
-        loading: true
-      }
-    case 'ERROR_USER':
+        loading: true,
+      };
+    case "LOADING_USER_END":
+      return {
+        loading: false,
+      };
+    case "ERROR_USER":
       return {
         ...state,
-        errors: action.payload
-      }
+        errors: action.payload,
+      };
     default:
-      return state
+      return state;
   }
 }
 
-export default userReducer
+export default userReducer;
