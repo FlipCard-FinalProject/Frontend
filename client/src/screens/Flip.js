@@ -57,8 +57,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     minHeight: windowHeight,
     justifyContent: 'center',
-    alignItems: 'center',
-    paddingBottom: 120
+    alignItems: 'center'
   },
   swipes: {
     backgroundColor: '#fff',

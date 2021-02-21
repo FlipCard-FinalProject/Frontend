@@ -14,7 +14,7 @@ export default function Account ({navigation}) {
         <Text style={{
           fontWeight: 'bold',
           marginBottom: 20
-        }}>Imam</Text>
+        }}>Imam@mail.com</Text>
         <TextInput
         label="First name"
         value={firstName}
