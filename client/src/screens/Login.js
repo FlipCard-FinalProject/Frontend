@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { TextInput } from 'react-native-paper';
 import { Button, StyleSheet, Text, View, Image } from 'react-native';
 import { login, sendError } from '../store/actions/userAction'
 import { useDispatch, useSelector } from 'react-redux'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const MyComponent = ({navigation}) => {
   const [email, setEmail] = React.useState('');
@@ -16,12 +17,29 @@ const MyComponent = ({navigation}) => {
       alert(errors);
       dispatch(sendError([]))
     }
-    if (access_token) {
-      navigation.navigate('Home')
-    }
+    console.log(access_token, 'from useeffect');
+    if(access_token) getData()
+    if(access_token) navigation.navigate('Home')
+    
   }, [errors, access_token])
 
+  const getData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('access_token')
+      console.log(value, '<< access_token')
+      if(value) {
+        // console.log(value, 'ini value')
+        console.log('success login')
+
+        navigation.navigate('Home')
+      }
+    } catch(e) {
+      // error reading value
+    }
+  }
+
   const userlogin = () => {
+    console.log('tekan tombol login')
     let payload = {
       email,
       password,
