@@ -21,6 +21,8 @@ function userReducer(state = init, action) {
         loading: false,
       };
     case "SET_ACCESS_TOKEN":
+      console.log('masuk akses token')
+      console.log(state)
       return {
         ...state,
         access_token: action.payload,

@@ -29,7 +29,7 @@ export const register = (payload) => {
     dispatch(loadingStart());
     axios({
       method: "POST",
-      url: "http://localhost:3000/register",
+      url: "https://flip-cards-server.herokuapp.com/register",
       data: payload,
     })
       .then(({ data }) => {
@@ -48,21 +48,20 @@ export const login = (payload) => {
   return (dispatch) => {
     axios({
       method: "POST",
-      url: "http://localhost:3000/login",
+      url: "https://flip-cards-server.herokuapp.com/login",
       data: payload,
     })
       .then(({ data }) => {
-        // data { accesstoken, payload }
-        console.log("success login");
+        console.log(data.access_token, 'access_token')
         dispatch({
           type: "SET_ACCESS_TOKEN",
           payload: data.access_token,
         });
-        dispatch(fetchingUser(data.payload));
+        dispatch(fetchingUser(data.payload))
       })
       .catch((err) => {
-        console.log(err.response);
-        dispatch(sendError(err.response));
+        console.log(err.response.data.errors)
+        dispatch(sendError(err.response.data.errors))
       });
   };
 };
