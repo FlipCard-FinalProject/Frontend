@@ -1,5 +1,5 @@
 import axios from 'axios'
-
+import * as firebase from 'firebase'
 export const loading = () => {
   return { type: 'LOADING_CARDS' }
 }
@@ -23,7 +23,7 @@ export const fetchingCardBySetCardId = (set_card_id) => {
       method: 'GET',
       url: `http://localhost:3000/cards/${set_card_id}`
     })
-      .then(({data}) => {
+      .then(({ data }) => {
         dispatch(fetchingSuccess(data))
       })
       .catch(err => {
@@ -32,37 +32,66 @@ export const fetchingCardBySetCardId = (set_card_id) => {
       })
   }
 }
+export const insertCard = (set_card_id, payload) => {
+  return async dispatch => {
+    console.log(payload.type);
+    try {
+      if (payload.type === "image") {
+        
+        uploadImage = async (uri, imageName) => {
+          const response = await fetch(uri)
+          const blob = await response.blob()
+          var ref = firebase.storage().ref().child("images/" + imageName)
+          return ref.put(blob)
+        }
+        let uri = payload.hint
+        let stringName = uri.split("/");
+        let getNameImage = stringName[stringName.length - 1]
 
-export const insertCard = ({ set_card_id, payload }) => {
-  return dispatch => {
-    axios({
-      method: 'POST',
-      url: `http://localhost:3000/cards/${set_card_id}`,
-      data: payload
-    })
-      .then(({data}) => {
-        console.log('success add card')
-        dispatch({
-          type: 'ADD_CARD',
-          payload: data
+        uploadImage(payload.hint, getNameImage)
+        .then((data) => {
+          console.log(data);
+          payload.hint = `https://firebasestorage.googleapis.com/v0/b/flip-cards-server.appspot.com/o/images%2F${getNameImage}?alt=media`
+          console.log('success');
+          axios({
+            method: 'POST',
+            url: `https://flip-cards-server.herokuapp.com/cards/${set_card_id}`,
+            headers: {
+              access_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiIwZHpha3lhbHJAZ21haWwuY29tIiwiZmlyc3RfbmFtZSI6IlJvdGkiLCJsYXN0X25hbWUiOiJCYWphciIsImlhdCI6MTYxMzkxNDY2OH0.K2KKKuRcFM5Mn3yfstbAIvUyvLyWnTnepjBNfGufoFk'
+            },
+            data: payload
+          })
+            .then(res => {
+              console.log('success add card below this is the data')
+              console.log(res.data);
+            })
+            .catch(err => {
+              console.log(err.response)
+            })
         })
-        dispatch(newVal(data))
-      })
-      .catch(err => {
-        console.log(err.response)
-        dispatch(sendError(err.response))
-      })
+        .catch((error) => {
+          console.log('error', error);
+        })
+        console.log('tembus sini');
+      }
+
+      
+    } catch (error) {
+      console.log(error);
+    }
+
   }
 }
 
-export const updateCard = ({id, payload}) => {
+
+export const updateCard = ({ id, payload }) => {
   return dispatch => {
     axios({
       method: 'PUT',
       url: `http://localhost:3000/cards/${id}`,
       data: payload
     })
-      .then(({data}) => {
+      .then(({ data }) => {
         console.log('success update card')
         dispatch(fetchingCardBySetCardId())
         dispatch(newVal(data))
@@ -80,7 +109,7 @@ export const deleteCard = (id) => {
       method: 'DELETE',
       url: `http://localhost:3000/cards/${id}`
     })
-      .then(({data}) => {
+      .then(({ data }) => {
         console.log(data)
         dispatch(fetchingCardBySetCardId())
       })
