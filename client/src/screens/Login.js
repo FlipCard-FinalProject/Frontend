@@ -1,10 +1,33 @@
 import * as React from 'react';
+import { useEffect } from 'react';
 import { TextInput } from 'react-native-paper';
 import { Button, StyleSheet, Text, View, Image } from 'react-native';
+import { login, sendError } from '../store/actions/userAction'
+import { useDispatch, useSelector } from 'react-redux'
 
 const MyComponent = ({navigation}) => {
   const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
+  const [password, setPassword] = React.useState('')
+  const dispatch = useDispatch()
+  const { errors, access_token } = useSelector((state) => state.user)
+
+  useEffect(() => {
+    if (errors.length > 0) {
+      alert(errors);
+      dispatch(sendError([]))
+    }
+    if (access_token) {
+      navigation.navigate('Home')
+    }
+  }, [errors, access_token])
+
+  const userlogin = () => {
+    let payload = {
+      email,
+      password,
+    };
+    dispatch(login(payload));
+  }
 
   return (
     <>
@@ -37,7 +60,7 @@ const MyComponent = ({navigation}) => {
           />
           <View style={{marginBottom: 20}}>
             <Button
-            onPress={() => navigation.navigate('Home')}
+            onPress={userlogin}
               title="Login"></Button>
           </View>
             <Button
