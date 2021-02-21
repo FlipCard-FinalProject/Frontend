@@ -5,21 +5,84 @@ import { Input } from 'react-native-elements';
 import { Button, StyleSheet, Text, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import {Picker} from '@react-native-picker/picker';
+import * as ImagePicker from 'expo-image-picker';
+
 export default function Create ({navigation}) {
+  const [image, setImage] = React.useState('');
   const [category, setCategory] = React.useState('');
   const [cardShow, setCardShow] = React.useState(9);
+
+  useEffect(() => {
+    (async () => {
+      if (Platform.OS !== 'web') {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') {
+          alert('Sorry, we need camera roll permissions to make this work!');
+        }
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      if (Platform.OS !== 'web') {
+        const { status } = await ImagePicker.requestCameraPermissionsAsync();
+        if (status !== 'granted') {
+          alert('Sorry, we need camera permissions to make this work!');
+        }
+      }
+    })();
+  }, []);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      setImage(result.uri);
+    }
+  };
+
+  const pickPhoto = async () => {
+    let result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      setImage(result.uri);
+    }
+  };
+
   const handleAddCard = () => {
     if(cardShow >= 0) setCardShow(cardShow + 1)
   }
   useEffect(() => {
     console.log(cardShow);
   }, [cardShow])
+
   return (
     <>
       <Header navigation={navigation}></Header>
       <ScrollView>
-      <Input
-        placeholder='Set Title'/>
+        <View>
+          <Input
+            placeholder='Set Title'/>
+          <Button title="add"
+          onPress={pickImage}/>
+          <Button title="camera"
+          onPress={pickPhoto}/>
+        </View>
       <Picker
         selectedValue={category}
         style={{height: 50, width: 400}}
