@@ -8,6 +8,7 @@ const init = {
 };
 
 function userReducer(state = init, action) {
+  console.log(action.type);
   switch (action.type) {
     case "FETCHING_USER":
       return {

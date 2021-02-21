@@ -26,8 +26,8 @@ export const sendError = (payload) => {
 
 export const register = (payload) => {
   return (dispatch) => {
-    dispatch(sendError([]));
     dispatch(loadingStart());
+    dispatch(sendError([]));
     axios({
       method: "POST",
       url: "http://localhost:3000/register",
@@ -38,9 +38,9 @@ export const register = (payload) => {
         dispatch(loadingEnd());
       })
       .catch((err) => {
-        console.log(err.response);
+        console.log(err.response.data.errors);
+        dispatch(sendError(err.response.data.errors));
         dispatch(loadingEnd());
-        dispatch(sendError(err.response));
       });
   };
 };

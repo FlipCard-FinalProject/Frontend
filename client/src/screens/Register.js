@@ -1,6 +1,13 @@
 import * as React from "react";
 import { TextInput } from "react-native-paper";
-import { Button, StyleSheet, Text, View, Image } from "react-native";
+import {
+  ActivityIndicator,
+  Button,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+} from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { register } from "../store/actions/userAction";
 
@@ -23,9 +30,17 @@ const MyComponent = ({ navigation }) => {
     dispatch(register(payload));
     if (error.length > 0) {
       alert("error");
-    } else {
+    } else if (!loading) {
       navigation.navigate("Login");
     }
+  }
+
+  if (loading) {
+    return (
+      <View style={[styles.container, styles.horizontal]}>
+        <ActivityIndicator size={100} color="#00ff00" />
+      </View>
+    );
   }
 
   return (
