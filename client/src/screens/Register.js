@@ -21,8 +21,7 @@ const MyComponent = ({ navigation }) => {
       last_name: lastName,
     };
     dispatch(register(payload));
-    console.log(error);
-    if (error.length == 0) {
+    if (error.length > 0) {
       alert("error");
     } else {
       navigation.navigate("Login");
