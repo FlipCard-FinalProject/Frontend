@@ -9,7 +9,8 @@ export default function Home ({navigation}) {
     <>
       <Header navigation={navigation}></Header>
       <ScrollView>
-        <SetCard navigation={navigation}></SetCard>
+        <SetCard
+        navigation={navigation}></SetCard>
         <SetCard navigation={navigation}></SetCard>
       </ScrollView>
       <Appbar navigation={navigation}></Appbar>
