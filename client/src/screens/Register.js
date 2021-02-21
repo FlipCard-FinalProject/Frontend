@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect } from "react";
 import { TextInput } from "react-native-paper";
 import {
   ActivityIndicator,
@@ -9,7 +9,7 @@ import {
   Image,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { register } from "../store/actions/userAction";
+import { register, newVal, sendError } from "../store/actions/userAction";
 
 const MyComponent = ({ navigation }) => {
   const [email, setEmail] = React.useState("");
@@ -18,7 +18,19 @@ const MyComponent = ({ navigation }) => {
   const [lastName, setLastName] = React.useState("");
   const loading = useSelector((state) => state.user.loading);
   const error = useSelector((state) => state.user.errors);
+  const data = useSelector((state) => state.user.newVal);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (error.length > 0) {
+      alert(error);
+      dispatch(sendError([]));
+    }
+    if (data.email) {
+      dispatch(newVal({}));
+      navigation.navigate("Login");
+    }
+  }, [error, newVal]);
 
   function userRegister() {
     let payload = {
@@ -28,11 +40,6 @@ const MyComponent = ({ navigation }) => {
       last_name: lastName,
     };
     dispatch(register(payload));
-    if (error.length > 0) {
-      alert("error");
-    } else if (!loading) {
-      navigation.navigate("Login");
-    }
   }
 
   if (loading) {

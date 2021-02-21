@@ -8,7 +8,6 @@ const init = {
 };
 
 function userReducer(state = init, action) {
-  console.log(action.type);
   switch (action.type) {
     case "FETCHING_USER":
       return {
@@ -32,13 +31,9 @@ function userReducer(state = init, action) {
         newVal: action.payload,
       };
     case "LOADING_USER_START":
-      return {
-        loading: true,
-      };
+      return { ...state, loading: true };
     case "LOADING_USER_END":
-      return {
-        loading: false,
-      };
+      return { ...state, loading: false };
     case "ERROR_USER":
       return {
         ...state,
