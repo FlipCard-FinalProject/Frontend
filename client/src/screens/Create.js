@@ -12,7 +12,6 @@ import { insertCard } from "../store/actions/cardAction";
 import { Audio } from 'expo-av';
 
 export default function Create({ navigation }) {
-  const [image, setImage] = React.useState('');
   const [setCardId, setSetCardId] = React.useState(1);
   const [card, setCard] = React.useState({
     hint: '',
