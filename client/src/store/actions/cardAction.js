@@ -1,13 +1,8 @@
-<<<<<<< HEAD
-import axios from "axios";
-import * as firebase from "firebase";
-=======
 import axios from 'axios'
 import * as firebase from 'firebase'
 import { getAccess } from '../../helpers/AsyncStorage'
 
 
->>>>>>> 49837d7362991a28671c097442b973dd699dfc15
 export const loading = () => {
   return { type: "LOADING_CARDS" };
 };
@@ -46,33 +41,6 @@ export const fetchingCardBySetCardId = (set_card_id, access_token) => {
 };
 
 uploadImage = async (uri, imageName) => {
-<<<<<<< HEAD
-  const response = await fetch(uri);
-  const blob = await response.blob();
-  var ref = firebase
-    .storage()
-    .ref()
-    .child("images/" + imageName);
-  return ref.put(blob);
-};
-
-export const insertCard = (set_card_id, payload) => {
-  return (dispatch) => {
-    console.log(payload.type);
-    if (payload.type === "text") {
-      console.log("here bos");
-      axios({
-        method: "POST",
-        url: `https://flip-cards-server.herokuapp.com/cards/${set_card_id}`,
-        headers: {
-          access_token:
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiIwZHpha3lhbHJAZ21haWwuY29tIiwiZmlyc3RfbmFtZSI6IlJvdGkiLCJsYXN0X25hbWUiOiJCYWphciIsImlhdCI6MTYxMzkxNDY2OH0.K2KKKuRcFM5Mn3yfstbAIvUyvLyWnTnepjBNfGufoFk",
-        },
-        data: payload,
-      })
-        .then((res) => {
-          console.log("success add card below this is the data");
-=======
   const response = await fetch(uri)
   const blob = await response.blob()
   var ref = firebase.storage().ref().child("images/" + imageName)
@@ -101,15 +69,11 @@ export const insertCard = (set_card_id, payload) => {
         })
         .then(res => {
           console.log('success add card below this is the data')
->>>>>>> 49837d7362991a28671c097442b973dd699dfc15
           console.log(res.data);
         })
         .catch((err) => {
           console.log(err.response);
-<<<<<<< HEAD
-=======
           // dispatch(sendError(err.response));
->>>>>>> 49837d7362991a28671c097442b973dd699dfc15
         });
     }
     if (payload.type === "image") {
@@ -119,21 +83,6 @@ export const insertCard = (set_card_id, payload) => {
       uploadImage(payload.hint, getNameImage)
         .then((data) => {
           console.log(data);
-<<<<<<< HEAD
-          payload.hint = `https://firebasestorage.googleapis.com/v0/b/flip-cards-server.appspot.com/o/images%2F${getNameImage}?alt=media`;
-          console.log("success");
-          axios({
-            method: "POST",
-            url: `https://flip-cards-server.herokuapp.com/cards/${set_card_id}`,
-            headers: {
-              access_token:
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiIwZHpha3lhbHJAZ21haWwuY29tIiwiZmlyc3RfbmFtZSI6IlJvdGkiLCJsYXN0X25hbWUiOiJCYWphciIsImlhdCI6MTYxMzkxNDY2OH0.K2KKKuRcFM5Mn3yfstbAIvUyvLyWnTnepjBNfGufoFk",
-            },
-            data: payload,
-          })
-            .then((res) => {
-              console.log("success add card below this is the data");
-=======
           payload.hint = `https://firebasestorage.googleapis.com/v0/b/flip-cards-server.appspot.com/o/images%2F${getNameImage}?alt=media`
           console.log('success');
           getAccess()
@@ -147,13 +96,10 @@ export const insertCard = (set_card_id, payload) => {
             })
             .then(res => {
               console.log('success add card below this is the data')
->>>>>>> 49837d7362991a28671c097442b973dd699dfc15
               console.log(res.data);
             })
             .catch((err) => {
               console.log(err.response);
-<<<<<<< HEAD
-=======
               // dispatch(sendError(err.response));
             });
         })
@@ -187,7 +133,6 @@ export const insertCard = (set_card_id, payload) => {
             .catch((err) => {
               console.log(err.response);
               // dispatch(sendError(err.response));
->>>>>>> 49837d7362991a28671c097442b973dd699dfc15
             });
         })
         .catch((error) => {

@@ -8,20 +8,11 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
 import { useDispatch, useSelector } from "react-redux";
-<<<<<<< HEAD
-// import { insertCard } from "../store/actions/cardAction";
-import { Audio } from 'expo-av';
-import { insertCard, fetchingCardBySetCardId } from '../store/actions/cardAction'
-
-export default function Create({ navigation }) {
-  const [setCardId, setSetCardId] = React.useState(1);
-=======
 import { insertCard } from "../store/actions/cardAction";
 import { insertSetCard } from "../store/actions/setCardAction";
 import { Audio } from 'expo-av';
   export default function Create({ navigation }) {
   const [setCardId, setSetCardId] = React.useState("");
->>>>>>> 49837d7362991a28671c097442b973dd699dfc15
   const [card, setCard] = React.useState({
     hint: '',
     answer: '',
@@ -325,10 +316,6 @@ import { Audio } from 'expo-av';
                     borderBottomWidth: 1,
                   }} />
               </View>
-<<<<<<< HEAD
-            )}
-            
-=======
             )} */}
             {/* {cardShow < 8 && (
               <View style={{ marginBottom: 20 }}>
@@ -407,7 +394,6 @@ import { Audio } from 'expo-av';
                   }} />
               </View>
             )} */}
->>>>>>> 49837d7362991a28671c097442b973dd699dfc15
             <View style={{
               marginBottom: 100
             }}>
