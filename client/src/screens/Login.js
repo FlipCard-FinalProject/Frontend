@@ -5,6 +5,10 @@ import { Button, StyleSheet, Text, View, Image } from "react-native";
 import { login, sendError } from "../store/actions/userAction";
 import { useDispatch, useSelector } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
 
 const MyComponent = ({ navigation }) => {
   const [email, setEmail] = React.useState("");
@@ -56,7 +60,7 @@ const MyComponent = ({ navigation }) => {
           </View>
           <TextInput
             style={{
-              marginBottom: 20,
+              marginBottom: hp("2%"),
             }}
             label="Email"
             value={email}
@@ -64,19 +68,19 @@ const MyComponent = ({ navigation }) => {
           />
           <TextInput
             style={{
-              marginBottom: 50,
+              marginBottom: hp("5%"),
             }}
             label="Password"
             value={password}
             onChangeText={(text) => setPassword(text)}
           />
-          <View style={{ marginBottom: 20 }}>
+          <View style={{ marginBottom: hp("2%") }}>
             <Button onPress={userlogin} title="Login"></Button>
           </View>
           <Button
             color="#444444"
             style={{
-              marginBottom: 20,
+              marginBottom: hp("2%"),
             }}
             onPress={() => navigation.navigate("Register")}
             title="Register"
@@ -91,10 +95,10 @@ export default MyComponent;
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 150,
+    marginTop: hp("15%"),
     flex: 1,
     flexDirection: "column",
-    marginLeft: 20,
-    marginRight: 20,
+    marginLeft: hp("2%"),
+    marginRight: hp("2%"),
   },
 });
