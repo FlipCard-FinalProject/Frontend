@@ -1,15 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Appbar from '../components/Appbar'
 import Header from '../components/Header'
-// import Card from '../components/Card'
+import Card from '../components/Card'
 import { Input } from 'react-native-elements';
-import { TextInput } from "react-native-paper";
+import { TextInput, Text } from "react-native-paper";
 import { Button, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
 import { useDispatch, useSelector } from "react-redux";
-import { insertCard, fetchingCardBySetCardId } from "../store/actions/cardAction";
+import { insertCard, fetchingCardBySetCardId, clearForm } from "../store/actions/cardAction";
 import { insertSetCard } from "../store/actions/setCardAction";
 import { Audio } from 'expo-av';
 
@@ -20,15 +20,15 @@ export default function Create({ navigation }) {
     answer: '',
     type: ''
   });
-  const [image, setImage] = React.useState('');
+  const [image, setImage] = useState('');
   const [titleInput, setTitleInput] = React.useState('');
   const [category, setCategory] = React.useState('');
-  const [cardShow, setCardShow] = React.useState(9);
   const [sound, setSound] = React.useState('');
   const [recording, setRecording] = React.useState();
-  const { newVal } = useSelector((state) => state.setCard)
+  
   const dispatch = useDispatch();
 
+  const { newVal } = useSelector((state) => state.setCard)
   const { cards } = useSelector((state) => state.card)
   const { access_token } = useSelector((state) => state.user)
 
@@ -37,7 +37,7 @@ export default function Create({ navigation }) {
     if (newVal.id !== undefined) {
       setSetCardId(newVal.id)
     } 
-  }, [newVal])
+  }, [newVal.id])
 
   function createCard() {
     let payload = {
@@ -76,6 +76,15 @@ export default function Create({ navigation }) {
     }
     dispatch(insertSetCard(payload));
   }
+
+  function saveSetCard() {
+    dispatch(clearForm())
+    setSetCardId('')
+    setTitleInput('')
+    setCategory('')
+    navigation.navigate('Home')
+  }
+
   useEffect(() => {
     (async () => {
       if (Platform.OS !== 'web') {
@@ -163,41 +172,18 @@ export default function Create({ navigation }) {
     console.log('Recording stopped and stored at', uri);
   }
 
-  // async function playSound() {
-  //   console.log('Loading Sound');
-  //   const { sound } = await Audio.Sound.createAsync(
-  //     require('./assets/Hello.mp3')
-  //   );
-  //   setSound(sound);
-
-  //   console.log('Playing Sound');
-  //   await sound.playAsync();
-  // }
-
-  // React.useEffect(() => {
-  //   return sound
-  //     ? () => {
-  //       console.log('Unloading Sound');
-  //       sound.unloadAsync();
-  //     }
-  //     : undefined;
-  // }, [sound]);
-
   // ******************** ETC ********************
-  // jadi POST CARD
-  // const handleAddCard = () => {
-  //   if (cardShow >= 0) setCardShow(cardShow - 1)
-  //   dispatch(insertCard)
-  // }
-  useEffect(() => {
-    if (cards.length) dispatch(fetchingCardBySetCardId(setCardId, access_token))
-  }, [cards])
+
+  // useEffect(() => {
+  //   if (cards.length > 0){
+  //     dispatch(fetchingCardBySetCardId(setCardId, access_token))
+  //   }
+  // }, [cards])
 
   return (
     <>
       <Header navigation={navigation}></Header>
       <ScrollView>
-        
         <View>
           <Input
             placeholder='Set Title'
@@ -222,20 +208,18 @@ export default function Create({ navigation }) {
           <Picker.Item label="Funny" value="funny" />
           <Picker.Item label="Others" value="others" />
         </Picker>
+
         {setCardId === '' && (
-        <View style={{
-              marginBottom: 100
-            }}>
-              <Button
-                onPress={createSetCard}
-                title="Create Set Card"></Button>
-            </View>)}
+          <View style={{
+            marginBottom: 100
+          }}>
+            <Button onPress={createSetCard} title="Create Set Card" />
+          </View>)}
         {setCardId !== '' && (
-          <>
+          <View style={{ marginBottom: 100 }}>
+            <Button title="Create Set pressed" />
             <View style={{ marginBottom: 20, display: 'flex', flexDirection: 'column' }}>
-              <View style={{
-                width: '90%'
-              }}>
+              <View style={{ width: '90%' }}>
                 <TextInput
                   style={{
                     marginBottom: 20,
@@ -249,65 +233,56 @@ export default function Create({ navigation }) {
               </View>
               <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
                 <View style={{ width: '20%' }}>
-                  <Button title="add"
-                    onPress={pickImage} />
+                  <Button title="add" onPress={pickImage} />
                 </View>
                 <View style={{ width: '20%' }}>
-                  <Button title="camera"
-                    onPress={pickPhoto} />
+                  <Button title="camera" onPress={pickPhoto} />
                 </View>
                 <View style={{ width: '20%' }}>
-                  <Button
-                    title={recording ? 'Stop Recording' : 'Start Recording'}
-                    onPress={recording ? stopRecording : startRecording} />
+                  <Button title={recording ? 'Stop Recording' : 'Start Recording'} onPress={recording ? stopRecording : startRecording} />
                 </View>
                 <View style={{ width: '20%' }}>
-                  <Button
-                    title="Play Sound"
-                  />
+                  <Button title="Play Sound" />
                 </View>
               </View>
-
               <TextInput
-                  style={{
-                    marginBottom: 20,
-                  }}
-                  label="answer"
-                  placeholder="set answer"
-                  name="answer"
-                  value={card.answer}
-                  onChangeText={e => onChange(e, { name: "answer" })}
-                />
-              <View
                 style={{
-                  borderBottomColor: 'grey',
-                  borderBottomWidth: 0.5,
+                  marginBottom: 20,
                 }}
+                label="answer"
+                placeholder="set answer"
+                name="answer"
+                value={card.answer}
+                onChangeText={e => onChange(e, { name: "answer" })}
               />
+              <View>
+                { cards.length > 0 && (
+                  cards.map(carde => {
+                    return <Card card={carde} key={carde.id} navigation={navigation} />
+                  })
+                )}
+              </View>
+              <View style={{ marginBottom: 100 }}>
+                {cards.length === 0 && (
+                  <Button
+                  onPress={createCard}
+                  title="Add"/>
+                )}
+                {cards.length > 0 && (
+                  <>
+                    <Button
+                    onPress={createCard}
+                    title="Add more"/>
+
+                    <Button
+                    onPress={saveSetCard}
+                    color="red"
+                    title="Save"/>
+                  </>
+                )}
+              </View>
             </View>
-            { cards.length && (
-              cards.map(carde => {
-                <Card card={carde} key={carde.id} navigation={navigation} />
-              })
-            )}
-            <View style={{
-              marginBottom: 100
-            }}>
-              {!cards.length && (
-                <Button
-                onPress={createCard}
-                title="Add"></Button>
-              )}
-              {cards.length && (
-                <Button
-                onPress={createCard}
-                title="Add more"></Button>
-              )}
-              {/* <Button
-                onPress={createCard}
-                title="Save"></Button> */}
-            </View>
-          </>
+          </View>
         )}
       </ScrollView>
       <Appbar navigation={navigation}></Appbar>

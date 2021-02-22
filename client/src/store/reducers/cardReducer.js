@@ -7,6 +7,12 @@ const init = {
 
 function cardReducer (state = init, action) {
   switch (action.type) {
+    case 'CLEAR_FORM':
+      return { 
+        ...state,
+        cards: [],
+        newVal: {}
+      }
     case 'FETCHING_CARDS':
       return { 
         ...state,

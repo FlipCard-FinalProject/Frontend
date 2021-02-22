@@ -3,6 +3,10 @@ import * as firebase from 'firebase'
 import { getAccess } from '../../helpers/AsyncStorage'
 
 
+export const clearForm = () => {
+  return { type: "CLEAR_FORM" };
+};
+
 export const loading = () => {
   return { type: "LOADING_CARDS" };
 };
@@ -56,10 +60,12 @@ uploadSound = async (uri, soundName) => {
 export const insertCard = (set_card_id, payload) => {
   return dispatch => {
     console.log(payload.type);
+    let access = ''
     if (payload.type === 'text') {
       console.log('here bos');
       getAccess()
         .then(access_token => {
+          access = access_token
           return axios({
             method: 'POST',
             url: `https://flip-cards-server.herokuapp.com/cards/${set_card_id}`,
@@ -70,6 +76,7 @@ export const insertCard = (set_card_id, payload) => {
         .then(res => {
           console.log('success add card below this is the data')
           console.log(res.data);
+          dispatch(fetchingCardBySetCardId(set_card_id, access))
         })
         .catch((err) => {
           console.log(err.response);
@@ -97,6 +104,7 @@ export const insertCard = (set_card_id, payload) => {
             .then(res => {
               console.log('success add card below this is the data')
               console.log(res.data);
+              dispatch(fetchingCardBySetCardId(set_card_id, access))
             })
             .catch((err) => {
               console.log(err.response);
@@ -129,6 +137,7 @@ export const insertCard = (set_card_id, payload) => {
             .then(res => {
               console.log('success add card below this is the data')
               console.log(res.data);
+              dispatch(fetchingCardBySetCardId(set_card_id, access))
             })
             .catch((err) => {
               console.log(err.response);
