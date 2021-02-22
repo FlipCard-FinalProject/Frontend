@@ -6,11 +6,18 @@ import { Button, StyleSheet, Text, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import {Picker} from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
+import { Audio } from 'expo-av';
 
 export default function Create ({navigation}) {
   const [image, setImage] = React.useState('');
+  const [titleInput, setTitleInput] = React.useState('');
   const [category, setCategory] = React.useState('');
   const [cardShow, setCardShow] = React.useState(9);
+  const [sound, setSound] = React.useState();
+  const [recording, setRecording] = React.useState();
+
+
+  // ******************** MEDIA ********************
 
   useEffect(() => {
     (async () => {
@@ -21,7 +28,7 @@ export default function Create ({navigation}) {
         }
       }
     })();
-  }, []);
+  }, [pickImage]);
 
   useEffect(() => {
     (async () => {
@@ -32,7 +39,7 @@ export default function Create ({navigation}) {
         }
       }
     })();
-  }, []);
+  }, [pickPhoto]);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -41,9 +48,7 @@ export default function Create ({navigation}) {
       aspect: [4, 3],
       quality: 1,
     });
-
     console.log(result);
-
     if (!result.cancelled) {
       setImage(result.uri);
     }
@@ -56,15 +61,62 @@ export default function Create ({navigation}) {
       aspect: [4, 3],
       quality: 1,
     });
-
     console.log(result);
-
     if (!result.cancelled) {
       setImage(result.uri);
     }
   };
 
-  const handleAddCard = () => {
+  // ******************** AUDIO ********************
+
+  async function startRecording() {
+    try {
+      console.log('Requesting permissions..');
+      await Audio.requestPermissionsAsync();
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: true,
+        playsInSilentModeIOS: true,
+      }); 
+      console.log('Starting recording..');
+      const recording = new Audio.Recording();
+      await recording.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY);
+      await recording.startAsync(); 
+      setRecording(recording);
+      console.log('Recording started');
+    } catch (err) {
+      console.error('Failed to start recording', err);
+    }
+  }
+
+  async function stopRecording() {
+    console.log('Stopping recording..');
+    setRecording(undefined);
+    await recording.stopAndUnloadAsync();
+    const uri = recording.getURI(); 
+    console.log('Recording stopped and stored at', uri);
+  }
+
+  async function playSound() {
+    console.log('Loading Sound');
+    const { sound } = await Audio.Sound.createAsync(
+       require('./assets/Hello.mp3')
+    );
+    setSound(sound);
+
+    console.log('Playing Sound');
+    await sound.playAsync(); }
+
+  React.useEffect(() => {
+    return sound
+      ? () => {
+          console.log('Unloading Sound');
+          sound.unloadAsync(); }
+      : undefined;
+  }, [sound]);
+
+    // ******************** ETC ********************
+
+    const handleAddCard = () => {
     if(cardShow >= 0) setCardShow(cardShow + 1)
   }
   useEffect(() => {
@@ -77,11 +129,8 @@ export default function Create ({navigation}) {
       <ScrollView>
         <View>
           <Input
-            placeholder='Set Title'/>
-          <Button title="add"
-          onPress={pickImage}/>
-          <Button title="camera"
-          onPress={pickPhoto}/>
+            placeholder='Set Title'
+            onChangeText={text => setTitleInput(text)}/>
         </View>
       <Picker
         selectedValue={category}
@@ -102,113 +151,144 @@ export default function Create ({navigation}) {
         <Picker.Item label="Funny" value="funny" />
         <Picker.Item label="Others" value="others" />
       </Picker>
-      <View style={{ marginBottom: 20}}>
-        <Input placeholder='Set Hint'/>
-        <Input placeholder='Set answer'/>
-      <View
-        style={{
-          borderBottomColor: 'grey',
-          borderBottomWidth: 0.5,
-        }}
-      />
-      </View>
-      { cardShow < 9 && (
-        <View style={{ marginBottom: 20}}>
-          <Input placeholder='Set Hint'/>
-          <Input placeholder='Set answer'/>
-                <View
-        style={{
-          borderBottomColor: 'grey',
-          borderBottomWidth: 1,
-        }}/>
-        </View>
+      {titleInput.trim() !== '' && (
+        <>
+                <View style={{ marginBottom: 20, display: 'flex', flexDirection: 'column'}}>
+                <View style={{
+                  width: '90%'
+                }}>
+                  <Input
+                  placeholder='Set Hint'/>
+                </View>
+                <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly'}}>
+                  <View style={{width: '20%'}}>
+                    <Button title="add"
+                    onPress={() => pickImage}/>
+                  </View>
+                  <View style={{width: '20%'}}>
+                    <Button title="camera"
+                    onPress={() => pickPhoto}/>
+                  </View>
+                  <View style={{width: '20%'}}>
+                    <Button
+                    title={recording ? 'Stop Recording' : 'Start Recording'}
+                    onPress={recording ? stopRecording : startRecording}/>
+                  </View>
+                  <View style={{width: '20%'}}>
+                    <Button
+                    title="Play Sound"
+                    onPress={playSound}/>
+                  </View>
+                </View>
+      
+                <Input placeholder='Set answer'/>
+              <View
+                style={{
+                  borderBottomColor: 'grey',
+                  borderBottomWidth: 0.5,
+                }}
+              />
+              </View>
+              { cardShow < 9 && (
+                <View style={{ marginBottom: 20}}>
+                  <Input placeholder='Set Hint'/>
+      
+                  <Input placeholder='Set answer'/>
+                        <View
+                style={{
+                  borderBottomColor: 'grey',
+                  borderBottomWidth: 1,
+                }}/>
+                </View>
+              )}
+              { cardShow < 8 && (
+                <View style={{ marginBottom: 20}}>
+                  <Input placeholder='Set Hint'/>
+                  <Input placeholder='Set answer'/>
+                        <View
+                style={{
+                  borderBottomColor: 'grey',
+                  borderBottomWidth: 1,
+                }}/>
+                </View>
+              )}
+              { cardShow < 7 && (
+                <View style={{ marginBottom: 20}}>
+                  <Input placeholder='Set Hint'/>
+                  <Input placeholder='Set answer'/>
+                        <View
+                style={{
+                  borderBottomColor: 'grey',
+                  borderBottomWidth: 1,
+                }}/>
+                </View>
+              )}
+              { cardShow < 6 && (
+                <View style={{ marginBottom: 20}}>
+                  <Input placeholder='Set Hint'/>
+                  <Input placeholder='Set answer'/>
+                        <View
+                style={{
+                  borderBottomColor: 'grey',
+                  borderBottomWidth: 1,
+                }}/>
+                </View>
+              )}
+              { cardShow < 5 && (
+                <View style={{ marginBottom: 20}}>
+                  <Input placeholder='Set Hint'/>
+                  <Input placeholder='Set answer'/>
+                        <View
+                style={{
+                  borderBottomColor: 'grey',
+                  borderBottomWidth: 1,
+                }}/>
+                </View>
+              )}
+              { cardShow < 4 && (
+                <View style={{ marginBottom: 20}}>
+                  <Input placeholder='Set Hint'/>
+                  <Input placeholder='Set answer'/>
+                        <View
+                style={{
+                  borderBottomColor: 'grey',
+                  borderBottomWidth: 1,
+                }}/>
+                </View>
+              )}
+              { cardShow < 3 && (
+                <View style={{ marginBottom: 20}}>
+                  <Input placeholder='Set Hint'/>
+                  <Input placeholder='Set answer'/>
+                        <View
+                style={{
+                  borderBottomColor: 'grey',
+                  borderBottomWidth: 1,
+                }}/>
+                </View>
+              )}
+              { cardShow < 2 && (
+                <View style={{ marginBottom: 20}}>
+                  <Input placeholder='Set Hint'/>
+                  <Input placeholder='Set answer'/>
+                        <View
+                style={{
+                  borderBottomColor: 'grey',
+                  borderBottomWidth: 1,
+                }}/>
+                </View>
+              )}
+              <View style={{
+                marginBottom: 100
+              }}>
+                <Button
+                onPress={handleAddCard}
+                title="Add more"></Button>
+                <Button
+                title="Save"></Button>
+              </View>
+            </>
       )}
-      { cardShow < 8 && (
-        <View style={{ marginBottom: 20}}>
-          <Input placeholder='Set Hint'/>
-          <Input placeholder='Set answer'/>
-                <View
-        style={{
-          borderBottomColor: 'grey',
-          borderBottomWidth: 1,
-        }}/>
-        </View>
-      )}
-      { cardShow < 7 && (
-        <View style={{ marginBottom: 20}}>
-          <Input placeholder='Set Hint'/>
-          <Input placeholder='Set answer'/>
-                <View
-        style={{
-          borderBottomColor: 'grey',
-          borderBottomWidth: 1,
-        }}/>
-        </View>
-      )}
-      { cardShow < 6 && (
-        <View style={{ marginBottom: 20}}>
-          <Input placeholder='Set Hint'/>
-          <Input placeholder='Set answer'/>
-                <View
-        style={{
-          borderBottomColor: 'grey',
-          borderBottomWidth: 1,
-        }}/>
-        </View>
-      )}
-      { cardShow < 5 && (
-        <View style={{ marginBottom: 20}}>
-          <Input placeholder='Set Hint'/>
-          <Input placeholder='Set answer'/>
-                <View
-        style={{
-          borderBottomColor: 'grey',
-          borderBottomWidth: 1,
-        }}/>
-        </View>
-      )}
-      { cardShow < 4 && (
-        <View style={{ marginBottom: 20}}>
-          <Input placeholder='Set Hint'/>
-          <Input placeholder='Set answer'/>
-                <View
-        style={{
-          borderBottomColor: 'grey',
-          borderBottomWidth: 1,
-        }}/>
-        </View>
-      )}
-      { cardShow < 3 && (
-        <View style={{ marginBottom: 20}}>
-          <Input placeholder='Set Hint'/>
-          <Input placeholder='Set answer'/>
-                <View
-        style={{
-          borderBottomColor: 'grey',
-          borderBottomWidth: 1,
-        }}/>
-        </View>
-      )}
-      { cardShow < 2 && (
-        <View style={{ marginBottom: 20}}>
-          <Input placeholder='Set Hint'/>
-          <Input placeholder='Set answer'/>
-                <View
-        style={{
-          borderBottomColor: 'grey',
-          borderBottomWidth: 1,
-        }}/>
-        </View>
-      )}
-      <View style={{
-        marginBottom: 100
-      }}>
-        <Button
-        onPress={handleAddCard}
-        title="Add more"></Button>
-        <Button
-        title="Save"></Button>
-      </View>
       </ScrollView>
       <Appbar navigation={navigation}></Appbar>
     </>
