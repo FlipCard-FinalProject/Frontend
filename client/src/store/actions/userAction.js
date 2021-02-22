@@ -1,5 +1,6 @@
 import axios from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { getAccess } from '../../helpers/AsyncStorage'
 
 export const fetchingUser = (payload) => {
   return { type: "FETCHING_USER", payload };
@@ -63,7 +64,9 @@ export const login = (payload) => {
           payload: data.access_token,
         });
         dispatch(fetchingUser(data.payload))
-        return AsyncStorage.setItem('access_token', data.access_token)
+        const access = ['access_token', data.access_token]
+        const user = ['userid', `${data.payload.id}`]
+        return AsyncStorage.multiSet([access, user])
       })
       .then(() => {
         console.log('passed away, userAction: ln 69')
@@ -76,13 +79,35 @@ export const login = (payload) => {
 };
 
 export const getUser = (id) => {
+  console.log('masuk get user')
   return (dispatch) => {
-    dispatch(loading());
-    axios({
-      method: "GET",
-      url: `http://localhost:3000/user/${id}`,
-    })
+      return axios({
+        method: "GET",
+        url: `https://flip-cards-server.herokuapp.com/user/${id}`,
+      })
       .then(({ data }) => {
+        dispatch(fetchingProfile(data));
+      })
+      .catch((err) => {
+        console.log(err.response);
+        dispatch(sendError(err.response));
+      });
+  };
+};
+
+export const updateUser = (id, payload) => {
+  return (dispatch) => {
+    getAccess()
+      .then(access_token => {
+        return axios({
+          method: "PUT",
+          url: `https://flip-cards-server.herokuapp.com/user/${id}`,
+          data: payload,
+          headers: {access_token}
+        })
+      })
+      .then(({ data }) => {
+        console.log(data, 'hasil update')
         dispatch(fetchingProfile(data));
       })
       .catch((err) => {
