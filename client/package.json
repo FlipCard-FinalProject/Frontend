@@ -36,12 +36,8 @@
     "react-navigation": "^4.4.3",
     "react-redux": "^7.2.2",
     "redux": "^4.0.5",
-<<<<<<< HEAD
-    "redux-thunk": "^2.3.0"
-=======
     "redux-thunk": "^2.3.0",
     "expo-av": "~8.7.0"
->>>>>>> 15e75fb0ab67e82be6d1fa52f3e01570edc300d2
   },
   "devDependencies": {
     "@babel/core": "~7.9.0"
