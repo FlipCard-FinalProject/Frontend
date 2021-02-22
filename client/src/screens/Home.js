@@ -7,9 +7,11 @@ import { fetchingSetCards } from "../store/actions/setCardAction";
 import { StyleSheet, Text, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import LoadingSpin from "../helpers/loading";
 
 export default function Home({ navigation }) {
   const setcard = useSelector((state) => state.setCard.setCards);
+  const loading = useSelector((state) => state.setCard.loading);
   const dispatch = useDispatch();
   const [access, setAccess] = useState();
 
@@ -32,6 +34,10 @@ export default function Home({ navigation }) {
     }
   }, [access]);
 
+  if (loading) {
+    return <LoadingSpin />;
+  }
+
   return (
     <>
       <Header navigation={navigation}></Header>
@@ -53,5 +59,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
+  },
+  spin: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

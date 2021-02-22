@@ -1,7 +1,11 @@
 import axios from "axios";
 
-export const loading = () => {
-  return { type: "LOADING_SET_CARDS" };
+export const loadingStart = () => {
+  return { type: "LOADING_SET_CARDS_START" };
+};
+
+export const loadingEnd = () => {
+  return { type: "LOADING_SET_CARDS_END" };
 };
 
 export const fetchingSuccess = (payload) => {
@@ -18,7 +22,7 @@ export const newVal = (payload) => {
 
 export const fetchingSetCards = (payload) => {
   return (dispatch) => {
-    dispatch(loading());
+    dispatch(loadingStart());
     axios({
       method: "GET",
       url: "https://flip-cards-server.herokuapp.com/setcard",
@@ -26,10 +30,12 @@ export const fetchingSetCards = (payload) => {
     })
       .then(({ data }) => {
         dispatch(fetchingSuccess(data));
+        dispatch(loadingEnd());
       })
       .catch((err) => {
         console.log(err);
         dispatch(sendError(err.response));
+        dispatch(loadingEnd());
       });
   };
 };

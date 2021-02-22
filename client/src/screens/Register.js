@@ -15,6 +15,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import LoadingSpin from "../helpers/loading";
 
 const MyComponent = ({ navigation }) => {
   const [email, setEmail] = React.useState("");
@@ -48,13 +49,7 @@ const MyComponent = ({ navigation }) => {
   }
 
   if (loading) {
-    return (
-      <View style={styles.container}>
-        <View style={styles.spin}>
-          <ActivityIndicator size={hp("40%")} color="#00ff00" />
-        </View>
-      </View>
-    );
+    return <LoadingSpin />;
   }
 
   return (

@@ -2,40 +2,45 @@ const init = {
   setCards: [],
   loading: false,
   errors: [],
-  newVal: {}
-}
+  newVal: {},
+};
 
-function setCardReducer (state = init, action) {
+function setCardReducer(state = init, action) {
   switch (action.type) {
-    case 'FETCHING_SET_CARDS':
+    case "FETCHING_SET_CARDS":
       return {
         ...state,
         setCards: action.payload,
-        loading: false
-      }
-    case 'ADD_SET_CARD':
+        loading: false,
+      };
+    case "ADD_SET_CARD":
       return {
         ...state,
-        setCards: [...state.setCards, action.payload]
-      }
-    case 'NEW_VAL_SET_CARD':
+        setCards: [...state.setCards, action.payload],
+      };
+    case "NEW_VAL_SET_CARD":
       return {
         ...state,
-        newVal: action.payload
-      }
-    case 'LOADING_SET_CARDs':
+        newVal: action.payload,
+      };
+    case "LOADING_SET_CARDS_START":
       return {
         ...state,
-        loading: true
-      }
-    case 'ERROR_SET_CARDS':
+        loading: true,
+      };
+    case "LOADING_SET_CARDS_END":
       return {
         ...state,
-        errors: action.payload
-      }
+        loading: false,
+      };
+    case "ERROR_SET_CARDS":
+      return {
+        ...state,
+        errors: action.payload,
+      };
     default:
-      return state
+      return state;
   }
 }
 
-export default setCardReducer
+export default setCardReducer;

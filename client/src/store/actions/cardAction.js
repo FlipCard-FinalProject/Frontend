@@ -1,7 +1,12 @@
 import axios from "axios";
 import * as firebase from "firebase";
-export const loading = () => {
-  return { type: "LOADING_CARDS" };
+
+export const loadingStart = () => {
+  return { type: "LOADING_CARDS_START" };
+};
+
+export const loadingEnd = () => {
+  return { type: "LOADING_CARDS_END" };
 };
 
 export const fetchingSuccess = (payload) => {
@@ -18,21 +23,20 @@ export const newVal = (payload) => {
 
 export const fetchingCardBySetCardId = (set_card_id, access_token) => {
   return (dispatch) => {
-    console.log(set_card_id);
-    console.log(access_token);
-    dispatch(loading());
+    dispatch(loadingStart());
     axios({
       method: "GET",
       url: `https://flip-cards-server.herokuapp.com/cards/${set_card_id}`,
-      headers: { access_token: access_token },
+      headers: { access_token },
     })
       .then(({ data }) => {
-        console.log(data);
         dispatch(fetchingSuccess(data));
+        dispatch(loadingEnd());
       })
       .catch((err) => {
         // console.log(err);
         dispatch(sendError(err.response));
+        dispatch(loadingEnd());
       });
   };
 };

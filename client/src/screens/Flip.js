@@ -12,21 +12,28 @@ import { RectButton } from "react-native-gesture-handler";
 import Swipes from "../components/Swipes";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchingCardBySetCardId } from "../store/actions/cardAction";
+import LoadingSpin from "../helpers/loading";
 import { getAccess } from "../helpers/AsyncStorage";
 
 export default function Flip({ route, navigation }) {
   const dispatch = useDispatch();
-  const access_token = useSelector((state) => state.user.access_token);
-  const data = useSelector((state) => state.card.cards);
 
+  const data = useSelector((state) => state.card.cards);
+  const loading = useSelector((state) => state.card.loading);
   const [cards, setCards] = useState(data);
   const [currentIndex, setCurrentIndex] = useState(0);
   const { id } = route.params;
 
   useEffect(() => {
-    if (id) {
-      dispatch(fetchingCardBySetCardId(id, access_token));
-    }
+    getAccess("access_token")
+      .then((token) => {
+        if (id && token) {
+          dispatch(fetchingCardBySetCardId(id, token));
+        }
+      })
+      .catch(() => {
+        access_token = null;
+      });
   }, [id]);
 
   function handleSwipeRight() {
@@ -41,6 +48,14 @@ export default function Flip({ route, navigation }) {
     const nextIndex = cards.length - 2 === currentIndex ? 0 : currentIndex + 1;
     setCurrentIndex(nextIndex);
   }
+
+  if (loading) {
+    return <LoadingSpin />;
+  }
+  if (data) {
+    console.log(data);
+  }
+
   return (
     <>
       <Header navigation={navigation}></Header>

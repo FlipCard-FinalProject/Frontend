@@ -1,7 +1,14 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { TextInput } from "react-native-paper";
-import { Button, StyleSheet, Text, View, Image } from "react-native";
+import {
+  Button,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  ImageBackground,
+} from "react-native";
 import { login, sendError } from "../store/actions/userAction";
 import { useDispatch, useSelector } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -46,47 +53,52 @@ const MyComponent = ({ navigation }) => {
 
   return (
     <>
-      <View style={styles.container}>
-        <View>
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "center",
-              // marginBottom: 100,
-            }}
-          >
-            <Image source={require("../../assets/Flipcard.png")}></Image>
+      <ImageBackground
+        source={require("../../assets/bg3.jpg")}
+        style={styles.image}
+      >
+        <View style={styles.container}>
+          <View>
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                // marginBottom: 100,
+              }}
+            >
+              <Image source={require("../../assets/Flipcard.png")}></Image>
+            </View>
+            <TextInput
+              style={{
+                marginBottom: hp("2%"),
+              }}
+              label="Email"
+              value={email}
+              onChangeText={(text) => setEmail(text)}
+            />
+            <TextInput
+              style={{
+                marginBottom: hp("5%"),
+              }}
+              label="Password"
+              value={password}
+              onChangeText={(text) => setPassword(text)}
+            />
+            <View style={{ marginBottom: hp("2%") }}>
+              <Button onPress={userlogin} title="Login"></Button>
+            </View>
+            <Button
+              color="#444444"
+              style={{
+                marginBottom: hp("2%"),
+              }}
+              onPress={() => navigation.navigate("Register")}
+              title="Register"
+            ></Button>
           </View>
-          <TextInput
-            style={{
-              marginBottom: hp("2%"),
-            }}
-            label="Email"
-            value={email}
-            onChangeText={(text) => setEmail(text)}
-          />
-          <TextInput
-            style={{
-              marginBottom: hp("5%"),
-            }}
-            label="Password"
-            value={password}
-            onChangeText={(text) => setPassword(text)}
-          />
-          <View style={{ marginBottom: hp("2%") }}>
-            <Button onPress={userlogin} title="Login"></Button>
-          </View>
-          <Button
-            color="#444444"
-            style={{
-              marginBottom: hp("2%"),
-            }}
-            onPress={() => navigation.navigate("Register")}
-            title="Register"
-          ></Button>
         </View>
-      </View>
+      </ImageBackground>
     </>
   );
 };
@@ -100,5 +112,10 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     marginLeft: hp("2%"),
     marginRight: hp("2%"),
+  },
+  image: {
+    flex: 1,
+    width: wp("100%"),
+    height: hp("100%"),
   },
 });
