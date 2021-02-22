@@ -1,17 +1,19 @@
 import React, { useEffect } from 'react';
 import Appbar from '../components/Appbar'
 import Header from '../components/Header'
+// import Card from '../components/Card'
 import { Input } from 'react-native-elements';
 import { TextInput } from "react-native-paper";
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { Button, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
 import { useDispatch, useSelector } from "react-redux";
-import { insertCard } from "../store/actions/cardAction";
+import { insertCard, fetchingCardBySetCardId } from "../store/actions/cardAction";
 import { insertSetCard } from "../store/actions/setCardAction";
 import { Audio } from 'expo-av';
-  export default function Create({ navigation }) {
+
+export default function Create({ navigation }) {
   const [setCardId, setSetCardId] = React.useState("");
   const [card, setCard] = React.useState({
     hint: '',
@@ -27,7 +29,8 @@ import { Audio } from 'expo-av';
   const { newVal } = useSelector((state) => state.setCard)
   const dispatch = useDispatch();
 
-  const {} = useSelector((state) => state.card)
+  const { cards } = useSelector((state) => state.card)
+  const { access_token } = useSelector((state) => state.user)
 
   // ******************** MEDIA ********************
   useEffect(() => {
@@ -182,19 +185,13 @@ import { Audio } from 'expo-av';
 
   // ******************** ETC ********************
   // jadi POST CARD
-  const handleAddCard = () => {
-    // if (cardShow >= 0) setCardShow(cardShow - 1)
-    // dispatch(insertCard)
-  }
+  // const handleAddCard = () => {
+  //   if (cardShow >= 0) setCardShow(cardShow - 1)
+  //   dispatch(insertCard)
+  // }
   useEffect(() => {
-
-    dispatch(fetchingCardBySetCardId(/*newVal.id)*/))
-  }, [cardShow])
-
-  // ******************** ETC ********************
-  // useEffect(() => {
-  //   dispatch()
-  // }, [])
+    if (cards.length) dispatch(fetchingCardBySetCardId(setCardId, access_token))
+  }, [cards])
 
   return (
     <>
@@ -288,121 +285,27 @@ import { Audio } from 'expo-av';
                 }}
               />
             </View>
-            {/* {cardShow < 9 && (
-              <View style={{ marginBottom: 20 }}>
-                <TextInput
-                  style={{
-                    marginBottom: 20,
-                  }}
-                  label="Hint"
-                  placeholder="set hint"
-                  name="hint"
-                  value={card.hint}
-                  onChangeText={e => onChange(e, { name: "hint" })}
-                />
-                <TextInput
-                  style={{
-                    marginBottom: 20,
-                  }}
-                  label="answer"
-                  placeholder="set answer"
-                  name="answer"
-                  value={card.answer}
-                  onChangeText={e => onChange(e, { name: "answer" })}
-                />
-                <View
-                  style={{
-                    borderBottomColor: 'grey',
-                    borderBottomWidth: 1,
-                  }} />
-              </View>
-            )} */}
-            {/* {cardShow < 8 && (
-              <View style={{ marginBottom: 20 }}>
-                <Input placeholder='Set Hint' />
-                <Input placeholder='Set answer' />
-                <View
-                  style={{
-                    borderBottomColor: 'grey',
-                    borderBottomWidth: 1,
-                  }} />
-              </View>
+            { cards.length && (
+              cards.map(carde => {
+                <Card card={carde} key={carde.id} navigation={navigation} />
+              })
             )}
-            {cardShow < 7 && (
-              <View style={{ marginBottom: 20 }}>
-                <Input placeholder='Set Hint' />
-                <Input placeholder='Set answer' />
-                <View
-                  style={{
-                    borderBottomColor: 'grey',
-                    borderBottomWidth: 1,
-                  }} />
-              </View>
-            )}
-            {cardShow < 6 && (
-              <View style={{ marginBottom: 20 }}>
-                <Input placeholder='Set Hint' />
-                <Input placeholder='Set answer' />
-                <View
-                  style={{
-                    borderBottomColor: 'grey',
-                    borderBottomWidth: 1,
-                  }} />
-              </View>
-            )}
-            {cardShow < 5 && (
-              <View style={{ marginBottom: 20 }}>
-                <Input placeholder='Set Hint' />
-                <Input placeholder='Set answer' />
-                <View
-                  style={{
-                    borderBottomColor: 'grey',
-                    borderBottomWidth: 1,
-                  }} />
-              </View>
-            )}
-            {cardShow < 4 && (
-              <View style={{ marginBottom: 20 }}>
-                <Input placeholder='Set Hint' />
-                <Input placeholder='Set answer' />
-                <View
-                  style={{
-                    borderBottomColor: 'grey',
-                    borderBottomWidth: 1,
-                  }} />
-              </View>
-            )}
-            {cardShow < 3 && (
-              <View style={{ marginBottom: 20 }}>
-                <Input placeholder='Set Hint' />
-                <Input placeholder='Set answer' />
-                <View
-                  style={{
-                    borderBottomColor: 'grey',
-                    borderBottomWidth: 1,
-                  }} />
-              </View>
-            )}
-            {cardShow < 2 && (
-              <View style={{ marginBottom: 20 }}>
-                <Input placeholder='Set Hint' />
-                <Input placeholder='Set answer' />
-                <View
-                  style={{
-                    borderBottomColor: 'grey',
-                    borderBottomWidth: 1,
-                  }} />
-              </View>
-            )} */}
             <View style={{
               marginBottom: 100
             }}>
-              <Button
-                onPress={handleAddCard}
-                title="Add more"></Button>
-              <Button
+              {!cards.length && (
+                <Button
                 onPress={createCard}
-                title="Save"></Button>
+                title="Add"></Button>
+              )}
+              {cards.length && (
+                <Button
+                onPress={createCard}
+                title="Add more"></Button>
+              )}
+              {/* <Button
+                onPress={createCard}
+                title="Save"></Button> */}
             </View>
           </>
         )}

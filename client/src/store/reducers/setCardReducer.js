@@ -14,6 +14,8 @@ function setCardReducer (state = init, action) {
         loading: false
       }
     case 'ADD_SET_CARD':
+      console.log(state.setCards, 'ini setcards')
+      console.log(action.payload, 'ini payload')
       return {
         ...state,
         setCards: [...state.setCards, action.payload]

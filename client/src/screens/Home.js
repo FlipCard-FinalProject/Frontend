@@ -9,7 +9,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Home({ navigation }) {
-  const setcard = useSelector((state) => state.setCard.setCards);
+  const { setCards } = useSelector((state) => state.setCard);
   const dispatch = useDispatch();
   const [access, setAccess] = useState();
 
@@ -36,7 +36,7 @@ export default function Home({ navigation }) {
     <>
       <Header navigation={navigation}></Header>
       <ScrollView>
-        {setcard.map((set) => {
+        {setCards.map((set) => {
           return (
             <SetCard navigation={navigation} props={set} key={set.id}></SetCard>
           );
