@@ -170,7 +170,7 @@ export default function Create ({navigation}) {
       />
       </View>
       { cardShow < 9 && (
-        <View style={{ marginBottom: 20}}>
+        <View style={{ marginBottom: 20}} >
           <Input placeholder='Set Hint'/>
           <Input placeholder='Set answer'/>
                 <View
@@ -261,7 +261,8 @@ export default function Create ({navigation}) {
         marginBottom: 100
       }}>
         <Button
-        title="Add more"></Button>
+        title="Add more"
+        onPress={handleAddCard}></Button>
         <Button
         onPress={createCard}
         title="Save"></Button>

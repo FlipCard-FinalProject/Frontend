@@ -32,18 +32,19 @@ export const fetchingCardBySetCardId = (set_card_id) => {
       })
   }
 }
-export const insertCard = (set_card_id, payload) => {
+
+uploadImage = async (uri, imageName) => {
+  const response = await fetch(uri)
+  const blob = await response.blob()
+  var ref = firebase.storage().ref().child("images/" + imageName)
+  return ref.put(blob)
+}
+
+export const insertCard =  (set_card_id, payload) => {
   return async dispatch => {
     console.log(payload.type);
-    try {
+    // try {
       if (payload.type === "image") {
-        
-        uploadImage = async (uri, imageName) => {
-          const response = await fetch(uri)
-          const blob = await response.blob()
-          var ref = firebase.storage().ref().child("images/" + imageName)
-          return ref.put(blob)
-        }
         let uri = payload.hint
         let stringName = uri.split("/");
         let getNameImage = stringName[stringName.length - 1]
@@ -76,9 +77,9 @@ export const insertCard = (set_card_id, payload) => {
       }
 
       
-    } catch (error) {
-      console.log(error);
-    }
+    // } catch (error) {
+    //   console.log(error);
+    // }
 
   }
 }
