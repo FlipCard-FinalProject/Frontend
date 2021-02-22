@@ -76,7 +76,7 @@ export default function Account({ navigation }) {
         <Text
           style={{
             fontWeight: "bold",
-            // marginBottom: 20
+            marginBottom: 20,
           }}
         >
           {email}
@@ -87,11 +87,9 @@ export default function Account({ navigation }) {
           onChangeText={(text) => {
             setFirstName(text);
           }}
-          style={
-            {
-              // marginBottom: 20
-            }
-          }
+          style={{
+            marginBottom: 20,
+          }}
         ></TextInput>
         <TextInput
           label="Last name"
@@ -101,18 +99,14 @@ export default function Account({ navigation }) {
           }}
         ></TextInput>
         <View
-          style={
-            {
-              // marginTop: 250,
-            }
-          }
+          style={{
+            marginTop: 250,
+          }}
         >
           <View
-            style={
-              {
-                // marginBottom: 20
-              }
-            }
+            style={{
+              marginBottom: 20,
+            }}
           >
             <Button title="Save" onPress={updateHandle}></Button>
           </View>
