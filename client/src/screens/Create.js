@@ -8,8 +8,9 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
 import { useDispatch, useSelector } from "react-redux";
-import { insertCard } from "../store/actions/cardAction";
+// import { insertCard } from "../store/actions/cardAction";
 import { Audio } from 'expo-av';
+import { insertCard, fetchingCardBySetCardId } from '../store/actions/cardAction'
 
 export default function Create({ navigation }) {
   const [setCardId, setSetCardId] = React.useState(1);
@@ -25,6 +26,8 @@ export default function Create({ navigation }) {
   const [sound, setSound] = React.useState();
   const [recording, setRecording] = React.useState();
   const dispatch = useDispatch();
+
+  const {} = useSelector((state) => state.card)
 
   // ******************** MEDIA ********************
 
@@ -156,13 +159,20 @@ export default function Create({ navigation }) {
   }, [sound]);
 
   // ******************** ETC ********************
-
+  // jadi POST CARD
   const handleAddCard = () => {
-    if (cardShow >= 0) setCardShow(cardShow + 1)
+    // if (cardShow >= 0) setCardShow(cardShow - 1)
+    // dispatch(insertCard)
   }
   useEffect(() => {
-    console.log(cardShow);
+
+    dispatch(fetchingCardBySetCardId(/*newVal.id)*/))
   }, [cardShow])
+
+  // ******************** ETC ********************
+  // useEffect(() => {
+  //   dispatch()
+  // }, [])
 
   return (
     <>
@@ -226,7 +236,7 @@ export default function Create({ navigation }) {
                 <View style={{ width: '20%' }}>
                   <Button
                     title="Play Sound"
-                     />
+                  />
                 </View>
               </View>
 
@@ -276,83 +286,7 @@ export default function Create({ navigation }) {
                   }} />
               </View>
             )}
-            {cardShow < 8 && (
-              <View style={{ marginBottom: 20 }}>
-                <Input placeholder='Set Hint' />
-                <Input placeholder='Set answer' />
-                <View
-                  style={{
-                    borderBottomColor: 'grey',
-                    borderBottomWidth: 1,
-                  }} />
-              </View>
-            )}
-            {cardShow < 7 && (
-              <View style={{ marginBottom: 20 }}>
-                <Input placeholder='Set Hint' />
-                <Input placeholder='Set answer' />
-                <View
-                  style={{
-                    borderBottomColor: 'grey',
-                    borderBottomWidth: 1,
-                  }} />
-              </View>
-            )}
-            {cardShow < 6 && (
-              <View style={{ marginBottom: 20 }}>
-                <Input placeholder='Set Hint' />
-                <Input placeholder='Set answer' />
-                <View
-                  style={{
-                    borderBottomColor: 'grey',
-                    borderBottomWidth: 1,
-                  }} />
-              </View>
-            )}
-            {cardShow < 5 && (
-              <View style={{ marginBottom: 20 }}>
-                <Input placeholder='Set Hint' />
-                <Input placeholder='Set answer' />
-                <View
-                  style={{
-                    borderBottomColor: 'grey',
-                    borderBottomWidth: 1,
-                  }} />
-              </View>
-            )}
-            {cardShow < 4 && (
-              <View style={{ marginBottom: 20 }}>
-                <Input placeholder='Set Hint' />
-                <Input placeholder='Set answer' />
-                <View
-                  style={{
-                    borderBottomColor: 'grey',
-                    borderBottomWidth: 1,
-                  }} />
-              </View>
-            )}
-            {cardShow < 3 && (
-              <View style={{ marginBottom: 20 }}>
-                <Input placeholder='Set Hint' />
-                <Input placeholder='Set answer' />
-                <View
-                  style={{
-                    borderBottomColor: 'grey',
-                    borderBottomWidth: 1,
-                  }} />
-              </View>
-            )}
-            {cardShow < 2 && (
-              <View style={{ marginBottom: 20 }}>
-                <Input placeholder='Set Hint' />
-                <Input placeholder='Set answer' />
-                <View
-                  style={{
-                    borderBottomColor: 'grey',
-                    borderBottomWidth: 1,
-                  }} />
-              </View>
-            )}
+            
             <View style={{
               marginBottom: 100
             }}>
