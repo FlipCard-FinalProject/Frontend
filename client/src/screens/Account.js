@@ -4,9 +4,41 @@ import Header from '../components/Header'
 import { Button, StyleSheet, Text, View } from 'react-native';
 import { TextInput } from 'react-native-paper'
 import { ScrollView } from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useDispatch } from 'react-redux'
+import { logout } from '../store/actions/userAction'
+
 export default function Account ({navigation}) {
   const [firstName, setFirstName] = useState("Imam")
   const [lastName, setLastName] = useState("Zain")
+  const dispatch = useDispatch()
+
+  // const userlogout = () => {
+  //     AsyncStorage.removeItem('access_token')
+  //     .then(() => {
+  //       return AsyncStorage.getItem('access_token')
+  //     }) .then(data => {
+  //       dispatch(logout())
+  //       console.log(data, 'dari logout')
+  //       navigation.navigate('Login')
+  //     })
+  //     .catch(err => console.log(err))
+  // }
+
+  const userlogout = async () => {
+    try {
+      await AsyncStorage.removeItem('access_token')
+      const data = await AsyncStorage.getItem('access_token')
+      console.log(data, 'dari logout')
+      dispatch(logout())
+
+      navigation.navigate('Login')
+      
+    } catch (err) {
+      console.log(err);
+    }
+}
+
   return (
     <>
       <Header navigation={navigation}></Header>
@@ -40,7 +72,7 @@ export default function Account ({navigation}) {
             <Button
             color="red"
             title="Logout"
-            onPress={() => navigation.navigate('Login')}></Button>
+            onPress={userlogout}></Button>
           </View>
         </View>
       </View>

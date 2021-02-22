@@ -26,6 +26,8 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context'
+import { Provider as ReduxProvider} from 'react-redux'
+import store from './src/store'
 import Appbar from './src/components/Appbar'
 import Header from './src/components/Header'
 import { NavigationContainer, StackActions } from '@react-navigation/native'
@@ -41,6 +43,7 @@ const Stack = createStackNavigator()
 
 export default function App() {
   return (
+    <ReduxProvider store={store}>
       <PaperProvider>
         <SafeAreaProvider>
           <NavigationContainer>
@@ -55,5 +58,6 @@ export default function App() {
           </NavigationContainer>
         </SafeAreaProvider>
       </PaperProvider>
+    </ReduxProvider>
   );
 }
