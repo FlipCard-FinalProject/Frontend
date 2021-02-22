@@ -72,6 +72,7 @@ export default function Create({ navigation }) {
   }, [pickPhoto]);
 
   const pickImage = async () => {
+    console.log('here');
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
@@ -134,16 +135,16 @@ export default function Create({ navigation }) {
     console.log('Recording stopped and stored at', uri);
   }
 
-  async function playSound() {
-    console.log('Loading Sound');
-    const { sound } = await Audio.Sound.createAsync(
-      require('./assets/Hello.mp3')
-    );
-    setSound(sound);
+  // async function playSound() {
+  //   console.log('Loading Sound');
+  //   const { sound } = await Audio.Sound.createAsync(
+  //     require('./assets/Hello.mp3')
+  //   );
+  //   setSound(sound);
 
-    console.log('Playing Sound');
-    await sound.playAsync();
-  }
+  //   console.log('Playing Sound');
+  //   await sound.playAsync();
+  // }
 
   React.useEffect(() => {
     return sound
@@ -197,17 +198,25 @@ export default function Create({ navigation }) {
               <View style={{
                 width: '90%'
               }}>
-                <Input
-                  placeholder='Set Hint' />
+                <TextInput
+                  style={{
+                    marginBottom: 20,
+                  }}
+                  label="Hint"
+                  placeholder="set hint"
+                  name="hint"
+                  value={card.hint}
+                  onChangeText={e => onChange(e, { name: "hint" })}
+                />
               </View>
               <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
                 <View style={{ width: '20%' }}>
                   <Button title="add"
-                    onPress={() => pickImage} />
+                    onPress={pickImage} />
                 </View>
                 <View style={{ width: '20%' }}>
                   <Button title="camera"
-                    onPress={() => pickPhoto} />
+                    onPress={pickPhoto} />
                 </View>
                 <View style={{ width: '20%' }}>
                   <Button
@@ -217,11 +226,20 @@ export default function Create({ navigation }) {
                 <View style={{ width: '20%' }}>
                   <Button
                     title="Play Sound"
-                    onPress={playSound} />
+                     />
                 </View>
               </View>
 
-              <Input placeholder='Set answer' />
+              <TextInput
+                  style={{
+                    marginBottom: 20,
+                  }}
+                  label="answer"
+                  placeholder="set answer"
+                  name="answer"
+                  value={card.answer}
+                  onChangeText={e => onChange(e, { name: "answer" })}
+                />
               <View
                 style={{
                   borderBottomColor: 'grey',

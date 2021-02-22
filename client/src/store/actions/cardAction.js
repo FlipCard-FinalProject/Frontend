@@ -32,23 +32,40 @@ export const fetchingCardBySetCardId = (set_card_id) => {
       })
   }
 }
-export const insertCard = (set_card_id, payload) => {
-  return async dispatch => {
-    console.log(payload.type);
-    try {
-      if (payload.type === "image") {
-        
-        uploadImage = async (uri, imageName) => {
-          const response = await fetch(uri)
-          const blob = await response.blob()
-          var ref = firebase.storage().ref().child("images/" + imageName)
-          return ref.put(blob)
-        }
-        let uri = payload.hint
-        let stringName = uri.split("/");
-        let getNameImage = stringName[stringName.length - 1]
 
-        uploadImage(payload.hint, getNameImage)
+uploadImage = async (uri, imageName) => {
+  const response = await fetch(uri)
+  const blob = await response.blob()
+  var ref = firebase.storage().ref().child("images/" + imageName)
+  return ref.put(blob)
+}
+
+export const insertCard = (set_card_id, payload) => {
+  return  dispatch => {
+    console.log(payload.type);
+    if (payload.type === 'text') {
+      console.log('here bos');
+      axios({
+        method: 'POST',
+        url: `https://flip-cards-server.herokuapp.com/cards/${set_card_id}`,
+        headers: {
+          access_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiIwZHpha3lhbHJAZ21haWwuY29tIiwiZmlyc3RfbmFtZSI6IlJvdGkiLCJsYXN0X25hbWUiOiJCYWphciIsImlhdCI6MTYxMzkxNDY2OH0.K2KKKuRcFM5Mn3yfstbAIvUyvLyWnTnepjBNfGufoFk'
+        },
+        data: payload
+      })
+        .then(res => {
+          console.log('success add card below this is the data')
+          console.log(res.data);
+        })
+        .catch(err => {
+          console.log(err.response)
+        })
+    }
+    if (payload.type === "image") {
+      let uri = payload.hint
+      let stringName = uri.split("/");
+      let getNameImage = stringName[stringName.length - 1]
+      uploadImage(payload.hint, getNameImage)
         .then((data) => {
           console.log(data);
           payload.hint = `https://firebasestorage.googleapis.com/v0/b/flip-cards-server.appspot.com/o/images%2F${getNameImage}?alt=media`
@@ -72,12 +89,7 @@ export const insertCard = (set_card_id, payload) => {
         .catch((error) => {
           console.log('error', error);
         })
-        console.log('tembus sini');
-      }
-
-      
-    } catch (error) {
-      console.log(error);
+      console.log('tembus sini');
     }
 
   }
