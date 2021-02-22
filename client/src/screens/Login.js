@@ -49,23 +49,27 @@ const MyComponent = ({ navigation }) => {
               display: "flex",
               flexDirection: "row",
               justifyContent: "center",
-              marginBottom: 100,
+              // marginBottom: 100,
             }}
           >
             <Image source={require("../../assets/Flipcard.png")}></Image>
           </View>
           <TextInput
-            style={{
-              marginBottom: 20,
-            }}
+            style={
+              {
+                // marginBottom: 20,
+              }
+            }
             label="Email"
             value={email}
             onChangeText={(text) => setEmail(text)}
           />
           <TextInput
-            style={{
-              marginBottom: 50,
-            }}
+            style={
+              {
+                // marginBottom: 50,
+              }
+            }
             label="Password"
             value={password}
             onChangeText={(text) => setPassword(text)}
@@ -75,9 +79,11 @@ const MyComponent = ({ navigation }) => {
           </View>
           <Button
             color="#444444"
-            style={{
-              marginBottom: 20,
-            }}
+            style={
+              {
+                // marginBottom: 20,
+              }
+            }
             onPress={() => navigation.navigate("Register")}
             title="Register"
           ></Button>

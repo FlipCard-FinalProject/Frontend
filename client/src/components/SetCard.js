@@ -5,7 +5,10 @@ import { StyleSheet, Text, View } from "react-native";
 const LeftContent = (props) => <Avatar.Icon {...props} icon="folder" />;
 
 const MyComponent = ({ navigation, props }) => (
-  <Card style={styles.card} onPress={() => navigation.navigate("Flip")}>
+  <Card
+    style={styles.card}
+    onPress={() => navigation.navigate("Flip", { id: props.id })}
+  >
     <Card.Content>
       <Title>{props.category}</Title>
       <Paragraph>{props.title}</Paragraph>

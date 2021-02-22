@@ -37,7 +37,9 @@ export default function Home({ navigation }) {
       <Header navigation={navigation}></Header>
       <ScrollView>
         {setcard.map((set) => {
-          return <SetCard navigation={navigation} props={set}></SetCard>;
+          return (
+            <SetCard navigation={navigation} props={set} key={set.id}></SetCard>
+          );
         })}
       </ScrollView>
       <Appbar navigation={navigation}></Appbar>
