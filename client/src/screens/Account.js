@@ -7,6 +7,10 @@ import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch, useSelector } from "react-redux";
 import { logout, getUser, updateUser } from "../store/actions/userAction";
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
 // import { getUserId } from '../helpers/AsyncStorage';
 
 export default function Account({ navigation }) {
@@ -76,7 +80,7 @@ export default function Account({ navigation }) {
         <Text
           style={{
             fontWeight: "bold",
-            marginBottom: 20,
+            marginBottom: hp("2%"),
           }}
         >
           {email}
@@ -88,7 +92,7 @@ export default function Account({ navigation }) {
             setFirstName(text);
           }}
           style={{
-            marginBottom: 20,
+            marginBottom: hp("2%"),
           }}
         ></TextInput>
         <TextInput
@@ -100,12 +104,12 @@ export default function Account({ navigation }) {
         ></TextInput>
         <View
           style={{
-            marginTop: 250,
+            marginTop: hp("25%"),
           }}
         >
           <View
             style={{
-              marginBottom: 20,
+              marginBottom: hp("2%"),
             }}
           >
             <Button title="Save" onPress={updateHandle}></Button>
@@ -122,10 +126,10 @@ export default function Account({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 50,
+    marginTop: hp("5%"),
     flex: 1,
     flexDirection: "column",
-    marginLeft: 20,
-    marginRight: 20,
+    marginLeft: hp("2%"),
+    marginRight: hp("2%"),
   },
 });
