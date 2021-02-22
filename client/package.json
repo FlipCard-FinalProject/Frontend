@@ -8,6 +8,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^1.13.4",
     "@react-native-community/masked-view": "^0.1.10",
     "@react-native-picker/picker": "1.9.2",
     "@react-navigation/native": "^5.9.2",
@@ -25,6 +26,7 @@
     "react-native-elements": "^3.2.0",
     "react-native-flip-card": "^3.5.6",
     "react-native-gesture-handler": "^1.8.0",
+    "react-native-image-picker": "^3.2.1",
     "react-native-paper": "^4.7.1",
     "react-native-reanimated": "^1.13.2",
     "react-native-safe-area-context": "^3.1.9",
@@ -34,7 +36,12 @@
     "react-navigation": "^4.4.3",
     "react-redux": "^7.2.2",
     "redux": "^4.0.5",
+<<<<<<< HEAD
     "redux-thunk": "^2.3.0"
+=======
+    "redux-thunk": "^2.3.0",
+    "expo-av": "~8.7.0"
+>>>>>>> 15e75fb0ab67e82be6d1fa52f3e01570edc300d2
   },
   "devDependencies": {
     "@babel/core": "~7.9.0"

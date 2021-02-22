@@ -1,4 +1,5 @@
 import axios from "axios";
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export const fetchingUser = (payload) => {
   return { type: "FETCHING_USER", payload };
@@ -24,12 +25,16 @@ export const sendError = (payload) => {
   return { type: "ERROR_USER", payload };
 };
 
+export const logout = (payload) => {
+  return { type: "LOGOUT", payload };
+};
+
 export const register = (payload) => {
   return (dispatch) => {
     dispatch(loadingStart());
     axios({
       method: "POST",
-      url: "http://localhost:3000/register",
+      url: "https://flip-cards-server.herokuapp.com/register",
       data: payload,
     })
       .then(({ data }) => {
@@ -48,21 +53,24 @@ export const login = (payload) => {
   return (dispatch) => {
     axios({
       method: "POST",
-      url: "http://localhost:3000/login",
+      url: "https://flip-cards-server.herokuapp.com/login",
       data: payload,
     })
       .then(({ data }) => {
-        // data { accesstoken, payload }
-        console.log("success login");
+        // console.log(data.access_token, 'access_token')
         dispatch({
           type: "SET_ACCESS_TOKEN",
           payload: data.access_token,
         });
-        dispatch(fetchingUser(data.payload));
+        dispatch(fetchingUser(data.payload))
+        return AsyncStorage.setItem('access_token', data.access_token)
+      })
+      .then(() => {
+        console.log('passed away, userAction: ln 69')
       })
       .catch((err) => {
-        console.log(err.response);
-        dispatch(sendError(err.response));
+        console.log(err.response.data.errors)
+        dispatch(sendError(err.response.data.errors))
       });
   };
 };
