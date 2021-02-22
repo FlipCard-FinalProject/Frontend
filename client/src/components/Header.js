@@ -23,7 +23,7 @@ const Header = ({navigation}) => {
       <Appbar.Header style={styles.header}>
         <Appbar.BackAction
         onPress={_goBack}/>
-        <Appbar.Content title="Home">
+        <Appbar.Content title="FlipCard">
         </Appbar.Content>
         <Appbar.Action icon="magnify" onPress={_handleSearch} />
         <Appbar.Action icon="dots-vertical" />
