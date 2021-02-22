@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { getAccess } from '../../helpers/AsyncStorage'
 
 export const loading = () => {
   return { type: 'LOADING_SET_CARDS' }
@@ -23,7 +24,7 @@ export const fetchingSetCards = () => {
       method: 'GET',
       url: 'http://localhost:3000/setcard'
     })
-      .then(({data}) => {
+      .then(({ data }) => {
         dispatch(fetchingSuccess(data))
       })
       .catch(err => {
@@ -35,12 +36,17 @@ export const fetchingSetCards = () => {
 
 export const insertSetCard = (payload) => {
   return dispatch => {
-    axios({
-      method: 'POST',
-      url: 'http://localhost:3000/setcard',
-      data: payload
-    })
-      .then(({data}) => {
+    getAccess()
+      .then(access_token => {
+        return axios({
+          method: 'POST',
+          url: `https://flip-cards-server.herokuapp.com/setcard`,
+          headers: { access_token },
+          data: payload
+        })
+      })
+      .then(({ data }) => {
+        console.log(data);
         console.log('success add set card')
         dispatch({
           type: 'ADD_SET_CARD',
@@ -62,7 +68,7 @@ export const findSetCardByTitle = (query) => {
       method: 'GET',
       url: `http://localhost:3000/setcard/${query}`
     })
-      .then(({data}) => {
+      .then(({ data }) => {
         dispatch(fetchingSuccess(data))
       })
       .catch(err => {
@@ -72,14 +78,14 @@ export const findSetCardByTitle = (query) => {
   }
 }
 
-export const updateSetCard = ({id, payload}) => {
+export const updateSetCard = ({ id, payload }) => {
   return dispatch => {
     axios({
       method: 'PUT',
       url: `http://localhost:3000/setcard/${id}`,
       data: payload
     })
-      .then(({data}) => {
+      .then(({ data }) => {
         console.log('success update set card')
         dispatch(fetchingSetCards())
         dispatch(newVal(data))
@@ -97,7 +103,7 @@ export const deleteSetCard = (id) => {
       method: 'DELETE',
       url: `http://localhost:3000/setcard/${id}`
     })
-      .then(({data}) => {
+      .then(({ data }) => {
         console.log('success delete set card')
         dispatch(fetchingSetCards())
       })

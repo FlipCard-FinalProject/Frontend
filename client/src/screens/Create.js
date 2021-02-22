@@ -9,9 +9,10 @@ import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
 import { useDispatch, useSelector } from "react-redux";
 import { insertCard } from "../store/actions/cardAction";
+import { insertSetCard } from "../store/actions/setCardAction";
 import { Audio } from 'expo-av';
   export default function Create({ navigation }) {
-  const [setCardId, setSetCardId] = React.useState(1);
+  const [setCardId, setSetCardId] = React.useState("");
   const [card, setCard] = React.useState({
     hint: '',
     answer: '',
@@ -21,17 +22,23 @@ import { Audio } from 'expo-av';
   const [titleInput, setTitleInput] = React.useState('');
   const [category, setCategory] = React.useState('');
   const [cardShow, setCardShow] = React.useState(9);
-  const [sound, setSound] = React.useState();
+  const [sound, setSound] = React.useState('');
   const [recording, setRecording] = React.useState();
+  const { newVal } = useSelector((state) => state.setCard)
   const dispatch = useDispatch();
 
   // ******************** MEDIA ********************
+  useEffect(() => {
+    if (newVal.id !== undefined) {
+      setSetCardId(newVal.id)
+    } 
+  }, [newVal])
 
   function createCard() {
     let payload = {
       hint: card.hint,
       answer: card.answer,
-      type: '',
+      type: 'text',
     };
     if (image !== '') {
       payload = {
@@ -55,6 +62,14 @@ import { Audio } from 'expo-av';
       };
     }
     dispatch(insertCard(setCardId, payload));
+  }
+
+  function createSetCard() {
+    let payload = {
+      title: titleInput,
+      category
+    }
+    dispatch(insertSetCard(payload));
   }
   useEffect(() => {
     (async () => {
@@ -176,6 +191,7 @@ import { Audio } from 'expo-av';
     <>
       <Header navigation={navigation}></Header>
       <ScrollView>
+        
         <View>
           <Input
             placeholder='Set Title'
@@ -200,7 +216,15 @@ import { Audio } from 'expo-av';
           <Picker.Item label="Funny" value="funny" />
           <Picker.Item label="Others" value="others" />
         </Picker>
-        {titleInput.trim() !== '' && (
+        {setCardId === '' && (
+        <View style={{
+              marginBottom: 100
+            }}>
+              <Button
+                onPress={createSetCard}
+                title="Create Set Card"></Button>
+            </View>)}
+        {setCardId !== '' && (
           <>
             <View style={{ marginBottom: 20, display: 'flex', flexDirection: 'column' }}>
               <View style={{
@@ -255,7 +279,7 @@ import { Audio } from 'expo-av';
                 }}
               />
             </View>
-            {cardShow < 9 && (
+            {/* {cardShow < 9 && (
               <View style={{ marginBottom: 20 }}>
                 <TextInput
                   style={{
@@ -283,8 +307,8 @@ import { Audio } from 'expo-av';
                     borderBottomWidth: 1,
                   }} />
               </View>
-            )}
-            {cardShow < 8 && (
+            )} */}
+            {/* {cardShow < 8 && (
               <View style={{ marginBottom: 20 }}>
                 <Input placeholder='Set Hint' />
                 <Input placeholder='Set answer' />
@@ -360,7 +384,7 @@ import { Audio } from 'expo-av';
                     borderBottomWidth: 1,
                   }} />
               </View>
-            )}
+            )} */}
             <View style={{
               marginBottom: 100
             }}>
