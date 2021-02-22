@@ -1,5 +1,13 @@
+<<<<<<< HEAD
 import axios from "axios";
 import * as firebase from "firebase";
+=======
+import axios from 'axios'
+import * as firebase from 'firebase'
+import { getAccess } from '../../helpers/AsyncStorage'
+
+
+>>>>>>> 49837d7362991a28671c097442b973dd699dfc15
 export const loading = () => {
   return { type: "LOADING_CARDS" };
 };
@@ -38,6 +46,7 @@ export const fetchingCardBySetCardId = (set_card_id, access_token) => {
 };
 
 uploadImage = async (uri, imageName) => {
+<<<<<<< HEAD
   const response = await fetch(uri);
   const blob = await response.blob();
   var ref = firebase
@@ -63,10 +72,44 @@ export const insertCard = (set_card_id, payload) => {
       })
         .then((res) => {
           console.log("success add card below this is the data");
+=======
+  const response = await fetch(uri)
+  const blob = await response.blob()
+  var ref = firebase.storage().ref().child("images/" + imageName)
+  return ref.put(blob)
+}
+uploadSound = async (uri, soundName) => {
+  const response = await fetch(uri)
+  const blob = await response.blob()
+  var ref = firebase.storage().ref().child("audio/" + soundName)
+  return ref.put(blob)
+}
+
+export const insertCard = (set_card_id, payload) => {
+  return dispatch => {
+    console.log(payload.type);
+    if (payload.type === 'text') {
+      console.log('here bos');
+      getAccess()
+        .then(access_token => {
+          return axios({
+            method: 'POST',
+            url: `https://flip-cards-server.herokuapp.com/cards/${set_card_id}`,
+            headers: { access_token },
+            data: payload
+          })
+        })
+        .then(res => {
+          console.log('success add card below this is the data')
+>>>>>>> 49837d7362991a28671c097442b973dd699dfc15
           console.log(res.data);
         })
         .catch((err) => {
           console.log(err.response);
+<<<<<<< HEAD
+=======
+          // dispatch(sendError(err.response));
+>>>>>>> 49837d7362991a28671c097442b973dd699dfc15
         });
     }
     if (payload.type === "image") {
@@ -76,6 +119,7 @@ export const insertCard = (set_card_id, payload) => {
       uploadImage(payload.hint, getNameImage)
         .then((data) => {
           console.log(data);
+<<<<<<< HEAD
           payload.hint = `https://firebasestorage.googleapis.com/v0/b/flip-cards-server.appspot.com/o/images%2F${getNameImage}?alt=media`;
           console.log("success");
           axios({
@@ -89,10 +133,61 @@ export const insertCard = (set_card_id, payload) => {
           })
             .then((res) => {
               console.log("success add card below this is the data");
+=======
+          payload.hint = `https://firebasestorage.googleapis.com/v0/b/flip-cards-server.appspot.com/o/images%2F${getNameImage}?alt=media`
+          console.log('success');
+          getAccess()
+            .then(access_token => {
+              return axios({
+                method: 'POST',
+                url: `https://flip-cards-server.herokuapp.com/cards/${set_card_id}`,
+                headers: { access_token },
+                data: payload
+              })
+            })
+            .then(res => {
+              console.log('success add card below this is the data')
+>>>>>>> 49837d7362991a28671c097442b973dd699dfc15
               console.log(res.data);
             })
             .catch((err) => {
               console.log(err.response);
+<<<<<<< HEAD
+=======
+              // dispatch(sendError(err.response));
+            });
+        })
+        .catch((error) => {
+          console.log('error', error);
+        })
+      console.log('tembus sini');
+    }
+    if (payload.type === "sound") {
+      let uri = payload.hint
+      let stringName = uri.split("/");
+      let getSoundName = stringName[stringName.length - 1]
+      uploadSound(payload.hint, getSoundName)
+        .then((data) => {
+          console.log(data);
+          payload.hint = `https://firebasestorage.googleapis.com/v0/b/flip-cards-server.appspot.com/o/audio%2F${getSoundName}?alt=media`
+          console.log('success');
+          getAccess()
+            .then(access_token => {
+              return axios({
+                method: 'POST',
+                url: `https://flip-cards-server.herokuapp.com/cards/${set_card_id}`,
+                headers: { access_token },
+                data: payload
+              })
+            })
+            .then(res => {
+              console.log('success add card below this is the data')
+              console.log(res.data);
+            })
+            .catch((err) => {
+              console.log(err.response);
+              // dispatch(sendError(err.response));
+>>>>>>> 49837d7362991a28671c097442b973dd699dfc15
             });
         })
         .catch((error) => {

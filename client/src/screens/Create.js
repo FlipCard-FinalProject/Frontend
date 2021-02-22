@@ -8,12 +8,20 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
 import { useDispatch, useSelector } from "react-redux";
+<<<<<<< HEAD
 // import { insertCard } from "../store/actions/cardAction";
 import { Audio } from 'expo-av';
 import { insertCard, fetchingCardBySetCardId } from '../store/actions/cardAction'
 
 export default function Create({ navigation }) {
   const [setCardId, setSetCardId] = React.useState(1);
+=======
+import { insertCard } from "../store/actions/cardAction";
+import { insertSetCard } from "../store/actions/setCardAction";
+import { Audio } from 'expo-av';
+  export default function Create({ navigation }) {
+  const [setCardId, setSetCardId] = React.useState("");
+>>>>>>> 49837d7362991a28671c097442b973dd699dfc15
   const [card, setCard] = React.useState({
     hint: '',
     answer: '',
@@ -23,19 +31,25 @@ export default function Create({ navigation }) {
   const [titleInput, setTitleInput] = React.useState('');
   const [category, setCategory] = React.useState('');
   const [cardShow, setCardShow] = React.useState(9);
-  const [sound, setSound] = React.useState();
+  const [sound, setSound] = React.useState('');
   const [recording, setRecording] = React.useState();
+  const { newVal } = useSelector((state) => state.setCard)
   const dispatch = useDispatch();
 
   const {} = useSelector((state) => state.card)
 
   // ******************** MEDIA ********************
+  useEffect(() => {
+    if (newVal.id !== undefined) {
+      setSetCardId(newVal.id)
+    } 
+  }, [newVal])
 
   function createCard() {
     let payload = {
       hint: card.hint,
       answer: card.answer,
-      type: '',
+      type: 'text',
     };
     if (image !== '') {
       payload = {
@@ -43,7 +57,15 @@ export default function Create({ navigation }) {
         answer: card.answer,
         type: 'image',
       };
-    } else {
+    } 
+    else if(sound !== ''){
+      payload = {
+        hint: sound,
+        answer: card.answer,
+        type: 'sound',
+      };
+    }
+    else {
       payload = {
         hint: card.hint,
         answer: card.answer,
@@ -51,6 +73,14 @@ export default function Create({ navigation }) {
       };
     }
     dispatch(insertCard(setCardId, payload));
+  }
+
+  function createSetCard() {
+    let payload = {
+      title: titleInput,
+      category
+    }
+    dispatch(insertSetCard(payload));
   }
   useEffect(() => {
     (async () => {
@@ -135,6 +165,7 @@ export default function Create({ navigation }) {
     setRecording(undefined);
     await recording.stopAndUnloadAsync();
     const uri = recording.getURI();
+    setSound(uri)
     console.log('Recording stopped and stored at', uri);
   }
 
@@ -149,14 +180,14 @@ export default function Create({ navigation }) {
   //   await sound.playAsync();
   // }
 
-  React.useEffect(() => {
-    return sound
-      ? () => {
-        console.log('Unloading Sound');
-        sound.unloadAsync();
-      }
-      : undefined;
-  }, [sound]);
+  // React.useEffect(() => {
+  //   return sound
+  //     ? () => {
+  //       console.log('Unloading Sound');
+  //       sound.unloadAsync();
+  //     }
+  //     : undefined;
+  // }, [sound]);
 
   // ******************** ETC ********************
   // jadi POST CARD
@@ -178,6 +209,7 @@ export default function Create({ navigation }) {
     <>
       <Header navigation={navigation}></Header>
       <ScrollView>
+        
         <View>
           <Input
             placeholder='Set Title'
@@ -202,7 +234,15 @@ export default function Create({ navigation }) {
           <Picker.Item label="Funny" value="funny" />
           <Picker.Item label="Others" value="others" />
         </Picker>
-        {titleInput.trim() !== '' && (
+        {setCardId === '' && (
+        <View style={{
+              marginBottom: 100
+            }}>
+              <Button
+                onPress={createSetCard}
+                title="Create Set Card"></Button>
+            </View>)}
+        {setCardId !== '' && (
           <>
             <View style={{ marginBottom: 20, display: 'flex', flexDirection: 'column' }}>
               <View style={{
@@ -257,7 +297,7 @@ export default function Create({ navigation }) {
                 }}
               />
             </View>
-            {cardShow < 9 && (
+            {/* {cardShow < 9 && (
               <View style={{ marginBottom: 20 }}>
                 <TextInput
                   style={{
@@ -285,8 +325,89 @@ export default function Create({ navigation }) {
                     borderBottomWidth: 1,
                   }} />
               </View>
+<<<<<<< HEAD
             )}
             
+=======
+            )} */}
+            {/* {cardShow < 8 && (
+              <View style={{ marginBottom: 20 }}>
+                <Input placeholder='Set Hint' />
+                <Input placeholder='Set answer' />
+                <View
+                  style={{
+                    borderBottomColor: 'grey',
+                    borderBottomWidth: 1,
+                  }} />
+              </View>
+            )}
+            {cardShow < 7 && (
+              <View style={{ marginBottom: 20 }}>
+                <Input placeholder='Set Hint' />
+                <Input placeholder='Set answer' />
+                <View
+                  style={{
+                    borderBottomColor: 'grey',
+                    borderBottomWidth: 1,
+                  }} />
+              </View>
+            )}
+            {cardShow < 6 && (
+              <View style={{ marginBottom: 20 }}>
+                <Input placeholder='Set Hint' />
+                <Input placeholder='Set answer' />
+                <View
+                  style={{
+                    borderBottomColor: 'grey',
+                    borderBottomWidth: 1,
+                  }} />
+              </View>
+            )}
+            {cardShow < 5 && (
+              <View style={{ marginBottom: 20 }}>
+                <Input placeholder='Set Hint' />
+                <Input placeholder='Set answer' />
+                <View
+                  style={{
+                    borderBottomColor: 'grey',
+                    borderBottomWidth: 1,
+                  }} />
+              </View>
+            )}
+            {cardShow < 4 && (
+              <View style={{ marginBottom: 20 }}>
+                <Input placeholder='Set Hint' />
+                <Input placeholder='Set answer' />
+                <View
+                  style={{
+                    borderBottomColor: 'grey',
+                    borderBottomWidth: 1,
+                  }} />
+              </View>
+            )}
+            {cardShow < 3 && (
+              <View style={{ marginBottom: 20 }}>
+                <Input placeholder='Set Hint' />
+                <Input placeholder='Set answer' />
+                <View
+                  style={{
+                    borderBottomColor: 'grey',
+                    borderBottomWidth: 1,
+                  }} />
+              </View>
+            )}
+            {cardShow < 2 && (
+              <View style={{ marginBottom: 20 }}>
+                <Input placeholder='Set Hint' />
+                <Input placeholder='Set answer' />
+                <View
+                  style={{
+                    borderBottomColor: 'grey',
+                    borderBottomWidth: 1,
+                  }} />
+              </View>
+            )} */}
+>>>>>>> 49837d7362991a28671c097442b973dd699dfc15
             <View style={{
               marginBottom: 100
             }}>
