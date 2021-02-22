@@ -25,6 +25,7 @@ export default function Home ({navigation}) {
     }
     getData()
   }, [access])
+  
   console.log(access, 'console diluar')
   return (
     <>
