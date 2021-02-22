@@ -10,8 +10,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useDispatch, useSelector } from "react-redux";
 import { insertCard } from "../store/actions/cardAction";
 import { Audio } from 'expo-av';
-
-export default function Create({ navigation }) {
+  export default function Create({ navigation }) {
   const [setCardId, setSetCardId] = React.useState(1);
   const [card, setCard] = React.useState({
     hint: '',
@@ -40,7 +39,15 @@ export default function Create({ navigation }) {
         answer: card.answer,
         type: 'image',
       };
-    } else {
+    } 
+    else if(sound !== ''){
+      payload = {
+        hint: sound,
+        answer: card.answer,
+        type: 'sound',
+      };
+    }
+    else {
       payload = {
         hint: card.hint,
         answer: card.answer,
@@ -132,6 +139,7 @@ export default function Create({ navigation }) {
     setRecording(undefined);
     await recording.stopAndUnloadAsync();
     const uri = recording.getURI();
+    setSound(uri)
     console.log('Recording stopped and stored at', uri);
   }
 
@@ -146,14 +154,14 @@ export default function Create({ navigation }) {
   //   await sound.playAsync();
   // }
 
-  React.useEffect(() => {
-    return sound
-      ? () => {
-        console.log('Unloading Sound');
-        sound.unloadAsync();
-      }
-      : undefined;
-  }, [sound]);
+  // React.useEffect(() => {
+  //   return sound
+  //     ? () => {
+  //       console.log('Unloading Sound');
+  //       sound.unloadAsync();
+  //     }
+  //     : undefined;
+  // }, [sound]);
 
   // ******************** ETC ********************
 
