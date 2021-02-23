@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import Appbar from "../components/Appbar";
 import Header from "../components/Header";
 import Flipcard from "../components/FlipCard";
-import { StyleSheet, View, Dimensions, Modal, Text } from "react-native";
+
+import { StyleSheet, View, Dimensions, Modal, Text, Image } from "react-native";
 import { ScrollView, TouchableHighlight, TouchableOpacity } from "react-native-gesture-handler";
 const windowHeight = Dimensions.get("window").height;
 const windowWidth = Dimensions.get("window").width;
@@ -19,6 +20,7 @@ export default function Flip({ route, navigation }) {
   const { id } = route.params;
   const access_token = useSelector((state) => state.user.access_token);
   const data = useSelector((state) => state.card.cards);
+  const isLoading = useSelector((state) => state.card.loading);
   const [cards, setCards] = useState(data);
   const [modalVisible, setModalVisible] = useState(false)
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -54,6 +56,20 @@ export default function Flip({ route, navigation }) {
     const nextIndex = cards.length - 2 === currentIndex ? 0 : currentIndex + 1;
     setCurrentIndex(nextIndex);
   }
+
+  if (isLoading) {
+    return (
+        // <View style={[styles.container, { backgroundColor: '#191F26' }]}>
+        <>
+        <Header navigation={navigation}></Header>
+        <View style={styles.container}>
+  
+            <Text>loading bos</Text> 
+        </View>
+      <Appbar navigation={navigation}></Appbar>
+    </>
+    )
+}
   return (
     <>
       <Header navigation={navigation}></Header>

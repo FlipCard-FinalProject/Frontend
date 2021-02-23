@@ -34,7 +34,7 @@ export const newVal = (payload) => {
 export const fetchingCardBySetCardId = (set_card_id ) => {
   return (dispatch) => {
     console.log(set_card_id);
-    dispatch(loading());
+    dispatch(loading(true));
     getAccess()
       .then(access_token => {
         return axios({
@@ -44,11 +44,13 @@ export const fetchingCardBySetCardId = (set_card_id ) => {
         })
       })
       .then(({ data }) => {
+      dispatch(loading(false));
         console.log(data);
         dispatch(fetchingSuccess(data));
       })
       .catch((err) => {
         // console.log(err);
+        // dispatch(error(false));
         dispatch(sendError(err.response));
       });
   };
