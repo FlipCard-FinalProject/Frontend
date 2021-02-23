@@ -1,16 +1,12 @@
 import * as React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, Image } from 'react-native';
 
 const Card = ({ navigation, card }) => {
   return (
     <View style={{ marginBottom: 20 }}>
-      <Text>{card.hint}</Text>
+      { card.type === 'text' && <Text>{card.hint}</Text> }
+      {/* { card.type === 'image' && <Image source={{ uri: `${card.hint}` }} style={{width: 10, height: 10}}  />} */}
       <Text>{card.answer}</Text>
-      <View
-        style={{
-          borderBottomColor: 'grey',
-          borderBottomWidth: 1,
-        }} />
     </View>
   )
 }

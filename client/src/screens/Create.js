@@ -67,6 +67,11 @@ export default function Create({ navigation }) {
       };
     }
     dispatch(insertCard(setCardId, payload));
+    setCard({
+      hint: '',
+      answer: '',
+      type: ''
+    })
   }
 
   function createSetCard() {
