@@ -2,6 +2,12 @@ import axios from 'axios'
 import * as firebase from 'firebase'
 import { getAccess } from '../../helpers/AsyncStorage'
 
+export const clearCards = () => {
+  return (dispatch) => {
+    dispatch(fetchingSuccess(''));
+  };
+};
+
 export const loading = () => {
   return { type: "LOADING_CARDS" };
 };
@@ -18,16 +24,18 @@ export const newVal = (payload) => {
   return { type: "NEW_VAL_CARD", payload };
 };
 
-export const fetchingCardBySetCardId = (set_card_id, access_token) => {
+export const fetchingCardBySetCardId = (set_card_id ) => {
   return (dispatch) => {
     console.log(set_card_id);
-    console.log(access_token);
     dispatch(loading());
-    axios({
-      method: "GET",
-      url: `https://flip-cards-server.herokuapp.com/cards/${set_card_id}`,
-      headers: { access_token: access_token },
-    })
+    getAccess()
+      .then(access_token => {
+        return axios({
+          method: "GET",
+          url: `https://flip-cards-server.herokuapp.com/cards/${set_card_id}`,
+          headers: { access_token }
+        })
+      })
       .then(({ data }) => {
         console.log(data);
         dispatch(fetchingSuccess(data));
