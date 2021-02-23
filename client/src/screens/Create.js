@@ -9,6 +9,7 @@ import { TextInput } from "react-native-paper";
 import * as ImagePicker from 'expo-image-picker';
 import { useDispatch, useSelector } from "react-redux";
 import { insertCard } from "../store/actions/cardAction";
+import { insertSetCard } from "../store/actions/setCardAction";
 import { Audio } from 'expo-av';
 import Icon from 'react-native-vector-icons/Ionicons'
 import { Card, Title } from 'react-native-paper'
@@ -24,21 +25,27 @@ export default function Create({ navigation }) {
   const [titleInput, setTitleInput] = React.useState('');
   const [category, setCategory] = React.useState('');
   const [cardShow, setCardShow] = React.useState(9);
-  const [sound, setSound] = React.useState();
+  const [sound, setSound] = React.useState('');
   const [recording, setRecording] = React.useState();
-  const [currentlyRecording, setCurrentlyRecording] = React.useState(false);
+  const { newVal } = useSelector((state) => state.setCard)
+   const [currentlyRecording, setCurrentlyRecording] = React.useState(false);
   const [currentlyPlaying, setCurrentlyPlaying] = React.useState(false)
   const [inputType, setInputType] = React.useState('text')
   const [formType, setFormType] = React.useState('hint')
   const dispatch = useDispatch();
 
   // ******************** MEDIA ********************
+  useEffect(() => {
+    if (newVal.id !== undefined) {
+      setSetCardId(newVal.id)
+    } 
+  }, [newVal])
 
   function createCard() {
     let payload = {
       hint: card.hint,
       answer: card.answer,
-      type: '',
+      type: 'text',
     };
     if (image !== '') {
       payload = {
@@ -46,7 +53,15 @@ export default function Create({ navigation }) {
         answer: card.answer,
         type: 'image',
       };
-    } else {
+    } 
+    else if(sound !== ''){
+      payload = {
+        hint: sound,
+        answer: card.answer,
+        type: 'sound',
+      };
+    }
+    else {
       payload = {
         hint: card.hint,
         answer: card.answer,
@@ -54,6 +69,14 @@ export default function Create({ navigation }) {
       };
     }
     dispatch(insertCard(setCardId, payload));
+  }
+
+  function createSetCard() {
+    let payload = {
+      title: titleInput,
+      category
+    }
+    dispatch(insertSetCard(payload));
   }
   useEffect(() => {
     (async () => {
@@ -139,6 +162,7 @@ export default function Create({ navigation }) {
     setRecording(undefined);
     await recording.stopAndUnloadAsync();
     const uri = recording.getURI();
+    setSound(uri)
     console.log('Recording stopped and stored at', uri);
     setCurrentlyRecording(false) // Recording status
   }
@@ -154,14 +178,14 @@ export default function Create({ navigation }) {
   //   await sound.playAsync();
   // }
 
-  React.useEffect(() => {
-    return sound
-      ? () => {
-        console.log('Unloading Sound');
-        sound.unloadAsync();
-      }
-      : undefined;
-  }, [sound]);
+  // React.useEffect(() => {
+  //   return sound
+  //     ? () => {
+  //       console.log('Unloading Sound');
+  //       sound.unloadAsync();
+  //     }
+  //     : undefined;
+  // }, [sound]);
 
   // ******************** ETC ********************
 
@@ -186,6 +210,7 @@ export default function Create({ navigation }) {
   return (
     <>
       <Header navigation={navigation}></Header>
+
       <ScrollView style={{ display: 'flex', flexDirection: 'column', marginTop: 10}}>
         <View style={{alignSelf: 'center', width: '95%'}}>
           <View style={{ marginTop: 20, marginBottom: 10}}>
@@ -212,7 +237,15 @@ export default function Create({ navigation }) {
           <Picker.Item label="Funny" value="funny" />
           <Picker.Item label="Others" value="others" />
         </Picker>
-        {titleInput.trim() !== '' && (
+        {setCardId === '' && (
+        <View style={{
+              marginBottom: 100
+            }}>
+              <Button
+                onPress={createSetCard}
+                title="Create Set Card"></Button>
+            </View>)}
+        {setCardId !== '' && (
           <>
             <Card style={{ marginBottom: 20, paddingTop: 30, paddingBottom: 30, display: 'flex', flexDirection: 'column'}}>
               <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly'}}>
@@ -232,6 +265,7 @@ export default function Create({ navigation }) {
                   onPress={() => handleChangeInputType('image')}></Button>
                 </View>
               </View>
+
               
               {/* ==================== TEXT INPUT ==================== */}
               
