@@ -1,25 +1,52 @@
-import React, { useState } from 'react';
-import Appbar from '../components/Appbar'
-import Header from '../components/Header'
+
+import React, { useState, useEffect } from "react";
+import Appbar from "../components/Appbar";
+import Header from "../components/Header";
 import SetCard from '../components/SetCard'
 import { Button, StyleSheet, Text, View, TextInput, Dimensions } from 'react-native';
 import { Input } from 'react-native-elements';
-// import { TextInput } from 'react-native-paper'
-import { ScrollView } from 'react-native-gesture-handler';
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useDispatch } from 'react-redux'
-import { logout } from '../store/actions/userAction'
+// import { TextInput } from "react-native-paper";
 import Icon from 'react-native-vector-icons/Ionicons'
+import { ScrollView } from "react-native-gesture-handler";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useDispatch, useSelector } from "react-redux";
+import { logout, getUser, updateUser } from "../store/actions/userAction";
+  
+// const windowHeight = Dimensions.get('window').height
+// const windowWidth = Dimensions.get('window').width
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
+// import { getUserId } from '../helpers/AsyncStorage';
 
-const windowHeight = Dimensions.get('window').height
-const windowWidth = Dimensions.get('window').width
-
-export default function Account ({navigation}) {
-  const [firstName, setFirstName] = useState("Imam")
-  const [lastName, setLastName] = useState("Zain")
+export default function Account({ navigation }) {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [showForm, setShowForm] = useState(false)
-  const dispatch = useDispatch()
+  const { profile } = useSelector((state) => state.user);
+  const { id, email, first_name, last_name } = profile;
+  const dispatch = useDispatch();
 
+  useEffect(() => {
+    getUserId();
+    setFirstName(first_name);
+    setLastName(last_name);
+  }, [id, email, first_name, last_name]);
+
+  const getUserId = async () => {
+    try {
+      const id = await AsyncStorage.getItem("userid");
+      if (id !== null) {
+        dispatch(getUser(id));
+      }
+    } catch (e) {
+      // error reading value
+      console.log(e);
+    }
+  };
+
+  console.log(profile, "<<<");
   // const userlogout = () => {
   //     AsyncStorage.removeItem('access_token')
   //     .then(() => {
@@ -34,21 +61,30 @@ export default function Account ({navigation}) {
 
   const userlogout = async () => {
     try {
-      await AsyncStorage.removeItem('access_token')
-      const data = await AsyncStorage.getItem('access_token')
-      console.log(data, 'dari logout')
-      dispatch(logout())
+      await AsyncStorage.removeItem("access_token");
+      const data = await AsyncStorage.getItem("access_token");
+      console.log(data, "dari logout");
+      dispatch(logout());
 
-      navigation.navigate('Login')
-      
+      navigation.navigate("Login");
     } catch (err) {
       console.log(err);
     }
-}
-const handleShowForm = () => {
-  if(showForm) setShowForm(false)
-  else setShowForm(true)
-}
+  };
+  
+  const handleShowForm = () => {
+    if(showForm) setShowForm(false)
+    else setShowForm(true)
+  }
+
+  const updateHandle = () => {
+    const payload = {
+      first_name: firstName,
+      last_name: lastName,
+    };
+    dispatch(updateUser(id, payload));
+    navigation.navigate("Home");
+  };
 
   return (
     <>
@@ -105,7 +141,7 @@ const handleShowForm = () => {
                   <View style={styles.saveButtonContainer}>
                     <Button
                     title="Save"
-                    onPress={() => navigation.navigate('Home')}></Button>
+                    onPress={updateHandle}></Button>
                   </View>
                 </View>
               )
@@ -116,13 +152,14 @@ const handleShowForm = () => {
             <View style={styles.logoutButtonContainer}>
               <Button
                 color="#aa2b1d"
-                title="Logout"></Button>
+                title="Logout"
+                onPress={userlogout}></Button>
             </View>
           </View>
         </ScrollView>
       <Appbar navigation={navigation}></Appbar>
     </>
-  )
+  );
 }
 
 const styles = StyleSheet.create({

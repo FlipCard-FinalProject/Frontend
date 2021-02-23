@@ -8,7 +8,7 @@ const init = {
 };
 
 function userReducer(state = init, action) {
-  console.log('type:', action.type)
+  // console.log('type:', action.type)
   switch (action.type) {
     case "FETCHING_USER":
       return {
@@ -16,10 +16,10 @@ function userReducer(state = init, action) {
         user: action.payload,
       };
     case "LOGOUT":
-      console.log('masuk action logout')
+      // console.log('masuk action logout')
       return {
         ...state,
-        access_token: ''
+        access_token: "",
       };
     case "FETCHING_PROFILE":
       return {

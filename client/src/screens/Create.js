@@ -5,12 +5,21 @@ import { Input } from 'react-native-elements';
 import { Button, StyleSheet, Text, View, Image } from 'react-native';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import {Picker} from '@react-native-picker/picker';
+import { TextInput } from "react-native-paper";
 import * as ImagePicker from 'expo-image-picker';
+import { useDispatch, useSelector } from "react-redux";
+import { insertCard } from "../store/actions/cardAction";
 import { Audio } from 'expo-av';
 import Icon from 'react-native-vector-icons/Ionicons'
 import { Card, Title } from 'react-native-paper'
 
-export default function Create ({navigation}) {
+export default function Create({ navigation }) {
+  const [setCardId, setSetCardId] = React.useState(1);
+  const [card, setCard] = React.useState({
+    hint: '',
+    answer: '',
+    type: ''
+  });
   const [image, setImage] = React.useState('');
   const [titleInput, setTitleInput] = React.useState('');
   const [category, setCategory] = React.useState('');
@@ -21,10 +30,31 @@ export default function Create ({navigation}) {
   const [currentlyPlaying, setCurrentlyPlaying] = React.useState(false)
   const [inputType, setInputType] = React.useState('text')
   const [formType, setFormType] = React.useState('hint')
-
+  const dispatch = useDispatch();
 
   // ******************** MEDIA ********************
 
+  function createCard() {
+    let payload = {
+      hint: card.hint,
+      answer: card.answer,
+      type: '',
+    };
+    if (image !== '') {
+      payload = {
+        hint: image,
+        answer: card.answer,
+        type: 'image',
+      };
+    } else {
+      payload = {
+        hint: card.hint,
+        answer: card.answer,
+        type: 'text',
+      };
+    }
+    dispatch(insertCard(setCardId, payload));
+  }
   useEffect(() => {
     (async () => {
       if (Platform.OS !== 'web') {
@@ -48,6 +78,7 @@ export default function Create ({navigation}) {
   }, [pickPhoto]);
 
   const pickImage = async () => {
+    console.log('here');
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
@@ -73,6 +104,14 @@ export default function Create ({navigation}) {
     }
   };
 
+  const onChange = (e, input) => {
+    console.log(e);
+    let value = e
+    let { name } = input
+    const inputValue = { ...card, [name]: value }
+    setCard(inputValue)
+  }
+
   // ******************** AUDIO ********************
 
   async function startRecording() {
@@ -82,11 +121,11 @@ export default function Create ({navigation}) {
       await Audio.setAudioModeAsync({
         allowsRecordingIOS: true,
         playsInSilentModeIOS: true,
-      }); 
+      });
       console.log('Starting recording..');
       const recording = new Audio.Recording();
       await recording.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY);
-      await recording.startAsync(); 
+      await recording.startAsync();
       setRecording(recording);
       console.log('Recording started');
       setCurrentlyRecording(true) // Recording status
@@ -99,7 +138,7 @@ export default function Create ({navigation}) {
     console.log('Stopping recording..');
     setRecording(undefined);
     await recording.stopAndUnloadAsync();
-    const uri = recording.getURI(); 
+    const uri = recording.getURI();
     console.log('Recording stopped and stored at', uri);
     setCurrentlyRecording(false) // Recording status
   }
@@ -112,17 +151,19 @@ export default function Create ({navigation}) {
   //   setSound(sound);
 
   //   console.log('Playing Sound');
-  //   await sound.playAsync(); }
+  //   await sound.playAsync();
+  // }
 
   React.useEffect(() => {
     return sound
       ? () => {
-          console.log('Unloading Sound');
-          sound.unloadAsync(); }
+        console.log('Unloading Sound');
+        sound.unloadAsync();
+      }
       : undefined;
   }, [sound]);
 
-    // ******************** ETC ********************
+  // ******************** ETC ********************
 
   const handleAddCard = () => {
     if(cardShow >= 0) setCardShow(cardShow - 1)
@@ -150,7 +191,7 @@ export default function Create ({navigation}) {
           <View style={{ marginTop: 20, marginBottom: 10}}>
             <Input
               placeholder='Set Title'
-              onChangeText={text => setTitleInput(text)}/>
+              onChangeText={text => setTitleInput(text)} />
           </View>
         <Picker
           selectedValue={category}
@@ -199,9 +240,16 @@ export default function Create ({navigation}) {
                   <View style={{ display: 'flex', flexDirection: 'column', width: '100%', justifyContent: 'center', paddingTop: 30 }}>
                     <View style={{ marginLeft: 20 }}>
                       <Input
-                      placeholder="Set Hint"/>
+                      name="hint"
+                      placeholder="Set Hint"
+                      onChangeText={e => onChange(e, { name: "hint" }
+                      value={card.hint}
+                      />
                       <Input
-                      placeholder="Set Answer"/>
+                      placeholder="Set Answer"
+                      name="answer"
+                      value={card.answer}
+                      onChangeText={e => onChange(e, { name: "answer" }/>
                     </View>
                     <View>
                       <Button title="Confirm"></Button>
@@ -315,6 +363,7 @@ export default function Create ({navigation}) {
               </View>
               <View>
                 <Button
+                onPress={createCard}
                 title="Create"></Button>
               </View>
             </View>

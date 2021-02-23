@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { TextInput } from "react-native-paper";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import {
   ActivityIndicator,
   Button,
@@ -10,6 +11,10 @@ import {
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { register, newVal, sendError } from "../store/actions/userAction";
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
 
 const MyComponent = ({ navigation }) => {
   const [email, setEmail] = React.useState("");
@@ -44,8 +49,10 @@ const MyComponent = ({ navigation }) => {
 
   if (loading) {
     return (
-      <View style={[styles.container, styles.horizontal]}>
-        <ActivityIndicator size={100} color="#00ff00" />
+      <View style={styles.container}>
+        <View style={styles.spin}>
+          <ActivityIndicator size={hp("40%")} color="#00ff00" />
+        </View>
       </View>
     );
   }
@@ -53,64 +60,69 @@ const MyComponent = ({ navigation }) => {
   return (
     <>
       <View style={styles.container}>
-        <View>
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "center",
-              marginBottom: 50,
-            }}
-          >
-            <Image source={require("../../assets/Flipcard.png")}></Image>
-          </View>
-          <TextInput
-            style={{
-              marginBottom: 20,
-            }}
-            label="First name"
-            value={firstName}
-            onChangeText={(text) => setFirstName(text)}
-          />
-          <TextInput
-            style={{
-              marginBottom: 20,
-            }}
-            label="Last name"
-            value={lastName}
-            onChangeText={(text) => setLastName(text)}
-          />
-          <TextInput
-            style={{
-              marginBottom: 20,
-            }}
-            label="Email"
-            value={email}
-            onChangeText={(text) => setEmail(text)}
-          />
-          <TextInput
-            style={{
-              marginBottom: 50,
-            }}
-            label="Password"
-            value={password}
-            onChangeText={(text) => setPassword(text)}
-          />
-          <View
-            style={{
-              marginBottom: 20,
-            }}
-          >
-            <Button onPress={userRegister} title="Register"></Button>
-          </View>
+        <KeyboardAwareScrollView
+          enableOnAndroid={true}
+          extraScrollHeight={hp("9%")}
+        >
           <View>
-            <Button
-              color="#444444"
-              onPress={() => navigation.navigate("Login")}
-              title="Login"
-            ></Button>
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                marginBottom: hp("5%"),
+              }}
+            >
+              <Image source={require("../../assets/Flipcard.png")}></Image>
+            </View>
+            <TextInput
+              style={{
+                marginBottom: hp("2%"),
+              }}
+              label="First name"
+              value={firstName}
+              onChangeText={(text) => setFirstName(text)}
+            />
+            <TextInput
+              style={{
+                marginBottom: hp("2%"),
+              }}
+              label="Last name"
+              value={lastName}
+              onChangeText={(text) => setLastName(text)}
+            />
+            <TextInput
+              style={{
+                marginBottom: hp("2%"),
+              }}
+              label="Email"
+              value={email}
+              onChangeText={(text) => setEmail(text)}
+            />
+            <TextInput
+              style={{
+                marginBottom: hp("5%"),
+              }}
+              label="Password"
+              value={password}
+              onChangeText={(text) => setPassword(text)}
+            />
+            <View
+              style={{
+                marginBottom: hp("2%"),
+              }}
+            >
+              <Button onPress={userRegister} title="Register"></Button>
+            </View>
+            <View>
+              <Button
+                color="#444444"
+                onPress={() => navigation.navigate("Login")}
+                title="Login"
+              ></Button>
+            </View>
           </View>
-        </View>
+        </KeyboardAwareScrollView>
       </View>
     </>
   );
@@ -120,10 +132,15 @@ export default MyComponent;
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 70,
+    marginTop: hp("7%"),
     flex: 1,
     flexDirection: "column",
-    marginLeft: 20,
-    marginRight: 20,
+    marginLeft: hp("2%"),
+    marginRight: hp("2%"),
+  },
+  spin: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
