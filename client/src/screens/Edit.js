@@ -11,12 +11,9 @@ import * as ImagePicker from 'expo-image-picker';
 import { useDispatch, useSelector } from "react-redux";
 import { insertCard, fetchingCardBySetCardId, clearForm } from "../store/actions/cardAction";
 import { insertSetCard } from "../store/actions/setCardAction";
-import { clearCards } from "../store/actions/cardAction";
 import { Audio } from 'expo-av';
 import Icon from 'react-native-vector-icons/Ionicons'
 import { Card, Title } from 'react-native-paper'
-import SoundPlayer from 'react-native-sound-player'
-import {Player} from '@react-native-community/audio-toolkit';
 const windowHeight = Dimensions.get("window").height;
 const windowWidth = Dimensions.get("window").width;
 
@@ -33,7 +30,6 @@ export default function Create({ navigation }) {
   const [category, setCategory] = React.useState('');
   const [sound, setSound] = React.useState('');
   const [recording, setRecording] = React.useState();
-  const [playbackInstance, setPlaybackInstance] = React.useState(null);
 
   const [currentlyRecording, setCurrentlyRecording] = React.useState(false);
   const [currentlyPlaying, setCurrentlyPlaying] = React.useState(false)
@@ -42,14 +38,14 @@ export default function Create({ navigation }) {
   const dispatch = useDispatch();
 
   const { newVal } = useSelector((state) => state.setCard)
-  const { cards, loading } = useSelector((state) => state.card)
+  const { cards } = useSelector((state) => state.card)
   const { access_token } = useSelector((state) => state.user)
 
   // ******************** MEDIA ********************
   useEffect(() => {
     if (newVal.id !== undefined) {
       setSetCardId(newVal.id)
-    }
+    } 
   }, [newVal.id])
 
   function createCard() {
@@ -94,7 +90,6 @@ export default function Create({ navigation }) {
     }
     dispatch(insertSetCard(payload));
     setCreating(true)
-    dispatch(clearCards())
   }
 
   function saveSetCard() {
@@ -105,63 +100,6 @@ export default function Create({ navigation }) {
     setCreating(false)
     navigation.navigate('Home')
   }
-  useEffect(() => {
-
-  },[playbackInstance])
-
-  useEffect(() => {
-    (async () => {
-      //   let urlSound = sound
-      if (currentlyPlaying) {
-        // try {
-        //   SoundPlayer.playUrl(sound !== '' ? sound : 'https://example.com/music.mp3')
-        // } catch (e) {
-        //   console.log(`cannot play the sound file`, e)
-        // }
-        // if (sound !== '') {
-        //    urlSound = 'https://example.com/music.mp3'
-        // } else {
-        //    urlSound = sound
-        // }
-        // console.log('Loading Sound');
-        // const { sound } = await Audio.Sound.createAsync(
-        //   require(urlSound)
-        // );
-        // setSound(sound);
-
-        // console.log('Playing Sound');
-        // await sound.playAsync();
-        // new Player(sound).play();
-        // console.log('Loading Sound');
-        // const soundPlay = new Audio.Sound();
-        // try {
-        //   await soundPlay.loadAsync(require(sound));
-        //   await soundPlay.playAsync();
-        //   // Your sound is playing!
-        // } catch (error) {
-        // An error occurred!
-        // }
-        try {
-          const playbackInstances = new Audio.Sound()
-          const source = {
-            uri: sound
-          }
-
-          const status = {
-            shouldPlay: currentlyPlaying,
-            volume: 1.0
-          }
-          await playbackInstances.loadAsync(source, status, false)
-          setPlaybackInstance(playbackInstances)
-        } catch (e) {
-          console.log(e)
-        }
-      } else {
-        currentlyPlaying ? await playbackInstance.playAsync() : await playbackInstance.pauseAsync()
-        // await playbackInstance.pauseAsync() 
-      }
-    })();
-  }, [currentlyPlaying]);
 
   useEffect(() => {
     (async () => {
@@ -251,7 +189,7 @@ export default function Create({ navigation }) {
     console.log('Recording stopped and stored at', uri);
     setCurrentlyRecording(false) // Recording status
   }
-  // baru
+// baru
   // async function playSound() {
   //   console.log('Loading Sound');
   //   const { sound } = await Audio.Sound.createAsync(
@@ -278,21 +216,16 @@ export default function Create({ navigation }) {
     switch (type) {
       case 'image':
         setSound('')
-        setCard({ ...card, type: 'image' })
-        console.log(type, 'and', card.type);
+        setCard({...card, type: 'image' })
         break
-      case 'audio':
+        case 'audio':
         setImage('')
-        setCard({ ...card, type: 'audio' })
-        console.log(type, 'and', card.type);
-
+        setCard({...card, type: 'audio' })
         break
       default:
         setImage('')
         setSound('')
-        setCard({ ...card, type: 'text' })
-        console.log(type, 'and', card.type);
-
+        setCard({...card, type: 'text' })
         break;
     }
     setInputType(type)
@@ -304,21 +237,8 @@ export default function Create({ navigation }) {
   useEffect(() => {
     console.log(`input type: ${inputType}`);
   }, [inputType])
-  if (loading) {
-    return (
-        // <View style={[styles.container, { backgroundColor: '#191F26' }]}>
-            <Image source={{ uri: '../../assets/loading.gif' }}/>
-        // </View>
-    )
-}
 
-// if (isError) {
-//     return (
-//       <Text >Error </Text>
-//     )
-// }
-
-  // baru
+// baru
   return (
     <>
       <Header navigation={navigation}></Header>
@@ -436,7 +356,7 @@ export default function Create({ navigation }) {
                     <View style={{ display: 'flex', flexDirection: 'column', minHeight: 135, justifyContent: 'space-evenly', marginTop: 20 }}>
                       <Text style={{ fontSize: 18, marginLeft: 10, fontWeight: 'bold', color: '#444444', textAlign: 'left' }}>Hint</Text>
                       <View style={{ flexDirection: 'row' }}>
-                        <View style={{ width: '25%' }}>
+                        <View style={{ width: '50%' }}>
                           <TouchableOpacity
                             style={{ display: 'flex', flexDirection: 'row', height: 100, justifyContent: 'center', alignItems: 'center' }}
                             title="add"
@@ -445,7 +365,7 @@ export default function Create({ navigation }) {
                           </TouchableOpacity>
                           {/* <Button title="Hint" onPress={() => console.log('hint')}></Button> */}
                         </View>
-                        <View style={{ flexDirection: 'column', width: '25%' }}>
+                        <View style={{ flexDirection: 'column', width: '50%' }}>
                           <View style={{ flexDirection: 'row' }}>
                           </View>
                           <View>
@@ -453,42 +373,11 @@ export default function Create({ navigation }) {
                               style={{ display: 'flex', flexDirection: 'row', height: 100, justifyContent: 'center', alignItems: 'center' }}
                               title="camera"
                               onPress={() => currentlyPlaying === false ? setCurrentlyPlaying(true) : setCurrentlyPlaying(false)}>
-                              <Icon name={currentlyPlaying === false ? "play-outline" : "stop"} size={40} />
+                              <Icon name={currentlyPlaying === false ? "play-outline" : "play"} size={40} />
                             </TouchableOpacity>
                           </View>
                           {/* <Button title="Answer" onPress={() => console.log('answer')}></Button> */}
                         </View>
-                        <View style={{ width: '25%' }}>
-                          {/* <TouchableOpacity
-
-                            style={{ display: 'flex', flexDirection: 'row', height: 100, justifyContent: 'center', alignItems: 'center' }}
-                            title="add"
-                            onPress={recording ? stopRecording : startRecording}>
-                            <Icon name={currentlyRecording === false ? "mic-outline" : "mic"} size={40} />
-                          </TouchableOpacity> */}
-                          {/* <Button title="Hint" onPress={() => console.log('hint')}></Button> */}
-                        </View>
-                        <View style={{ flexDirection: 'column', width: '50%' }}>
-                          <View style={{ flexDirection: 'row' }}>
-                          </View>
-                          <View>
-                            {/* <TouchableOpacity
-                              style={{ display: 'flex', flexDirection: 'row', height: 100, justifyContent: 'center', alignItems: 'center' }}
-                              title="camera"
-                              onPress={() => currentlyPlaying === false ? setCurrentlyPlaying(true) : setCurrentlyPlaying(false)}>
-                              <Icon name={currentlyPlaying === false ? "play-outline" : "play"} size={40} />
-                            </TouchableOpacity> */}
-                          </View>
-                          {/* <Button title="Answer" onPress={() => console.log('answer')}></Button> */}
-                        </View>
-                      </View>
-                      <View style={{ width: '100%' }}>
-                        <Input
-                          placeholder="Set Answer"
-                          name="answer"
-                          value={card.answer}
-                          onChangeText={e => onChange(e, { name: "answer" })} />
-                        {/* <Button title="Confirm"></Button> */}
                       </View>
                       <View style={{}}>
                       <Input placeholder="Input answer"></Input>
@@ -515,7 +404,7 @@ export default function Create({ navigation }) {
                       <Text style={{ fontSize: 18, marginLeft: 10, fontWeight: 'bold', color: '#444444', textAlign: 'left' }}>Hint</Text>
                       <View style={{ flexDirection: 'row' }}>
                         <View style={{ width: '50%', justifyContent: 'space-between' }}>
-                          <Card.Cover style={{}} source={{ uri: image !== '' ? image : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQAj4zfeooDr7pe7KOtwInyl0_0Z-KxiDSNMg&usqp=CAU" }} />
+                          <Card.Cover style={{}} source={{ uri: `https://nayturr.com/wp-content/uploads/2020/09/linear-equation-sep032020-min-e1599143556912.jpg` }} />
                           {/* <Button title="Hint" onPress={() => console.log('hint')}></Button> */}
                         </View>
                         <View style={{ flexDirection: 'column', width: '50%' }}>
@@ -539,7 +428,6 @@ export default function Create({ navigation }) {
                         </View>
                       </View>
                       <View style={{ width: '100%' }}>
-
                         <Input placeholder="Input answer"></Input>
                         { cards.length === 0 && (
                           <Button
@@ -556,7 +444,6 @@ export default function Create({ navigation }) {
                   )
                 }
               </Card>
-
               <ScrollView style={{ height: 275, backgroundColor: '#fff', paddingTop: 10 }}>
                 { cards.length > 0 && (
                   cards.map((card, i) => {
