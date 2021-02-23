@@ -10,11 +10,9 @@ const MyComponent = ({ navigation, props }) => (
     onPress={() => navigation.navigate("Flip", { id: props.id })}
   >
     <Card.Content>
-      <Title>{props.category}</Title>
-      <Paragraph>{props.title}</Paragraph>
-      <Paragraph style={styles.author}>
-        {props.User.first_name} {props.User.last_name}
-      </Paragraph>
+      <Title style={{ fontSize: 20 }}>{props.title}</Title>
+      <Title style={{ fontSize: 15, fontStyle: 'italic'}}>Category: {props.category}</Title>
+      <Title style={styles.author}>{props.User.first_name} {props.User.last_name}</Title>
     </Card.Content>
     {/* <Card.Cover source={{ uri: 'https://picsum.photos/700' }} /> */}
     <Card.Actions>
@@ -30,10 +28,14 @@ const styles = StyleSheet.create({
   card: {
     display: "flex",
     minHeight: 150,
+    width: '100%',
     marginBottom: 5,
     marginTop: 5,
+    elevation: 5
   },
   author: {
-    marginTop: 40,
-  },
+    marginBottom: 0,
+    display: 'flex',
+    alignSelf: 'flex-end'
+  }
 });
