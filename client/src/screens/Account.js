@@ -93,10 +93,10 @@ export default function Account({ navigation }) {
           <View style={{alignSelf: 'center', width: '95%'}}>
             <View style={{ display: 'flex', marginBottom: 20, marginTop: 20}}>
               <View>
-                <Text style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginBottom: 20 }}>Imam@mail.com</Text>
+                <Text style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginBottom: 20 }}>{email}</Text>
               </View>
               <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                <Text style={{ fontSize: 20, textAlign: 'center', marginRight: 5 }}>{`${firstName} ${lastName}`}</Text>
+                <Text style={{ fontSize: 20, textAlign: 'center', marginRight: 5 }}>{`${first_name} ${last_name}`}</Text>
                 <Icon name="create-outline" size={23} onPress={handleShowForm} ></Icon>
               </View>
             </View>
@@ -146,9 +146,11 @@ export default function Account({ navigation }) {
                 </View>
               )
             }
-            <View>
+            {/* ============================= */}
+            {/* <View>
               <SetCard></SetCard>
-            </View>
+            </View> */}
+
             <View style={styles.logoutButtonContainer}>
               <Button
                 color="#aa2b1d"

@@ -7,11 +7,13 @@ import { fetchingSetCards } from "../store/actions/setCardAction";
 import { StyleSheet, Text, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Picker } from '@react-native-picker/picker'
 
 export default function Home({ navigation }) {
   const setcard = useSelector((state) => state.setCard.setCards);
   const dispatch = useDispatch();
   const [access, setAccess] = useState();
+  const [category, setCategory] = useState();
 
   useEffect(() => {
     const getData = async () => {
@@ -57,6 +59,7 @@ export default function Home({ navigation }) {
             <Picker.Item label="Others" value="others" />
           </Picker>
           {setcard.map((set) => {
+            console.log(set);
             return (
               <SetCard navigation={navigation} props={set} key={set.id}></SetCard>
             );

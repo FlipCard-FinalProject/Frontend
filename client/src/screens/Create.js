@@ -242,19 +242,19 @@ export default function Create({ navigation }) {
                       <Input
                       name="hint"
                       placeholder="Set Hint"
-                      onChangeText={e => onChange(e, { name: "hint" }
+                      onChangeText={e => onChange(e, { name: "hint" })}
                       value={card.hint}
                       />
                       <Input
                       placeholder="Set Answer"
                       name="answer"
                       value={card.answer}
-                      onChangeText={e => onChange(e, { name: "answer" }/>
-                    </View>
+                      onChangeText={e => onChange(e, { name: "answer" })}/>
                     <View>
                       <Button title="Confirm"></Button>
                     </View>
                   </View>
+                </View>
                 )
               }
               
