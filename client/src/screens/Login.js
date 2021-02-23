@@ -9,18 +9,20 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import Loading from "../helpers/Loading";
 
 const MyComponent = ({ navigation }) => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const dispatch = useDispatch();
-  const { errors, access_token } = useSelector((state) => state.user);
+  const { loading, errors, access_token } = useSelector((state) => state.user);
 
   useEffect(() => {
     if (errors.length > 0) {
       alert(errors);
       dispatch(sendError([]));
     }
+
     if (access_token) getData();
     if (access_token) navigation.navigate("Home");
   }, [errors, access_token]);
@@ -43,6 +45,10 @@ const MyComponent = ({ navigation }) => {
     };
     dispatch(login(payload));
   };
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <>

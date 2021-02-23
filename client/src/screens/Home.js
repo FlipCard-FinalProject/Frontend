@@ -7,25 +7,29 @@ import { fetchingSetCards } from "../store/actions/setCardAction";
 import { StyleSheet, Text, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Picker } from '@react-native-picker/picker'
+import { Picker } from "@react-native-picker/picker";
+import Loading from "../helpers/Loading";
 
 export default function Home({ navigation }) {
-  const {setCards} = useSelector((state) => state.setCard);
-  const {isUpdate} = useSelector((state) => state.setCard);
+  const { setCards, isUpdate, loading, errors } = useSelector(
+    (state) => state.setCard
+  );
   const [setCardsFiltered, setSetCardsFiltered] = useState(setCards);
   const dispatch = useDispatch();
   const [access, setAccess] = useState();
-  const [category, setCategory] = useState('');
+  const [category, setCategory] = useState("");
   useEffect(() => {
     dispatch(fetchingSetCards());
-    console.log(category);
-    if (category !== '') {
-      let filtered = setCards.filter(setCard => setCard.category === category)
-      setSetCardsFiltered(filtered)      
+
+    if (category !== "") {
+      let filtered = setCards.filter(
+        (setCard) => setCard.category === category
+      );
+      setSetCardsFiltered(filtered);
     } else {
-      setSetCardsFiltered(setCards)
+      setSetCardsFiltered(setCards);
     }
-  }, [category])
+  }, [category]);
 
   useEffect(() => {
     const getData = async () => {
@@ -46,21 +50,29 @@ export default function Home({ navigation }) {
     }
   }, [access]);
 
+  if (loading) {
+    return <Loading />;
+  }
 
+  // if (errors.length > 0) {
+  //   alert(errors);
+  //   dispatch(sendError([]));
+  // }
 
   return (
     <>
       <Header navigation={navigation}></Header>
-      <ScrollView style={{ display: 'flex', flexDirection: 'column', marginTop: 10}}>
-        <View style={{alignSelf: 'center', width: '95%'}}>
+      <ScrollView
+        style={{ display: "flex", flexDirection: "column", marginTop: 10 }}
+      >
+        <View style={{ alignSelf: "center", width: "95%" }}>
           <Picker
             selectedValue={category}
             style={{ height: 50 }}
-            onValueChange={(itemValue, itemIndex) =>
-              setCategory(itemValue)
-            }>
-            <Picker.Item label="Choose a category" enabled/>
-            <Picker.Item label="All" value='' />
+            onValueChange={(itemValue, itemIndex) => setCategory(itemValue)}
+          >
+            <Picker.Item label="Choose a category" enabled />
+            <Picker.Item label="All" value="" />
             <Picker.Item label="Movie" value="movie" />
             <Picker.Item label="Animal" value="animal" />
             <Picker.Item label="Technology" value="technology" />
@@ -73,17 +85,25 @@ export default function Home({ navigation }) {
             <Picker.Item label="Funny" value="funny" />
             <Picker.Item label="Others" value="others" />
           </Picker>
-          {category === '' ? setCards.map((set) => {
-            console.log(set);
-            return (
-              <SetCard navigation={navigation} props={set} key={set.id}></SetCard>
-            );
-          }) : setCardsFiltered.map((set) => {
-            console.log(set);
-            return (
-              <SetCard navigation={navigation} props={set} key={set.id}></SetCard>
-            );
-          })}
+          {category === ""
+            ? setCards.map((set) => {
+                return (
+                  <SetCard
+                    navigation={navigation}
+                    props={set}
+                    key={set.id}
+                  ></SetCard>
+                );
+              })
+            : setCardsFiltered.map((set) => {
+                return (
+                  <SetCard
+                    navigation={navigation}
+                    props={set}
+                    key={set.id}
+                  ></SetCard>
+                );
+              })}
         </View>
       </ScrollView>
       <Appbar navigation={navigation}></Appbar>
