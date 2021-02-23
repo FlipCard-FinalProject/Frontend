@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import Appbar from '../components/Appbar'
 import Header from '../components/Header'
-import Card from '../components/Card'
+import CardList from '../components/CardList'
 import { Input } from 'react-native-elements';
-import { TextInput, Text } from "react-native-paper";
-import { Button, View } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { Button, StyleSheet, Text, View, Image } from 'react-native';
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import { TextInput } from "react-native-paper";
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
 import { useDispatch, useSelector } from "react-redux";
 import { insertCard, fetchingCardBySetCardId, clearForm } from "../store/actions/cardAction";
 import { insertSetCard } from "../store/actions/setCardAction";
 import { Audio } from 'expo-av';
+import Icon from 'react-native-vector-icons/Ionicons'
+import { Card, Title } from 'react-native-paper'
 
 export default function Create({ navigation }) {
-  const [setCardId, setSetCardId] = React.useState("");
+  const [setCardId, setSetCardId] = React.useState('');
   const [card, setCard] = React.useState({
     hint: '',
     answer: '',
@@ -25,7 +27,11 @@ export default function Create({ navigation }) {
   const [category, setCategory] = React.useState('');
   const [sound, setSound] = React.useState('');
   const [recording, setRecording] = React.useState();
-  
+
+  const [currentlyRecording, setCurrentlyRecording] = React.useState(false);
+  const [currentlyPlaying, setCurrentlyPlaying] = React.useState(false)
+  const [inputType, setInputType] = React.useState('text')
+  const [formType, setFormType] = React.useState('hint')
   const dispatch = useDispatch();
 
   const { newVal } = useSelector((state) => state.setCard)
@@ -45,14 +51,14 @@ export default function Create({ navigation }) {
       answer: card.answer,
       type: 'text',
     };
-    if (image !== '') {
+    if (image !== '' && card.type === 'image') {
       payload = {
         hint: image,
         answer: card.answer,
         type: 'image',
       };
-    } 
-    else if(sound !== ''){
+    }
+    else if (sound !== '' && card.type === 'audio') {
       payload = {
         hint: sound,
         answer: card.answer,
@@ -163,6 +169,7 @@ export default function Create({ navigation }) {
       await recording.startAsync();
       setRecording(recording);
       console.log('Recording started');
+      setCurrentlyRecording(true) // Recording status
     } catch (err) {
       console.error('Failed to start recording', err);
     }
@@ -175,120 +182,264 @@ export default function Create({ navigation }) {
     const uri = recording.getURI();
     setSound(uri)
     console.log('Recording stopped and stored at', uri);
+    setCurrentlyRecording(false) // Recording status
   }
+// baru
+  // async function playSound() {
+  //   console.log('Loading Sound');
+  //   const { sound } = await Audio.Sound.createAsync(
+  //      require('')
+  //   );
+  //   setSound(sound);
+
+  //   console.log('Playing Sound');
+  //   await sound.playAsync();
+  // }
+
+  // React.useEffect(() => {
+  //   return sound
+  //     ? () => {
+  //       console.log('Unloading Sound');
+  //       sound.unloadAsync();
+  //     }
+  //     : undefined;
+  // }, [sound]);
 
   // ******************** ETC ********************
 
-  // useEffect(() => {
-  //   if (cards.length > 0){
-  //     dispatch(fetchingCardBySetCardId(setCardId, access_token))
-  //   }
-  // }, [cards])
+  const handleChangeInputType = (type) => {
+    switch (type) {
+      case 'image':
+        setSound('')
+        setCard({...card, type: 'image' })
+        break
+        case 'audio':
+        setImage('')
+        setCard({...card, type: 'audio' })
+        break
+      default:
+        setImage('')
+        setSound('')
+        setCard({...card, type: 'text' })
+        break;
+    }
+    setInputType(type)
+  }
+  const handleChangeFormType = (type) => {
+    setFormType(type)
+  }
 
+  useEffect(() => {
+    console.log(`input type: ${inputType}`);
+  }, [inputType])
+
+// baru
   return (
     <>
       <Header navigation={navigation}></Header>
-      <ScrollView>
-        <View>
-          <Input
-            placeholder='Set Title'
-            onChangeText={text => setTitleInput(text)} />
-        </View>
-        <Picker
-          selectedValue={category}
-          style={{ height: 50, width: 400 }}
-          onValueChange={(itemValue, itemIndex) =>
-            setCategory(itemValue)
-          }>
-          <Picker.Item label="Choose a category" enabled />
-          <Picker.Item label="Movie" value="movie" />
-          <Picker.Item label="Animal" value="animal" />
-          <Picker.Item label="Technology" value="technology" />
-          <Picker.Item label="Food" value="food" />
-          <Picker.Item label="Game" value="game" />
-          <Picker.Item label="Music" value="music" />
-          <Picker.Item label="People" value="people" />
-          <Picker.Item label="Math" value="math" />
-          <Picker.Item label="Programming" value="programming" />
-          <Picker.Item label="Funny" value="funny" />
-          <Picker.Item label="Others" value="others" />
-        </Picker>
+      <ScrollView style={{ display: 'flex', flexDirection: 'column', marginTop: 10 }}>
+        <View style={{ alignSelf: 'center', width: '95%' }}>
+          <View style={{ marginTop: 20, marginBottom: 10 }}>
+            <Input
+              placeholder='Set Title'
+              onChangeText={text => setTitleInput(text)} />
+          </View>
+          <Picker
+            selectedValue={category}
+            style={{ height: 50, marginBottom: 20 }}
+            onValueChange={(itemValue, itemIndex) =>
+              setCategory(itemValue)
+            }>
+            <Picker.Item label="Choose a category" enabled />
+            <Picker.Item label="Movie" value="movie" />
+            <Picker.Item label="Animal" value="animal" />
+            <Picker.Item label="Technology" value="technology" />
+            <Picker.Item label="Food" value="food" />
+            <Picker.Item label="Game" value="game" />
+            <Picker.Item label="Music" value="music" />
+            <Picker.Item label="People" value="people" />
+            <Picker.Item label="Math" value="math" />
+            <Picker.Item label="Programming" value="programming" />
+            <Picker.Item label="Funny" value="funny" />
+            <Picker.Item label="Others" value="others" />
+          </Picker>
+          {setCardId === '' && (
+            <View style={{
+              marginBottom: 100
+            }}>
+              <Button
+                onPress={createSetCard}
+                title="Create Set Card"></Button>
+            </View>)}
+          {setCardId !== '' && (
+            <>
+              <Card style={{ marginBottom: 20, paddingTop: 30, paddingBottom: 30, display: 'flex', flexDirection: 'column' }}>
+                <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
+                  <View style={{ width: '20%' }}>
+                    <Button
+                      title="Text"
+                      onPress={() => handleChangeInputType('text')}></Button>
+                  </View>
+                  <View style={{ width: '20%' }}>
+                    <Button
+                      title="Audio"
+                      onPress={() => handleChangeInputType('audio')}></Button>
+                  </View>
+                  <View style={{ width: '20%' }}>
+                    <Button
+                      title="Images"
+                      onPress={() => handleChangeInputType('image')}></Button>
+                  </View>
+                </View>
 
-        {setCardId === '' && (
-          <View style={{
-            marginBottom: 100
-          }}>
-            <Button onPress={createSetCard} title="Create Set Card" />
-          </View>)}
-        {setCardId !== '' && (
-          <View style={{ marginBottom: 100 }}>
-            <Button title="Create Set pressed" />
-            <View style={{ marginBottom: 20, display: 'flex', flexDirection: 'column' }}>
-              <View style={{ width: '90%' }}>
-                <TextInput
-                  style={{
-                    marginBottom: 20,
-                  }}
-                  label="Hint"
-                  placeholder="set hint"
-                  name="hint"
-                  value={card.hint}
-                  onChangeText={e => onChange(e, { name: "hint" })}
-                />
-              </View>
-              <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
-                <View style={{ width: '20%' }}>
-                  <Button title="add" onPress={pickImage} />
-                </View>
-                <View style={{ width: '20%' }}>
-                  <Button title="camera" onPress={pickPhoto} />
-                </View>
-                <View style={{ width: '20%' }}>
-                  <Button title={recording ? 'Stop Recording' : 'Start Recording'} onPress={recording ? stopRecording : startRecording} />
-                </View>
-                <View style={{ width: '20%' }}>
-                  <Button title="Play Sound" />
-                </View>
-              </View>
-              <TextInput
-                style={{
-                  marginBottom: 20,
-                }}
-                label="answer"
-                placeholder="set answer"
-                name="answer"
-                value={card.answer}
-                onChangeText={e => onChange(e, { name: "answer" })}
-              />
+
+                {/* ==================== TEXT INPUT ==================== */}
+
+                {
+                  inputType === 'text' && (
+                    <View style={{ display: 'flex', flexDirection: 'column', width: '100%', justifyContent: 'center', paddingTop: 30 }}>
+                      <View style={{ marginLeft: 20 }}>
+                        <Input
+                          name="hint"
+                          placeholder="Set Hint"
+                          onChangeText={e => onChange(e, { name: "hint" })}
+                          value={card.hint}
+                        />
+                        <Input
+                          placeholder="Set Answer"
+                          name="answer"
+                          value={card.answer}
+                          onChangeText={e => onChange(e, { name: "answer" })} />
+                        <View>
+                          {/* <Button title="Confirm"></Button> */}
+                        </View>
+                      </View>
+                    </View>
+                  )
+                }
+
+                {/* ==================== AUDIO INPUT ==================== */}
+
+                {
+                  inputType === 'audio' && (
+                    <View style={{ display: 'flex', flexDirection: 'column', minHeight: 135, justifyContent: 'space-evenly', marginTop: 20 }}>
+                      <View style={{ flexDirection: 'row' }}>
+                        <View style={{ width: '25%' }}>
+                          <TouchableOpacity
+                            style={{ display: 'flex', flexDirection: 'row', height: 100, justifyContent: 'center', alignItems: 'center' }}
+                            title="add"
+                            onPress={recording ? stopRecording : startRecording}>
+                            <Icon name={currentlyRecording === false ? "mic-outline" : "mic"} size={40} />
+                          </TouchableOpacity>
+                          {/* <Button title="Hint" onPress={() => console.log('hint')}></Button> */}
+                        </View>
+                        <View style={{ flexDirection: 'column', width: '25%' }}>
+                          <View style={{ flexDirection: 'row' }}>
+                          </View>
+                          <View>
+                            <TouchableOpacity
+                              style={{ display: 'flex', flexDirection: 'row', height: 100, justifyContent: 'center', alignItems: 'center' }}
+                              title="camera"
+                              onPress={() => currentlyPlaying === false ? setCurrentlyPlaying(true) : setCurrentlyPlaying(false)}>
+                              <Icon name={currentlyPlaying === false ? "play-outline" : "play"} size={40} />
+                            </TouchableOpacity>
+                          </View>
+                          {/* <Button title="Answer" onPress={() => console.log('answer')}></Button> */}
+                        </View>
+                        <View style={{ width: '25%' }}>
+                          <TouchableOpacity
+                            style={{ display: 'flex', flexDirection: 'row', height: 100, justifyContent: 'center', alignItems: 'center' }}
+                            title="add"
+                            onPress={recording ? stopRecording : startRecording}>
+                            <Icon name={currentlyRecording === false ? "mic-outline" : "mic"} size={40} />
+                          </TouchableOpacity>
+                          {/* <Button title="Hint" onPress={() => console.log('hint')}></Button> */}
+                        </View>
+                        <View style={{ flexDirection: 'column', width: '25%' }}>
+                          <View style={{ flexDirection: 'row' }}>
+                          </View>
+                          <View>
+                            <TouchableOpacity
+                              style={{ display: 'flex', flexDirection: 'row', height: 100, justifyContent: 'center', alignItems: 'center' }}
+                              title="camera"
+                              onPress={() => currentlyPlaying === false ? setCurrentlyPlaying(true) : setCurrentlyPlaying(false)}>
+                              <Icon name={currentlyPlaying === false ? "play-outline" : "play"} size={40} />
+                            </TouchableOpacity>
+                          </View>
+                          {/* <Button title="Answer" onPress={() => console.log('answer')}></Button> */}
+                        </View>
+                      </View>
+                      <View style={{}}>
+                        <Button title="Confirm"></Button>
+                      </View>
+                    </View>
+                  )
+                }
+
+                {/* ==================== IMAGE INPUT ==================== */}
+
+                {
+                  inputType === 'image' && (
+                    <View style={{ display: 'flex', flexDirection: 'column', minHeight: 195, justifyContent: 'space-evenly', marginTop: 20 }}>
+                      <View style={{ flexDirection: 'row' }}>
+                        <View style={{ width: '50%', justifyContent: 'space-between' }}>
+                          <Card.Cover style={{}} source={{ uri: `https://nayturr.com/wp-content/uploads/2020/09/linear-equation-sep032020-min-e1599143556912.jpg` }} />
+                          {/* <Button title="Hint" onPress={() => console.log('hint')}></Button> */}
+                        </View>
+                        <View style={{ flexDirection: 'column', width: '50%' }}>
+                          <View style={{}}>
+                            <TouchableOpacity
+                              style={{ display: 'flex', flexDirection: 'row', height: 100, justifyContent: 'center' }}
+                              title="add"
+                              onPress={pickImage}>
+                              <Icon name="image" color="#444444" size={80}></Icon>
+                            </TouchableOpacity>
+                          </View>
+                          <View>
+                            <TouchableOpacity
+                              style={{ display: 'flex', flexDirection: 'row', height: 100, justifyContent: 'center' }}
+                              title="camera"
+                              onPress={pickPhoto}>
+                              <Icon name="camera" color="#444444" size={80}></Icon>
+                            </TouchableOpacity>
+                          </View>
+                          {/* <Button title="Answer" onPress={() => console.log('answer')}></Button> */}
+                        </View>
+                      </View>
+                      <View style={{ width: '100%' }}>
+                        <Input placeholder="Input answer"></Input>
+                        {/* <Button title="Confirm"></Button> */}
+                      </View>
+                    </View>
+                  )
+                }
+              </Card>
               <View>
                 { cards.length > 0 && (
                   cards.map(carde => {
-                    return <Card card={carde} key={carde.id} navigation={navigation} />
+                    return <CardList card={carde} key={carde.id} navigation={navigation} />
                   })
                 )}
               </View>
               <View style={{ marginBottom: 100 }}>
-                {cards.length === 0 && (
-                  <Button
-                  onPress={createCard}
-                  title="Add"/>
-                )}
-                {cards.length > 0 && (
-                  <>
+                <View style={{ marginBottom: 20 }}>
+                  {cards.length === 0 && (
                     <Button
                     onPress={createCard}
-                    title="Add more"/>
-
-                    <Button
-                    onPress={saveSetCard}
-                    color="red"
-                    title="Save"/>
-                  </>
-                )}
+                    title="Add"/>
+                  )}
+                  {cards.length !== 0 && (
+                    <View>
+                      <Button onPress={createCard} title="Add more"/>
+                      <Button onPress={saveSetCard} color= 'salmon' title="Create"></Button>
+                    </View>
+                  )}
+                </View>
               </View>
-            </View>
-          </View>
-        )}
+            </>
+          )}
+
+        </View>
       </ScrollView>
       <Appbar navigation={navigation}></Appbar>
     </>

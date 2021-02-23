@@ -29,6 +29,10 @@ export default function Flip({ route, navigation }) {
     }
   }, [id]);
 
+  useEffect(() => {
+    setCards(data)
+  }, [data])
+
   function handleSwipeRight() {
     console.log("right");
     nextCard();
@@ -84,6 +88,7 @@ const styles = StyleSheet.create({
   },
 });
 
+/*
 // import React from 'react';
 // import Appbar from '../components/Appbar'
 // import Header from '../components/Header'
@@ -116,4 +121,4 @@ const styles = StyleSheet.create({
 //     borderWidth: 1,
 //     paddingBottom: 120
 //   }
-// });
+// });*/

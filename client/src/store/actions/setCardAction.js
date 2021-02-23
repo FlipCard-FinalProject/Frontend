@@ -51,6 +51,7 @@ export const insertSetCard = (payload) => {
       .then(({ data }) => {
         console.log(data);
         console.log('success add set card')
+
         dispatch(newVal(data));
         dispatch(fetchingSetCards(access))
       })
@@ -110,10 +111,6 @@ export const deleteSetCard = (id) => {
       .then(({ data }) => {
         console.log('success delete set card')
         dispatch(fetchingSetCards())
-      })
-      .catch(err => {
-        console.log(err.response)
-        dispatch(sendError(err.response))
       })
       .catch((err) => {
         console.log(err);
