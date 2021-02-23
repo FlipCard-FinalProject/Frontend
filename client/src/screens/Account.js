@@ -1,17 +1,25 @@
-
 import React, { useState, useEffect } from "react";
 import Appbar from "../components/Appbar";
 import Header from "../components/Header";
-import SetCard from '../components/SetCard'
-import { Button, StyleSheet, Text, View, TextInput, Dimensions } from 'react-native';
-import { Input } from 'react-native-elements';
+import SetCardEditable from "../components/SetCardAcount";
+import {
+  Button,
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Dimensions,
+} from "react-native";
+import { Input } from "react-native-elements";
 // import { TextInput } from "react-native-paper";
-import Icon from 'react-native-vector-icons/Ionicons'
+import Icon from "react-native-vector-icons/Ionicons";
 import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch, useSelector } from "react-redux";
 import { logout, getUser, updateUser } from "../store/actions/userAction";
-  
+import { fetchingSetCards } from "../store/actions/setCardAction";
+import { getData } from "../helpers/AsyncStorage";
+
 // const windowHeight = Dimensions.get('window').height
 // const windowWidth = Dimensions.get('window').width
 import {
@@ -23,11 +31,19 @@ import {
 export default function Account({ navigation }) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [showForm, setShowForm] = useState(false)
+  const [showForm, setShowForm] = useState(false);
   const { profile } = useSelector((state) => state.user);
   const { id, email, first_name, last_name } = profile;
+  const { setCards } = useSelector((state) => state.setCard);
+  const [listSetCards, setListSetCards] = useState(setCards.filter(set => set.user_id === id));
+  // let filtered = setCardsOrigin.filter(set => set.user_id === id)
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    let filtered = setCards.filter(set => set.user_id === id)
+        setListSetCards(filtered)
+  },[setCards])
+  
   useEffect(() => {
     getUserId();
     setFirstName(first_name);
@@ -39,6 +55,13 @@ export default function Account({ navigation }) {
       const id = await AsyncStorage.getItem("userid");
       if (id !== null) {
         dispatch(getUser(id));
+      }
+
+      const access_token = await AsyncStorage.getItem("access_token");
+      if (access_token !== null) {
+        dispatch(fetchingSetCards(id, access_token));
+        let filtered = setCards.filter(set => set.user_id === id)
+        setListSetCards(filtered)
       }
     } catch (e) {
       // error reading value
@@ -71,11 +94,11 @@ export default function Account({ navigation }) {
       console.log(err);
     }
   };
-  
+
   const handleShowForm = () => {
-    if(showForm) setShowForm(false)
-    else setShowForm(true)
-  }
+    if (showForm) setShowForm(false);
+    else setShowForm(true);
+  };
 
   const updateHandle = () => {
     const payload = {
@@ -89,76 +112,120 @@ export default function Account({ navigation }) {
   return (
     <>
       <Header navigation={navigation}></Header>
-        <ScrollView style={{ display: 'flex', flexDirection: 'column', marginTop: 10}}>
-          <View style={{alignSelf: 'center', width: '95%'}}>
-            <View style={{ display: 'flex', marginBottom: 20, marginTop: 20}}>
-              <View>
-                <Text style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginBottom: 20 }}>{email}</Text>
+      <View style={{ alignSelf: "center", width: wp("95%") }}>
+        <View
+          style={{
+            display: "flex",
+            marginBottom: hp("2%"),
+            marginTop: hp("2%"),
+          }}
+        >
+          <View>
+            <Text
+              style={{
+                fontSize: hp("2%"),
+                fontWeight: "bold",
+                textAlign: "center",
+                marginBottom: hp("2%"),
+              }}
+            >
+              {email}
+            </Text>
+          </View>
+          <View style={{ flexDirection: "row", justifyContent: "center" }}>
+            <Text
+              style={{
+                fontSize: hp("2%"),
+                textAlign: "center",
+                margin: hp("0.5%"),
+              }}
+            >{`${first_name} ${last_name}`}</Text>
+            <Icon
+              name="create-outline"
+              size={23}
+              onPress={handleShowForm}
+            ></Icon>
+          </View>
+        </View>
+
+        {showForm && (
+          <View style={{ display: "flex" }}>
+            <View
+              style={{
+                flexDirection: "row",
+                marginBottom: hp("2%"),
+                marginTop: hp("2%"),
+                justifyContent: "space-evenly",
+              }}
+            >
+              <View style={{ width: "45%" }}>
+                <TextInput
+                  style={{
+                    backgroundColor: "#fff",
+                    height: hp("4%"),
+                    borderColor: "gray",
+                    borderWidth: 1,
+                    borderRadius: 5,
+                    paddingLeft: hp("2%"),
+                  }}
+                  value={firstName}
+                  onChangeText={(text) => {
+                    setFirstName(text);
+                  }}
+                ></TextInput>
               </View>
-              <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                <Text style={{ fontSize: 20, textAlign: 'center', marginRight: 5 }}>{`${first_name} ${last_name}`}</Text>
-                <Icon name="create-outline" size={23} onPress={handleShowForm} ></Icon>
+
+              <View style={{ width: wp("45%") }}>
+                <TextInput
+                  style={{
+                    backgroundColor: "#fff",
+                    height: hp("4%"),
+                    borderColor: "gray",
+                    borderWidth: 1,
+                    borderRadius: 5,
+                    paddingLeft: 20,
+                  }}
+                  label="Last name"
+                  value={lastName}
+                  onChangeText={(text) => {
+                    setLastName(text);
+                  }}
+                ></TextInput>
               </View>
             </View>
-
-            {
-              showForm && (
-                <View style={{ display: 'flex' }}>
-                  <View style={{ flexDirection: 'row', marginBottom: 20, marginTop: 20, justifyContent: 'space-evenly' }}>
-
-                    <View style={{ width: '45%' }}>
-                      <TextInput
-                      style={{
-                        backgroundColor: '#fff',
-                        height: 40,
-                        borderColor: 'gray',
-                        borderWidth: 1,
-                        borderRadius: 5,
-                        paddingLeft: 20,
-                      }}
-                      value={firstName}
-                      onChangeText={text => {setFirstName(text)}}>
-                      </TextInput>
-                    </View>
-
-                    <View style={{width: '45%'}}>
-                      <TextInput
-                      style={{
-                        backgroundColor: '#fff',
-                        height: 40,
-                        borderColor: 'gray',
-                        borderWidth: 1,
-                        borderRadius: 5,
-                        paddingLeft: 20,
-                      }}
-                      label="Last name"
-                      value={lastName}
-                      onChangeText={text => {setLastName(text)}}>
-                      </TextInput>
-                    </View>
-
-                  </View>
-                  <View style={styles.saveButtonContainer}>
-                    <Button
-                    title="Save"
-                    onPress={updateHandle}></Button>
-                  </View>
-                </View>
-              )
-            }
-            {/* ============================= */}
-            {/* <View>
+            <View style={styles.saveButtonContainer}>
+              <Button title="Save" onPress={updateHandle}></Button>
+            </View>
+          </View>
+        )}
+        {/* ============================= */}
+        {/* <View>
               <SetCard></SetCard>
             </View> */}
 
-            <View style={styles.logoutButtonContainer}>
-              <Button
-                color="#aa2b1d"
-                title="Logout"
-                onPress={userlogout}></Button>
-            </View>
-          </View>
+        <ScrollView
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            marginBottom: hp("50%"),
+          }}
+        >
+          {listSetCards.map((set) => {
+            // console.log(set);
+            return (
+              <SetCardEditable
+                navigation={navigation}
+                props={set}
+                key={set.id}
+              ></SetCardEditable>
+            );
+          })}
         </ScrollView>
+
+        <View style={styles.logoutButtonContainer}>
+          <Button color="#aa2b1d" title="Logout" onPress={userlogout}></Button>
+        </View>
+      </View>
       <Appbar navigation={navigation}></Appbar>
     </>
   );
@@ -166,25 +233,25 @@ export default function Account({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 50,
-    minHeight: 430,
-    display: 'flex',
-    flexDirection: 'column',
-    marginLeft: 20,
-    marginRight: 20,
-    justifyContent: 'space-between'
+    marginTop: hp("5%"),
+    minHeight: hp("43%"),
+    display: "flex",
+    flexDirection: "column",
+    marginLeft: hp("2%"),
+    marginRight: hp("2%"),
+    justifyContent: "space-between",
   },
   textContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignSelf: 'center'
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignSelf: "center",
   },
   saveButtonContainer: {
-    marginBottom: 20,
-    width: '100%'
+    marginBottom: hp("2%"),
+    width: wp("95%"),
   },
   logoutButtonContainer: {
-    marginTop: 20
-  }
+    marginTop: hp("2%"),
+  },
 });

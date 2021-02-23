@@ -13,6 +13,9 @@ function cardReducer (state = init, action) {
         cards: [],
       }
     case 'FETCHING_CARDS':
+      // console.log('in reducer');
+      // console.log(action.payload);
+      // console.log('in reducer');
       return { 
         ...state,
         cards: action.payload,
