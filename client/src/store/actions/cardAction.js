@@ -31,7 +31,7 @@ export const newVal = (payload) => {
   return { type: "NEW_VAL_CARD", payload };
 };
 
-export const fetchingCardBySetCardId = (set_card_id ) => {
+export const fetchingCardBySetCardId = (set_card_id) => {
   return (dispatch) => {
     console.log(set_card_id);
     dispatch(loading(true));
@@ -44,7 +44,7 @@ export const fetchingCardBySetCardId = (set_card_id ) => {
         })
       })
       .then(({ data }) => {
-      dispatch(loading(false));
+        dispatch(loading(false));
         console.log(data);
         dispatch(fetchingSuccess(data));
       })
@@ -73,6 +73,7 @@ export const insertCard = (set_card_id, payload) => {
   return dispatch => {
     console.log(payload.type);
     let access = ''
+    dispatch(loading(true));
     if (payload.type === 'text') {
       console.log('here bos');
       getAccess()
@@ -86,11 +87,13 @@ export const insertCard = (set_card_id, payload) => {
           })
         })
         .then(res => {
+          dispatch(loading(false));
           console.log('success add card below this is the data')
           console.log(res.data);
           dispatch(fetchingCardBySetCardId(set_card_id, access))
         })
         .catch((err) => {
+
           console.log(err.response);
           // dispatch(sendError(err.response));
         });
@@ -114,6 +117,7 @@ export const insertCard = (set_card_id, payload) => {
               })
             })
             .then(res => {
+              dispatch(loading(false));
               console.log('success add card below this is the data')
               console.log(res.data);
               dispatch(fetchingCardBySetCardId(set_card_id, access))
@@ -147,6 +151,7 @@ export const insertCard = (set_card_id, payload) => {
               })
             })
             .then(res => {
+              dispatch(loading(false));
               console.log('success add card below this is the data')
               console.log(res.data);
               dispatch(fetchingCardBySetCardId(set_card_id, access))
