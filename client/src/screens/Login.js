@@ -29,6 +29,7 @@ const MyComponent = ({ navigation }) => {
     try {
       const value = await AsyncStorage.getItem("access_token");
       if (value) {
+        dispatch();
         navigation.navigate("Home");
       }
     } catch (e) {
