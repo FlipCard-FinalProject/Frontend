@@ -2,7 +2,7 @@ const init = {
   setCards: [],
   loading: false,
   errors: [],
-  newVal: {}
+  newVal: {},
 }
 
 function setCardReducer (state = init, action) {
@@ -16,6 +16,7 @@ function setCardReducer (state = init, action) {
       return {
         ...state,
         setCards: action.payload,
+        isUpdate: true,
         loading: false
       }
     case 'ADD_SET_CARD':

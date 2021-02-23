@@ -10,10 +10,22 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from '@react-native-picker/picker'
 
 export default function Home({ navigation }) {
-  const { setCards } = useSelector((state) => state.setCard);
+  const {setCards} = useSelector((state) => state.setCard);
+  const {isUpdate} = useSelector((state) => state.setCard);
+  const [setCardsFiltered, setSetCardsFiltered] = useState(setCards);
   const dispatch = useDispatch();
   const [access, setAccess] = useState();
-  const [category, setCategory] = useState();
+  const [category, setCategory] = useState('');
+  useEffect(() => {
+    dispatch(fetchingSetCards());
+    console.log(category);
+    if (category !== '') {
+      let filtered = setCards.filter(setCard => setCard.category === category)
+      setSetCardsFiltered(filtered)      
+    } else {
+      setSetCardsFiltered(setCards)
+    }
+  }, [category])
 
   useEffect(() => {
     const getData = async () => {
@@ -30,9 +42,11 @@ export default function Home({ navigation }) {
     };
     getData();
     if (access) {
-      dispatch(fetchingSetCards(access));
+      dispatch(fetchingSetCards());
     }
   }, [access]);
+
+
 
   return (
     <>
@@ -46,6 +60,7 @@ export default function Home({ navigation }) {
               setCategory(itemValue)
             }>
             <Picker.Item label="Choose a category" enabled/>
+            <Picker.Item label="All" value='' />
             <Picker.Item label="Movie" value="movie" />
             <Picker.Item label="Animal" value="animal" />
             <Picker.Item label="Technology" value="technology" />
@@ -58,7 +73,12 @@ export default function Home({ navigation }) {
             <Picker.Item label="Funny" value="funny" />
             <Picker.Item label="Others" value="others" />
           </Picker>
-          {setCards.map((set) => {
+          {category === '' ? setCards.map((set) => {
+            console.log(set);
+            return (
+              <SetCard navigation={navigation} props={set} key={set.id}></SetCard>
+            );
+          }) : setCardsFiltered.map((set) => {
             console.log(set);
             return (
               <SetCard navigation={navigation} props={set} key={set.id}></SetCard>

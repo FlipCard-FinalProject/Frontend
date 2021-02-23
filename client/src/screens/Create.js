@@ -11,6 +11,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useDispatch, useSelector } from "react-redux";
 import { insertCard, fetchingCardBySetCardId, clearForm } from "../store/actions/cardAction";
 import { insertSetCard } from "../store/actions/setCardAction";
+import { clearCards } from "../store/actions/cardAction";
 import { Audio } from 'expo-av';
 import Icon from 'react-native-vector-icons/Ionicons'
 import { Card, Title } from 'react-native-paper'
@@ -90,6 +91,7 @@ export default function Create({ navigation }) {
     }
     dispatch(insertSetCard(payload));
     setCreating(true)
+    dispatch(clearCards())
   }
 
   function saveSetCard() {
