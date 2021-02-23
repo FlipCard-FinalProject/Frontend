@@ -6,6 +6,7 @@ export const clearCards = () => {
   return (dispatch) => {
     dispatch(fetchingSuccess(''));
   };
+}
 
 export const clearForm = () => {
   return dispatch => {
