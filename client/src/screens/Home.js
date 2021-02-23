@@ -74,12 +74,12 @@ export default function Home({ navigation }) {
             <Picker.Item label="Others" value="others" />
           </Picker>
           {category === '' ? setCards.map((set) => {
-            console.log(set);
+            // console.log(set);
             return (
               <SetCard navigation={navigation} props={set} key={set.id}></SetCard>
             );
           }) : setCardsFiltered.map((set) => {
-            console.log(set);
+            // console.log(set);
             return (
               <SetCard navigation={navigation} props={set} key={set.id}></SetCard>
             );
