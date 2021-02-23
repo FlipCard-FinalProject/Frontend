@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Appbar from "../components/Appbar";
 import Header from "../components/Header";
 import Flipcard from "../components/FlipCard";
-import { StyleSheet, Text, View, Dimensions, SafeAreaView } from "react-native";
+import { StyleSheet, View, Dimensions, Modal, Text } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 const windowHeight = Dimensions.get("window").height;
 const windowWidth = Dimensions.get("window").width;
@@ -16,18 +16,22 @@ import { getAccess } from "../helpers/AsyncStorage";
 
 export default function Flip({ route, navigation }) {
   const dispatch = useDispatch();
+  const { id } = route.params;
   const access_token = useSelector((state) => state.user.access_token);
   const data = useSelector((state) => state.card.cards);
-
   const [cards, setCards] = useState(data);
+  const [modalVisible, setModalVisible] = useState(false)
   const [currentIndex, setCurrentIndex] = useState(0);
-  const { id } = route.params;
+  
+  useEffect(() => {
+    setCards(data)
+  }, [data])
 
   useEffect(() => {
     if (id) {
       dispatch(fetchingCardBySetCardId(id, access_token));
     }
-  }, [id]);
+  },[id]);
 
   useEffect(() => {
     setCards(data)
@@ -49,6 +53,21 @@ export default function Flip({ route, navigation }) {
     <>
       <Header navigation={navigation}></Header>
       <View style={styles.container}>
+
+        <View style={{ display: 'flex', flexDirection: 'row', marginLeft: 10 }}>
+          <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            Alert.alert('Modal has been closed.');
+          }}>
+            <Text>
+              1123124125235423523423423513111
+            </Text>
+          </Modal>
+        </View>
+
         <View style={styles.swipes}>
           {cards.length > 1 &&
             cards.map(
@@ -87,38 +106,3 @@ const styles = StyleSheet.create({
     paddingBottom: 100,
   },
 });
-
-/*
-// import React from 'react';
-// import Appbar from '../components/Appbar'
-// import Header from '../components/Header'
-// import Flipcard from '../components/FlipCard'
-// import { StyleSheet, Text, View, Dimensions, SafeAreaView } from 'react-native';
-// import { ScrollView } from 'react-native-gesture-handler';
-// const windowHeight = Dimensions.get('window').height
-// const windowWidth = Dimensions.get('window').width
-
-// export default function Flip ({navigation}) {
-//   return(
-//     <>
-//       <Header navigation={navigation}></Header>
-//         <SafeAreaView style={styles.container}>
-//           <Flipcard navigation={navigation}></Flipcard>
-//         </SafeAreaView>
-//       <Appbar navigation={navigation}></Appbar>
-//     </>
-//   )
-// }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     backgroundColor: '#fff',
-//     display: 'flex',
-//     flexDirection: 'column',
-//     minHeight: windowHeight,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     borderWidth: 1,
-//     paddingBottom: 120
-//   }
-// });*/

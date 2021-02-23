@@ -2,6 +2,10 @@ import axios from 'axios'
 import * as firebase from 'firebase'
 import { getAccess } from '../../helpers/AsyncStorage'
 
+export const clearCards = () => {
+  return (dispatch) => {
+    dispatch(fetchingSuccess(''));
+  };
 
 export const clearForm = () => {
   return dispatch => {
