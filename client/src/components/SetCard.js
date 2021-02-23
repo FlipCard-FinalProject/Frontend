@@ -1,16 +1,18 @@
-import * as React from 'react';
-import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
-import { StyleSheet, Text, View } from 'react-native';
+import * as React from "react";
+import { Avatar, Button, Card, Title, Paragraph } from "react-native-paper";
+import { StyleSheet, Text, View } from "react-native";
 
-const LeftContent = props => <Avatar.Icon {...props} icon="folder" />
+const LeftContent = (props) => <Avatar.Icon {...props} icon="folder" />;
 
-const MyComponent = ({navigation}) => (
-  <Card style={styles.card}
-  onPress={() => navigation.navigate('Flip')}>
+const MyComponent = ({ navigation, props }) => (
+  <Card
+    style={styles.card}
+    onPress={() => navigation.navigate("Flip", { id: props.id })}
+  >
     <Card.Content>
-      <Title>Animals name</Title>
-      <Paragraph>Animal</Paragraph>
-      <Paragraph style={styles.author}>Dzaky</Paragraph>
+      <Title style={{ fontSize: 20 }}>{props.title}</Title>
+      <Title style={{ fontSize: 15, fontStyle: 'italic'}}>Category: {props.category}</Title>
+      <Title style={styles.author}>{props.User.first_name} {props.User.last_name}</Title>
     </Card.Content>
     {/* <Card.Cover source={{ uri: 'https://picsum.photos/700' }} /> */}
     <Card.Actions>
@@ -24,12 +26,16 @@ export default MyComponent;
 
 const styles = StyleSheet.create({
   card: {
-    display: 'flex',
+    display: "flex",
     minHeight: 150,
+    width: '100%',
     marginBottom: 5,
-    marginTop: 5
+    marginTop: 5,
+    elevation: 5
   },
   author: {
-    marginTop: 40
+    marginBottom: 0,
+    display: 'flex',
+    alignSelf: 'flex-end'
   }
 });
