@@ -9,6 +9,7 @@ export const fetchingSuccess = (payload) => {
   return { type: "FETCHING_SET_CARDS", payload };
 };
 
+
 export const sendError = (payload) => {
   return { type: "ERROR_SET_CARDS", payload };
 };
@@ -17,14 +18,40 @@ export const newVal = (payload) => {
   return { type: "NEW_VAL_SET_CARD", payload };
 };
 
-export const fetchingSetCards = (payload) => {
+export const fetchingSetCards = () => {
   return (dispatch) => {
-    dispatch(loading());
-    axios({
-      method: "GET",
-      url: "https://flip-cards-server.herokuapp.com/setcard",
-      headers: { access_token: payload },
-    })
+    let access = ''
+    getAccess()
+      .then(access_token => {
+        access = access_token
+        return axios({
+          method: "GET",
+          url: "https://flip-cards-server.herokuapp.com/setcard",
+          headers: { access_token }
+        })
+      })
+      .then(({ data }) => {
+        dispatch(fetchingSuccess(data))
+      })
+      .catch((err) => {
+        console.log(err);
+        dispatch(sendError(err.response));
+      });
+  };
+};
+
+export const fetchByCategory = () => {
+  return (dispatch) => {
+    let access = ''
+    getAccess()
+      .then(access_token => {
+        access = access_token
+        return axios({
+          method: "GET",
+          url: "https://flip-cards-server.herokuapp.com/setcard",
+          headers: { access_token }
+        })
+      })
       .then(({ data }) => {
         dispatch(fetchingSuccess(data))
       })
@@ -51,6 +78,7 @@ export const insertSetCard = (payload) => {
       .then(({ data }) => {
         console.log(data);
         console.log('success add set card')
+
         dispatch(newVal(data));
         dispatch(fetchingSetCards(access))
       })
@@ -63,11 +91,16 @@ export const insertSetCard = (payload) => {
 
 export const findSetCardByTitle = (query) => {
   return (dispatch) => {
-    dispatch(loading());
-    axios({
-      method: "GET",
-      url: `https://flip-cards-server.herokuapp.com/setcard/${query}`,
-    })
+    let access = ''
+    getAccess()
+      .then(access_token => {
+        access = access_token
+        return axios({
+          method: "GET",
+          url: `https://flip-cards-server.herokuapp.com/setcard/${query}`,
+          headers: { access_token }
+        })
+      })
       .then(({ data }) => {
         dispatch(fetchingSuccess(data))
       })
@@ -75,10 +108,6 @@ export const findSetCardByTitle = (query) => {
         console.log(err.response)
         dispatch(sendError(err.response))
       })
-      .catch((err) => {
-        console.log(err);
-        dispatch(sendError(err.response));
-      });
   };
 };
 
@@ -110,10 +139,6 @@ export const deleteSetCard = (id) => {
       .then(({ data }) => {
         console.log('success delete set card')
         dispatch(fetchingSetCards())
-      })
-      .catch(err => {
-        console.log(err.response)
-        dispatch(sendError(err.response))
       })
       .catch((err) => {
         console.log(err);

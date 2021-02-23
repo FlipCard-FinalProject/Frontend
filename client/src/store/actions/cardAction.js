@@ -2,6 +2,11 @@ import axios from 'axios'
 import * as firebase from 'firebase'
 import { getAccess } from '../../helpers/AsyncStorage'
 
+export const clearCards = () => {
+  return (dispatch) => {
+    dispatch(fetchingSuccess(''));
+  };
+}
 
 export const clearForm = () => {
   return dispatch => {
@@ -26,22 +31,26 @@ export const newVal = (payload) => {
   return { type: "NEW_VAL_CARD", payload };
 };
 
-export const fetchingCardBySetCardId = (set_card_id, access_token) => {
+export const fetchingCardBySetCardId = (set_card_id) => {
   return (dispatch) => {
     console.log(set_card_id);
-    console.log(access_token);
-    dispatch(loading());
-    axios({
-      method: "GET",
-      url: `https://flip-cards-server.herokuapp.com/cards/${set_card_id}`,
-      headers: { access_token: access_token },
-    })
+    dispatch(loading(true));
+    getAccess()
+      .then(access_token => {
+        return axios({
+          method: "GET",
+          url: `https://flip-cards-server.herokuapp.com/cards/${set_card_id}`,
+          headers: { access_token }
+        })
+      })
       .then(({ data }) => {
+        dispatch(loading(false));
         console.log(data);
         dispatch(fetchingSuccess(data));
       })
       .catch((err) => {
         // console.log(err);
+        // dispatch(error(false));
         dispatch(sendError(err.response));
       });
   };
@@ -64,6 +73,7 @@ export const insertCard = (set_card_id, payload) => {
   return dispatch => {
     console.log(payload.type);
     let access = ''
+    dispatch(loading(true));
     if (payload.type === 'text') {
       console.log('here bos');
       getAccess()
@@ -77,11 +87,13 @@ export const insertCard = (set_card_id, payload) => {
           })
         })
         .then(res => {
+          dispatch(loading(false));
           console.log('success add card below this is the data')
           console.log(res.data);
           dispatch(fetchingCardBySetCardId(set_card_id, access))
         })
         .catch((err) => {
+
           console.log(err.response);
           // dispatch(sendError(err.response));
         });
@@ -105,6 +117,7 @@ export const insertCard = (set_card_id, payload) => {
               })
             })
             .then(res => {
+              dispatch(loading(false));
               console.log('success add card below this is the data')
               console.log(res.data);
               dispatch(fetchingCardBySetCardId(set_card_id, access))
@@ -138,6 +151,7 @@ export const insertCard = (set_card_id, payload) => {
               })
             })
             .then(res => {
+              dispatch(loading(false));
               console.log('success add card below this is the data')
               console.log(res.data);
               dispatch(fetchingCardBySetCardId(set_card_id, access))
