@@ -1,14 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Appbar from '../components/Appbar'
 import Header from '../components/Header'
+import CardList from '../components/CardList'
 import { Input } from 'react-native-elements';
 import { Button, StyleSheet, Text, View, Image } from 'react-native';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
-import { Picker } from '@react-native-picker/picker';
 import { TextInput } from "react-native-paper";
+import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
 import { useDispatch, useSelector } from "react-redux";
-import { insertCard } from "../store/actions/cardAction";
+import { insertCard, fetchingCardBySetCardId, clearForm } from "../store/actions/cardAction";
 import { insertSetCard } from "../store/actions/setCardAction";
 import { Audio } from 'expo-av';
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -21,25 +22,28 @@ export default function Create({ navigation }) {
     answer: '',
     type: ''
   });
-  const [image, setImage] = React.useState('');
+  const [image, setImage] = useState('');
   const [titleInput, setTitleInput] = React.useState('');
   const [category, setCategory] = React.useState('');
-  const [cardShow, setCardShow] = React.useState(9);
   const [sound, setSound] = React.useState('');
   const [recording, setRecording] = React.useState();
-  const { newVal } = useSelector((state) => state.setCard)
+
   const [currentlyRecording, setCurrentlyRecording] = React.useState(false);
   const [currentlyPlaying, setCurrentlyPlaying] = React.useState(false)
   const [inputType, setInputType] = React.useState('text')
   const [formType, setFormType] = React.useState('hint')
   const dispatch = useDispatch();
 
+  const { newVal } = useSelector((state) => state.setCard)
+  const { cards } = useSelector((state) => state.card)
+  const { access_token } = useSelector((state) => state.user)
+
   // ******************** MEDIA ********************
   useEffect(() => {
     if (newVal.id !== undefined) {
       setSetCardId(newVal.id)
-    }
-  }, [newVal])
+    } 
+  }, [newVal.id])
 
   function createCard() {
     let payload = {
@@ -69,6 +73,11 @@ export default function Create({ navigation }) {
       };
     }
     dispatch(insertCard(setCardId, payload));
+    setCard({
+      hint: '',
+      answer: '',
+      type: ''
+    })
   }
 
   function createSetCard() {
@@ -78,6 +87,15 @@ export default function Create({ navigation }) {
     }
     dispatch(insertSetCard(payload));
   }
+
+  function saveSetCard() {
+    dispatch(clearForm())
+    setSetCardId('')
+    setTitleInput('')
+    setCategory('')
+    navigation.navigate('Home')
+  }
+
   useEffect(() => {
     (async () => {
       if (Platform.OS !== 'web') {
@@ -166,7 +184,7 @@ export default function Create({ navigation }) {
     console.log('Recording stopped and stored at', uri);
     setCurrentlyRecording(false) // Recording status
   }
-
+// baru
   // async function playSound() {
   //   console.log('Loading Sound');
   //   const { sound } = await Audio.Sound.createAsync(
@@ -189,9 +207,6 @@ export default function Create({ navigation }) {
 
   // ******************** ETC ********************
 
-  const handleAddCard = () => {
-    if (cardShow >= 0) setCardShow(cardShow - 1)
-  }
   const handleChangeInputType = (type) => {
     switch (type) {
       case 'image':
@@ -218,14 +233,10 @@ export default function Create({ navigation }) {
     console.log(`input type: ${inputType}`);
   }, [inputType])
 
-  useEffect(() => {
-    console.log(cardShow, 'card left');
-  }, [cardShow])
-
+// baru
   return (
     <>
       <Header navigation={navigation}></Header>
-
       <ScrollView style={{ display: 'flex', flexDirection: 'column', marginTop: 10 }}>
         <View style={{ alignSelf: 'center', width: '95%' }}>
           <View style={{ marginTop: 20, marginBottom: 10 }}>
@@ -300,7 +311,7 @@ export default function Create({ navigation }) {
                           value={card.answer}
                           onChangeText={e => onChange(e, { name: "answer" })} />
                         <View>
-                          <Button title="Confirm"></Button>
+                          {/* <Button title="Confirm"></Button> */}
                         </View>
                       </View>
                     </View>
@@ -397,23 +408,32 @@ export default function Create({ navigation }) {
                       </View>
                       <View style={{ width: '100%' }}>
                         <Input placeholder="Input answer"></Input>
-                        <Button title="Confirm"></Button>
+                        {/* <Button title="Confirm"></Button> */}
                       </View>
                     </View>
                   )
                 }
               </Card>
-
+              <View>
+                { cards.length > 0 && (
+                  cards.map(carde => {
+                    return <CardList card={carde} key={carde.id} navigation={navigation} />
+                  })
+                )}
+              </View>
               <View style={{ marginBottom: 100 }}>
                 <View style={{ marginBottom: 20 }}>
-                  <Button
-                    onPress={handleAddCard}
-                    title="Add more"></Button>
-                </View>
-                <View>
-                  <Button
+                  {cards.length === 0 && (
+                    <Button
                     onPress={createCard}
-                    title="Create"></Button>
+                    title="Add"/>
+                  )}
+                  {cards.length !== 0 && (
+                    <View>
+                      <Button onPress={createCard} title="Add more"/>
+                      <Button onPress={saveSetCard} color= 'salmon' title="Create"></Button>
+                    </View>
+                  )}
                 </View>
               </View>
             </>

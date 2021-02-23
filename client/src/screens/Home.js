@@ -10,7 +10,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from '@react-native-picker/picker'
 
 export default function Home({ navigation }) {
-  const setcard = useSelector((state) => state.setCard.setCards);
+  const { setCards } = useSelector((state) => state.setCard);
   const dispatch = useDispatch();
   const [access, setAccess] = useState();
   const [category, setCategory] = useState();
@@ -58,7 +58,7 @@ export default function Home({ navigation }) {
             <Picker.Item label="Funny" value="funny" />
             <Picker.Item label="Others" value="others" />
           </Picker>
-          {setcard.map((set) => {
+          {setCards.map((set) => {
             console.log(set);
             return (
               <SetCard navigation={navigation} props={set} key={set.id}></SetCard>

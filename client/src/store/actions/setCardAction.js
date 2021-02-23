@@ -1,7 +1,6 @@
 import axios from 'axios'
 import { getAccess } from '../../helpers/AsyncStorage'
 
-
 export const loading = () => {
   return { type: "LOADING_SET_CARDS" };
 };
@@ -37,8 +36,8 @@ export const fetchingSetCards = (payload) => {
 };
 
 export const insertSetCard = (payload) => {
-  let access = null
   return dispatch => {
+    let access = ''
     getAccess()
       .then(access_token => {
         access = access_token
@@ -52,8 +51,9 @@ export const insertSetCard = (payload) => {
       .then(({ data }) => {
         console.log(data);
         console.log('success add set card')
-        dispatch(fetchingSetCards(access))
+
         dispatch(newVal(data));
+        dispatch(fetchingSetCards(access))
       })
       .catch((err) => {
         console.log(err);
@@ -75,7 +75,6 @@ export const findSetCardByTitle = (query) => {
       .catch(err => {
         console.log(err.response)
         dispatch(sendError(err.response))
-
       })
       .catch((err) => {
         console.log(err);
@@ -110,8 +109,8 @@ export const deleteSetCard = (id) => {
       url: `https://flip-cards-server.herokuapp.com/setcard/${id}`,
     })
       .then(({ data }) => {
-        console.log("success delete set card");
-        dispatch(fetchingSetCards());
+        console.log('success delete set card')
+        dispatch(fetchingSetCards())
       })
       .catch((err) => {
         console.log(err);
