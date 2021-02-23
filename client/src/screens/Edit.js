@@ -9,8 +9,8 @@ import { TextInput } from "react-native-paper";
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
 import { useDispatch, useSelector } from "react-redux";
-import { insertCard, fetchingCardBySetCardId, clearForm, updateCard } from "../store/actions/cardAction";
-import { insertSetCard, updateSetCard } from "../store/actions/setCardAction";
+import { insertCard, fetchingCardBySetCardId, clearForm, updateCard, deleteCard } from "../store/actions/cardAction";
+import { insertSetCard, updateSetCard, deleteSetCard } from "../store/actions/setCardAction";
 import { Audio } from 'expo-av';
 import Icon from 'react-native-vector-icons/Ionicons'
 import { Card, Title } from 'react-native-paper'
@@ -127,6 +127,42 @@ export default function Edit({ navigation, route }) {
     }
   }, [newVal.id])
 
+// ================================================
+
+  function handleCreateCard() {
+    let payload = {
+      hint: card.hint,
+      answer: card.answer,
+      type: 'text',
+    };
+    if (image !== '' && card.type === 'image') {
+      payload = {
+        hint: image,
+        answer: card.answer,
+        type: 'image',
+      };
+    }
+    else if (sound !== '' && card.type === 'audio' || card.type === 'sound') {
+      payload = {
+        hint: sound,
+        answer: card.answer,
+        type: 'sound',
+      };
+    }
+    else {
+      payload = {
+        hint: card.hint,
+        answer: card.answer,
+        type: 'text',
+      };
+    }
+    dispatch(insertCard(id, payload));
+    setCard({
+      hint: '',
+      answer: '',
+      type: ''
+    })
+  }
 
   function handleUpdateCard() {
     console.log(card.type);
@@ -163,6 +199,7 @@ export default function Edit({ navigation, route }) {
       answer: '',
       type: ''
     })
+    setActiveIdForm(null)
   }
 
   function handleUpdateSetCard() {
@@ -174,6 +211,15 @@ export default function Edit({ navigation, route }) {
     navigation.navigate('Home')
   }
 
+  function handleDeleteSetCard() {
+    dispatch(deleteSetCard(id));
+    navigation.navigate('Home')
+  }
+
+  function handleDeleteCard(cardId) {
+    dispatch(deleteCard(cardId, id));
+  }
+  
   function saveSetCard() {
     dispatch(clearForm())
     setSetCardId('')
@@ -311,9 +357,11 @@ export default function Edit({ navigation, route }) {
     }
     setInputType(type)
   }
+
   const handleChangeFormType = (type) => {
     setFormType(type)
   }
+
   const setThisIntoForm = (cardId) => {
     setActiveIdForm(cardId)
     console.log(cardId);
@@ -387,10 +435,13 @@ export default function Edit({ navigation, route }) {
             <Button
               onPress={handleUpdateSetCard}
               title="Update Set Card"></Button>
+            <Button
+            onPress={handleDeleteSetCard}
+            color= 'red'
+            title="Delete Set Card"></Button>
           </View>
 
           <>
-            {activeIdForm !== null && (
                 <Card style={{ marginBottom: 5, display: 'flex', flexDirection: 'column' }}>
                   <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
                     <View style={{ width: '33%' }}>
@@ -409,7 +460,6 @@ export default function Edit({ navigation, route }) {
                         onPress={() => handleChangeInputType('image')}></Button>
                     </View>
                   </View>
-
 
                   {/* ==================== TEXT INPUT ==================== */}
                   {
@@ -515,17 +565,24 @@ export default function Edit({ navigation, route }) {
                       </View>
                     )
                   }
-            <Button
-                    onPress={handleUpdateCard}
-                    title="Update Card" />
+            {activeIdForm !== null && (
+              <Button
+                onPress={handleUpdateCard}
+                title="Update Card"
+              />
+            )}
+            {activeIdForm === null && (
+              <Button onPress={handleCreateCard} title="Add Card" />
+            )}
                 </Card>
-                    )}
+
 
                 <ScrollView style={{ height: 275, backgroundColor: '#fff', paddingTop: 10 }}>
                   {cards.length > 0 && (
                     cards.map((element, i) => {
                       return (<>
-                        <Button onPress={() => setThisIntoForm(element.id)} color='salmon' title="Edit"></Button>
+                        <Button onPress={() => setThisIntoForm(element.id)} color='salmon' title="Edit Card"></Button>
+                        <Button onPress={() => handleDeleteCard(element.id)} color='red' title="Delete Card"></Button>
                         <CardList card={element} id={i + 1} key={element.id} navigation={navigation} />
                       </>)
                     })
