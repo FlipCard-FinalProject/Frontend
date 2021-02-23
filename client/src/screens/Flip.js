@@ -3,7 +3,7 @@ import Appbar from "../components/Appbar";
 import Header from "../components/Header";
 import Flipcard from "../components/FlipCard";
 import { StyleSheet, View, Dimensions, Modal, Text } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import { ScrollView, TouchableHighlight, TouchableOpacity } from "react-native-gesture-handler";
 const windowHeight = Dimensions.get("window").height;
 const windowWidth = Dimensions.get("window").width;
 import Swipeable from "react-native-gesture-handler/Swipeable";
@@ -24,6 +24,11 @@ export default function Flip({ route, navigation }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   
   useEffect(() => {
+    console.log(modalVisible);
+    setModalVisible(true)
+  }, [])
+
+  useEffect(() => {
     setCards(data)
   }, [data])
 
@@ -33,10 +38,6 @@ export default function Flip({ route, navigation }) {
     }
   },[id]);
 
-  useEffect(() => {
-    setCards(data)
-  }, [data])
-
   function handleSwipeRight() {
     console.log("right");
     nextCard();
@@ -44,6 +45,10 @@ export default function Flip({ route, navigation }) {
   function handleSwipeLeft() {
     console.log("left");
     nextCard();
+  }
+  const handleCloseModal = () => {
+    console.log(modalVisible)
+    setModalVisible(!modalVisible)
   }
   function nextCard() {
     const nextIndex = cards.length - 2 === currentIndex ? 0 : currentIndex + 1;
@@ -54,7 +59,7 @@ export default function Flip({ route, navigation }) {
       <Header navigation={navigation}></Header>
       <View style={styles.container}>
 
-        <View style={{ display: 'flex', flexDirection: 'row', marginLeft: 10 }}>
+        <View>
           <Modal
           animationType="slide"
           transparent={true}
@@ -62,9 +67,21 @@ export default function Flip({ route, navigation }) {
           onRequestClose={() => {
             Alert.alert('Modal has been closed.');
           }}>
-            <Text>
-              1123124125235423523423423513111
-            </Text>
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+              <Text style={styles.modalTextTitle}>How to Use Flipcard: </Text>
+                <Text style={styles.modalText}>Swipe Left to review the card later and Swipe Right when you're finished</Text>
+
+                <View onPress={handleCloseModal}>
+                  <TouchableHighlight
+                    style={{ ...styles.openButton, backgroundColor: '#2196F3' }}>
+                        <Text
+                        onPress={handleCloseModal}
+                        style={styles.textStyle}>OK !</Text>
+                  </TouchableHighlight>
+                </View>
+              </View>
+            </View>
           </Modal>
         </View>
 
@@ -104,5 +121,48 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     width: windowWidth,
     paddingBottom: 100,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  openButton: {
+    backgroundColor: '#F194FF',
+    height: 40,
+    borderRadius: 5,
+    padding: 10,
+    elevation: 2,
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    width: 100,
+  },
+  modalTextTitle: {
+    fontWeight: 'bold',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
   },
 });
