@@ -37,9 +37,11 @@ export const fetchingSetCards = (payload) => {
 };
 
 export const insertSetCard = (payload) => {
+  let access = null
   return dispatch => {
     getAccess()
       .then(access_token => {
+        access = access_token
         return axios({
           method: 'POST',
           url: `https://flip-cards-server.herokuapp.com/setcard`,
@@ -50,11 +52,7 @@ export const insertSetCard = (payload) => {
       .then(({ data }) => {
         console.log(data);
         console.log('success add set card')
-
-        dispatch({
-          type: "ADD_SET_CARD",
-          payload: data,
-        });
+        dispatch(fetchingSetCards(access))
         dispatch(newVal(data));
       })
       .catch((err) => {
