@@ -108,7 +108,7 @@ export const updateUser = (id, payload) => {
       })
       .then(({ data }) => {
         console.log(data, 'hasil update')
-        dispatch(fetchingProfile(data));
+        dispatch(getUser(id));
       })
       .catch((err) => {
         console.log(err.response);

@@ -33,6 +33,10 @@ export default function Flip({ route, navigation }) {
     }
   },[id]);
 
+  useEffect(() => {
+    setCards(data)
+  }, [data])
+
   function handleSwipeRight() {
     console.log("right");
     nextCard();

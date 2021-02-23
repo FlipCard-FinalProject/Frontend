@@ -6,6 +6,12 @@ export const clearCards = () => {
   return (dispatch) => {
     dispatch(fetchingSuccess(''));
   };
+
+export const clearForm = () => {
+  return dispatch => {
+    dispatch({ type: 'CLEAR_FORM' })
+    dispatch({ type: 'CLEAR_NEW_VAL_SET_CARD' })
+  }
 };
 
 export const loading = () => {
@@ -63,10 +69,12 @@ uploadSound = async (uri, soundName) => {
 export const insertCard = (set_card_id, payload) => {
   return dispatch => {
     console.log(payload.type);
+    let access = ''
     if (payload.type === 'text') {
       console.log('here bos');
       getAccess()
         .then(access_token => {
+          access = access_token
           return axios({
             method: 'POST',
             url: `https://flip-cards-server.herokuapp.com/cards/${set_card_id}`,
@@ -76,12 +84,12 @@ export const insertCard = (set_card_id, payload) => {
         })
         .then(res => {
           console.log('success add card below this is the data')
-
           console.log(res.data);
+          dispatch(fetchingCardBySetCardId(set_card_id, access))
         })
         .catch((err) => {
           console.log(err.response);
-
+          // dispatch(sendError(err.response));
         });
     }
     if (payload.type === "image") {
@@ -104,8 +112,8 @@ export const insertCard = (set_card_id, payload) => {
             })
             .then(res => {
               console.log('success add card below this is the data')
-
               console.log(res.data);
+              dispatch(fetchingCardBySetCardId(set_card_id, access))
             })
             .catch((err) => {
               console.log(err.response);
@@ -138,11 +146,11 @@ export const insertCard = (set_card_id, payload) => {
             .then(res => {
               console.log('success add card below this is the data')
               console.log(res.data);
+              dispatch(fetchingCardBySetCardId(set_card_id, access))
             })
             .catch((err) => {
               console.log(err.response);
               // dispatch(sendError(err.response));
-
             });
         })
         .catch((error) => {
