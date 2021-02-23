@@ -7,6 +7,11 @@ const init = {
 
 function setCardReducer (state = init, action) {
   switch (action.type) {
+    case 'CLEAR_NEW_VAL_SET_CARD':
+      return { 
+        ...state,
+        newVal: [],
+      }
     case 'FETCHING_SET_CARDS':
       return {
         ...state,

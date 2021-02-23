@@ -11,7 +11,6 @@ function cardReducer (state = init, action) {
       return { 
         ...state,
         cards: [],
-        newVal: {}
       }
     case 'FETCHING_CARDS':
       return { 

@@ -4,7 +4,10 @@ import { getAccess } from '../../helpers/AsyncStorage'
 
 
 export const clearForm = () => {
-  return { type: "CLEAR_FORM" };
+  return dispatch => {
+    dispatch({ type: 'CLEAR_FORM' })
+    dispatch({ type: 'CLEAR_NEW_VAL_SET_CARD' })
+  }
 };
 
 export const loading = () => {
