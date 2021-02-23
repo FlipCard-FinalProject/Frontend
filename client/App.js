@@ -38,10 +38,13 @@ import Register from './src/screens/Register'
 import Account from './src/screens/Account'
 import Create from './src/screens/Create'
 import Flip from './src/screens/Flip'
+import * as firebase from 'firebase'
+import apiKeysFirebase from './src/store/actions/apiKeysFirebase';
 
 const Stack = createStackNavigator()
 
 export default function App() {
+  if (!firebase.apps.length) { firebase.initializeApp(apiKeysFirebase.FirebaseConfig)}
   return (
     <ReduxProvider store={store}>
       <PaperProvider>
