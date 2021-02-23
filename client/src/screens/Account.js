@@ -2,13 +2,17 @@ import React, { useState } from 'react';
 import Appbar from '../components/Appbar'
 import Header from '../components/Header'
 import SetCard from '../components/SetCard'
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { Button, StyleSheet, Text, View, TextInput, Dimensions } from 'react-native';
 import { Input } from 'react-native-elements';
-import { TextInput } from 'react-native-paper'
+// import { TextInput } from 'react-native-paper'
 import { ScrollView } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useDispatch } from 'react-redux'
 import { logout } from '../store/actions/userAction'
+import Icon from 'react-native-vector-icons/Ionicons'
+
+const windowHeight = Dimensions.get('window').height
+const windowWidth = Dimensions.get('window').width
 
 export default function Account ({navigation}) {
   const [firstName, setFirstName] = useState("Imam")
@@ -49,50 +53,72 @@ const handleShowForm = () => {
   return (
     <>
       <Header navigation={navigation}></Header>
-        <ScrollView>
-
-          <View>
-            <Text>
-              Imam@mail.com
-            </Text>
-            <Text
-            onPress={handleShowForm}>
-              Imam Zain
-            </Text>
-          </View>
-
-          {
-            showForm && (
+        <ScrollView style={{ display: 'flex', flexDirection: 'column', marginTop: 10}}>
+          <View style={{alignSelf: 'center', width: '95%'}}>
+            <View style={{ display: 'flex', marginBottom: 20, marginTop: 20}}>
               <View>
-                <Input
-                label="First name"
-                value={firstName}
-                onChangeText={text => {setFirstName(text)}}>
-                </Input>
-                <Input
-                label="Last name"
-                value={lastName}
-                onChangeText={text => {setLastName(text)}}>
-                </Input>
-                <View style={styles.saveButtonContainer}>
-                  <Button
-                  title="Save"
-                  onPress={() => navigation.navigate('Home')}></Button>
-                </View>
+                <Text style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginBottom: 20 }}>Imam@mail.com</Text>
               </View>
-            )
-          }
-          <View>
-            <SetCard></SetCard>
-            <SetCard></SetCard>
-            <SetCard></SetCard>
-          </View>
-          <View style={styles.logoutButtonContainer}>
-            <Button
-              color="red"
-              title="Logout"></Button>
-          </View>
+              <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                <Text style={{ fontSize: 20, textAlign: 'center', marginRight: 5 }}>{`${firstName} ${lastName}`}</Text>
+                <Icon name="create-outline" size={23} onPress={handleShowForm} ></Icon>
+              </View>
+            </View>
 
+            {
+              showForm && (
+                <View style={{ display: 'flex' }}>
+                  <View style={{ flexDirection: 'row', marginBottom: 20, marginTop: 20, justifyContent: 'space-evenly' }}>
+
+                    <View style={{ width: '45%' }}>
+                      <TextInput
+                      style={{
+                        backgroundColor: '#fff',
+                        height: 40,
+                        borderColor: 'gray',
+                        borderWidth: 1,
+                        borderRadius: 5,
+                        paddingLeft: 20,
+                      }}
+                      value={firstName}
+                      onChangeText={text => {setFirstName(text)}}>
+                      </TextInput>
+                    </View>
+
+                    <View style={{width: '45%'}}>
+                      <TextInput
+                      style={{
+                        backgroundColor: '#fff',
+                        height: 40,
+                        borderColor: 'gray',
+                        borderWidth: 1,
+                        borderRadius: 5,
+                        paddingLeft: 20,
+                      }}
+                      label="Last name"
+                      value={lastName}
+                      onChangeText={text => {setLastName(text)}}>
+                      </TextInput>
+                    </View>
+
+                  </View>
+                  <View style={styles.saveButtonContainer}>
+                    <Button
+                    title="Save"
+                    onPress={() => navigation.navigate('Home')}></Button>
+                  </View>
+                </View>
+              )
+            }
+            <View>
+              <SetCard></SetCard>
+            </View>
+            <View style={styles.logoutButtonContainer}>
+              <Button
+                color="#aa2b1d"
+                title="Logout"></Button>
+            </View>
+          </View>
         </ScrollView>
       <Appbar navigation={navigation}></Appbar>
     </>
@@ -120,5 +146,6 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   logoutButtonContainer: {
+    marginTop: 20
   }
 });
