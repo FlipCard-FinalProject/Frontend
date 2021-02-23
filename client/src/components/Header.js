@@ -3,8 +3,12 @@ import { Appbar } from 'react-native-paper';
 import { StyleSheet, View } from 'react-native';
 import {goBack} from '@react-navigation/stack'
 import { SearchBar } from 'react-native-elements';
-
+import { useDispatch } from "react-redux";
+import { findSetCardByTitle } from "../store/actions/setCardAction";
+import { useDebouncedEffect } from '../helpers/debounce'
 const Header = ({navigation}) => {
+  const dispatch = useDispatch();
+
   const [searchKey, setSearchKey] = React.useState('')
   const [searchBar, setSearchBar] = React.useState(false)
   const _goBack = () => {
@@ -12,10 +16,10 @@ const Header = ({navigation}) => {
   };
 
   const _handleSearch = () => setSearchBar(true);
-
+  useDebouncedEffect(() => dispatch(findSetCardByTitle(searchKey)), 500, [searchKey])
   const handleOnSubmit = () => {
     setSearchBar(false);
-    console.log(searchKey);
+    dispatch(findSetCardByTitle(searchKey))
   }
   return (
     <>
