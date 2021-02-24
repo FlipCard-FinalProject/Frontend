@@ -1,6 +1,10 @@
 import * as React from 'react';
 import { Appbar } from 'react-native-paper';
 import { StyleSheet } from 'react-native';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
 
 const MyComponent = ({navigation}) => (
  <Appbar style={styles.bottom}>
@@ -9,10 +13,6 @@ const MyComponent = ({navigation}) => (
      icon="home"
      onPress={() => navigation.navigate('Home')}
     />
-    <Appbar.Action
-    style={styles.icon}
-    icon="magnify"
-    onPress={() => console.log('Pressed search')} />
     <Appbar.Action
     style={styles.icon}
     icon="layers-plus"
@@ -30,11 +30,13 @@ const styles = StyleSheet.create({
   bottom: {
     backgroundColor: '#444444',
     display: 'flex',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     position: 'absolute',
     left: 0,
     right: 0,
     bottom: 0,
+    paddingLeft: wp("8%"),
+    paddingRight: wp("8%")
   },
   icon: {
     marginRight: 50

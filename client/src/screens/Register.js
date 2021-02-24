@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { TextInput } from "react-native-paper";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import {
   ActivityIndicator,
@@ -8,9 +7,11 @@ import {
   Text,
   View,
   Image,
+  TextInput
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { register, newVal, sendError } from "../store/actions/userAction";
+
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -60,69 +61,98 @@ const MyComponent = ({ navigation }) => {
   return (
     <>
       <View style={styles.container}>
-        <KeyboardAwareScrollView
-          enableOnAndroid={true}
-          extraScrollHeight={hp("9%")}
-        >
           <View>
+          <KeyboardAwareScrollView
+            enableOnAndroid={true}
+            extraScrollHeight={hp("9%")}>
             <View
               style={{
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "center",
                 marginBottom: hp("5%"),
+                marginLeft: wp("1%"),
+                marginRight: wp("1%")
               }}
             >
               <Image source={require("../../assets/Flipcard.png")}></Image>
             </View>
             <TextInput
               style={{
-                marginBottom: hp("2%"),
+                backgroundColor: "#fff",
+                height: hp("7%"),
+                marginBottom: hp("3%"),
+                borderRadius: 25,
+                elevation: 5,
+                paddingLeft: wp("5%"),
+                paddingRight: wp("5%"),
+                marginLeft: wp("1%"),
+                marginRight: wp("1%")
               }}
-              label="First name"
+              placeholder="First name"
               value={firstName}
               onChangeText={(text) => setFirstName(text)}
             />
             <TextInput
               style={{
-                marginBottom: hp("2%"),
+                backgroundColor: "#fff",
+                height: hp("7%"),
+                marginBottom: hp("3%"),
+                borderRadius: 25,
+                elevation: 5,
+                paddingLeft: wp("5%"),
+                paddingRight: wp("5%"),
+                marginLeft: wp("1%"),
+                marginRight: wp("1%")
               }}
-              label="Last name"
+              placeholder="Last name"
               value={lastName}
               onChangeText={(text) => setLastName(text)}
             />
             <TextInput
               style={{
-                marginBottom: hp("2%"),
+                backgroundColor: "#fff",
+                height: hp("7%"),
+                marginBottom: hp("3%"),
+                borderRadius: 25,
+                elevation: 5,
+                paddingLeft: wp("5%"),
+                paddingRight: wp("5%"),
+                marginLeft: wp("1%"),
+                marginRight: wp("1%")
               }}
-              label="Email"
+              placeholder="Email"
               value={email}
               onChangeText={(text) => setEmail(text)}
             />
             <TextInput
               style={{
-                marginBottom: hp("5%"),
+                backgroundColor: "#fff",
+                height: hp("7%"),
+                marginBottom: hp("3%"),
+                borderRadius: 25,
+                elevation: 5,
+                paddingLeft: wp("5%"),
+                paddingRight: wp("5%"),
+                marginLeft: wp("1%"),
+                marginRight: wp("1%")
               }}
-              label="Password"
+              placeholder="Password"
               value={password}
-              onChangeText={(text) => setPassword(text)}
-            />
-            <View
-              style={{
-                marginBottom: hp("2%"),
-              }}
-            >
-              <Button onPress={userRegister} title="Register"></Button>
-            </View>
-            <View>
-              <Button
-                color="#444444"
-                onPress={() => navigation.navigate("Login")}
-                title="Login"
-              ></Button>
-            </View>
+              onChangeText={(text) => setPassword(text)}/>
+              <View style={{flexDirection: 'row', justifyContent: 'space-evenly', marginTop: hp("5%")}}>
+                <View style={{ marginBottom: hp("5%"), width: wp("40%")}}>
+                  <Button
+                    color="#444444"
+                    onPress={() => navigation.navigate("Login")}
+                    title="Login"></Button>
+                </View>
+                <View style={{marginBottom: hp("5%"), width: wp("40%")}}>
+                  <Button onPress={userRegister} title="Register"></Button>
+                </View>
+              </View>
+          </KeyboardAwareScrollView>
           </View>
-        </KeyboardAwareScrollView>
       </View>
     </>
   );
@@ -132,14 +162,13 @@ export default MyComponent;
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: hp("7%"),
     flex: 1,
     flexDirection: "column",
-    marginLeft: hp("2%"),
-    marginRight: hp("2%"),
+    marginLeft: wp("5%"),
+    marginRight: wp("5%"),
+    justifyContent: 'center'
   },
   spin: {
-    flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },

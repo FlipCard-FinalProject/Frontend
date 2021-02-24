@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { TextInput } from "react-native-paper";
-import { Button, StyleSheet, Text, View, Image } from "react-native";
+// import { TextInput } from "react-native-paper";
+import { Button, StyleSheet, Text, View, Image, TextInput } from "react-native";
 import { login, sendError } from "../store/actions/userAction";
 import { useDispatch, useSelector } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -53,38 +53,55 @@ const MyComponent = ({ navigation }) => {
               display: "flex",
               flexDirection: "row",
               justifyContent: "center",
-              // marginBottom: 100,
+              marginBottom: hp('8%'),
             }}
           >
             <Image source={require("../../assets/Flipcard.png")}></Image>
           </View>
           <TextInput
             style={{
-              marginBottom: hp("2%"),
+              backgroundColor: "#fff",
+              height: hp("7%"),
+              marginBottom: hp("5%"),
+              borderRadius: 25,
+              elevation: 5,
+              paddingLeft: wp("5%"),
+              paddingRight: wp("5%"),
+              marginLeft: wp("1%"),
+              marginRight: wp("1%")
             }}
-            label="Email"
+            placeholder="Email"
             value={email}
             onChangeText={(text) => setEmail(text)}
           />
           <TextInput
             style={{
+              backgroundColor: "#fff",
+              height: hp("7%"),
               marginBottom: hp("5%"),
+              borderRadius: 25,
+              elevation: 5,
+              paddingLeft: wp("5%"),
+              paddingRight: wp("5%"),
+              marginLeft: wp("1%"),
+              marginRight: wp("1%")
             }}
-            label="Password"
+            secureTextEntry={true}
+            placeholder="Password"
             value={password}
             onChangeText={(text) => setPassword(text)}
           />
-          <View style={{ marginBottom: hp("2%") }}>
-            <Button onPress={userlogin} title="Login"></Button>
+          <View style={{flexDirection: 'row', justifyContent: 'space-evenly', marginTop: hp("5%")}}>
+            <View style={{ marginBottom: hp("5%"), width: wp("40%")}}>
+              <Button
+                color="#444444"
+                onPress={() => navigation.navigate("Register")}
+                title="Register"></Button>
+            </View>
+            <View style={{marginBottom: hp("5%"), width: wp("40%")}}>
+              <Button onPress={userlogin} title="Login"></Button>
+            </View>
           </View>
-          <Button
-            color="#444444"
-            style={{
-              marginBottom: hp("2%"),
-            }}
-            onPress={() => navigation.navigate("Register")}
-            title="Register"
-          ></Button>
         </View>
       </View>
     </>
@@ -95,10 +112,10 @@ export default MyComponent;
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: hp("15%"),
     flex: 1,
     flexDirection: "column",
-    marginLeft: hp("2%"),
-    marginRight: hp("2%"),
+    marginLeft: wp("5%"),
+    marginRight: wp("5%"),
+    justifyContent: 'center'
   },
 });

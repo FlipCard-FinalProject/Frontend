@@ -20,8 +20,6 @@ import { logout, getUser, updateUser } from "../store/actions/userAction";
 import { fetchingSetCards } from "../store/actions/setCardAction";
 import { getData } from "../helpers/AsyncStorage";
 
-// const windowHeight = Dimensions.get('window').height
-// const windowWidth = Dimensions.get('window').width
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -138,7 +136,9 @@ export default function Account({ navigation }) {
             ></Icon>
           </View>
         </View>
-
+        <View style={styles.logoutButtonContainer}>
+          <Button color="#aa2b1d" title="Logout" onPress={userlogout}></Button>
+        </View>
         {showForm && (
           <View style={{ display: "flex" }}>
             <View
@@ -212,10 +212,6 @@ export default function Account({ navigation }) {
             );
           })}
         </ScrollView>
-
-        <View style={styles.logoutButtonContainer}>
-          <Button color="#aa2b1d" title="Logout" onPress={userlogout}></Button>
-        </View>
       </View>
       <Appbar navigation={navigation}></Appbar>
     </>
@@ -243,6 +239,6 @@ const styles = StyleSheet.create({
     width: wp("95%"),
   },
   logoutButtonContainer: {
-    marginTop: hp("2%"),
+  
   },
 });

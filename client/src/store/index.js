@@ -7,7 +7,7 @@ import thunk from 'redux-thunk'
 const rootReducer = combineReducers({
   user: userReducer,
   setCard: setCardReducer,
-  card: cardReducer
+  card: cardReducer,
 })
 
 const store = createStore(rootReducer, applyMiddleware(thunk))

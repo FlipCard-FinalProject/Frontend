@@ -5,6 +5,10 @@ import FlipCard from 'react-native-flip-card'
 
 const windowHeight = Dimensions.get('window').height
 const windowWidth = Dimensions.get('window').width
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
 const LeftContent = props => <Avatar.Icon {...props} icon="folder" />
 const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse blandit semper mattis. Mauris eu fermentum sem. Integer pulvinar dignissim tincidunt. Nulla semper lacus ligula, vel volutpat odio tincidunt eu. Ut elementum lectus non malesuada elementum. Pellentesque mollis erat a velit lacinia, et suscipit mi fringilla.'
 const Flipcard = ({navigation, card, willRight, willLeft}) => (
@@ -100,15 +104,14 @@ export default Flipcard;
 
 const styles = StyleSheet.create({
   container: {
-    height: 390,
+    height: "100%",
     display: 'flex',
     justifyContent: 'center',
   },
   card: {
     display: 'flex',
-    minHeight: 150,
-    width: 250,
-    height: 350,
+    width: wp("80%"),
+    height: hp("65%"),
     justifyContent: 'center',
     flexDirection: 'row',
     alignSelf: 'center',
@@ -119,7 +122,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignContent: 'center',
     justifyContent: 'center',
-    paddingTop: 0
+    paddingTop: 0,
   },
   title: {
     display: 'flex',

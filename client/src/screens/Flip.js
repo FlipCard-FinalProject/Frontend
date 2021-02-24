@@ -5,15 +5,18 @@ import Flipcard from "../components/FlipCard";
 
 import { StyleSheet, View, Dimensions, Modal, Text, Image } from "react-native";
 import { ScrollView, TouchableHighlight, TouchableOpacity } from "react-native-gesture-handler";
-const windowHeight = Dimensions.get("window").height;
-const windowWidth = Dimensions.get("window").width;
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import { RectButton } from "react-native-gesture-handler";
-// import data from "../data/data.json";
 import Swipes from "../components/Swipes";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchingCardBySetCardId } from "../store/actions/cardAction";
 import { getAccess } from "../helpers/AsyncStorage";
+// const windowHeight = Dimensions.get("window").height;
+// const windowWidth = Dimensions.get("window").width;
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
 
 export default function Flip({ route, navigation }) {
   const dispatch = useDispatch();
@@ -62,9 +65,8 @@ export default function Flip({ route, navigation }) {
         // <View style={[styles.container, { backgroundColor: '#191F26' }]}>
         <>
         <Header navigation={navigation}></Header>
-        <View style={styles.container}>
-  
-            <Text>loading bos</Text> 
+        <View style={styles.loadingContainer}>
+          <Image source={require("../../assets/loading.gif")}/>
         </View>
       <Appbar navigation={navigation}></Appbar>
     </>
@@ -103,20 +105,19 @@ export default function Flip({ route, navigation }) {
 
         <View style={styles.swipes}>
           {cards.length > 1 &&
-            cards.map(
-              (u, i) =>
+            cards.map((u, i) =>
                 currentIndex === i && (
                   <Swipes
-                    key={i}
-                    currentIndex={currentIndex}
-                    cards={cards}
-                    card={cards[currentIndex]}
-                    handleSwipeRight={handleSwipeRight}
-                    handleSwipeLeft={handleSwipeLeft}
-                    navigation={navigation}
-                  ></Swipes>
+                  key={i}
+                  currentIndex={currentIndex}
+                  cards={cards}
+                  card={cards[currentIndex]}
+                  handleSwipeRight={handleSwipeRight}
+                  handleSwipeLeft={handleSwipeLeft}
+                  navigation={navigation}></Swipes>
                 )
-            )}
+            )
+          }
         </View>
       </View>
       <Appbar navigation={navigation}></Appbar>
@@ -127,50 +128,51 @@ export default function Flip({ route, navigation }) {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",
-    display: "flex",
+    flex: 1,
     flexDirection: "column",
-    minHeight: windowHeight,
+    height: hp("100%"),
+    justifyContent: 'center',
+    marginBottom: hp("9%")
+  },
+  loadingContainer: {
+    backgroundColor: "#fff",
+    flex: 1,
+    flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
   },
   swipes: {
     backgroundColor: "#fff",
-    width: windowWidth,
-    paddingBottom: 100,
+    height: hp("90%"),
+    width: wp("100%"),
+    justifyContent: 'center',
+    alignContent: 'center',
   },
   centeredView: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 22,
   },
   modalView: {
-    margin: 20,
+    margin: wp("5%"),
     backgroundColor: 'white',
-    borderRadius: 20,
+    borderRadius: 40,
     padding: 35,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
     elevation: 5,
   },
   openButton: {
     backgroundColor: '#F194FF',
     height: 40,
-    borderRadius: 5,
+    borderRadius: 30,
     padding: 10,
-    elevation: 2,
+    elevation: 5,
   },
   textStyle: {
     color: 'white',
     fontWeight: 'bold',
     textAlign: 'center',
-    width: 100,
+    width: wp("30%"),
   },
   modalTextTitle: {
     fontWeight: 'bold',

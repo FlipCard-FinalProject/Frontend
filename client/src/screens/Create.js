@@ -15,10 +15,9 @@ import { clearCards } from "../store/actions/cardAction";
 import { Audio } from 'expo-av';
 import Icon from 'react-native-vector-icons/Ionicons'
 import { Card, Title } from 'react-native-paper'
-import SoundPlayer from 'react-native-sound-player'
-import {Player} from '@react-native-community/audio-toolkit';
 const windowHeight = Dimensions.get("window").height;
 const windowWidth = Dimensions.get("window").width;
+import { useRoute } from '@react-navigation/native'
 
 export default function Create({ navigation }) {
   const [setCardId, setSetCardId] = React.useState('');
@@ -40,6 +39,7 @@ export default function Create({ navigation }) {
   const [inputType, setInputType] = React.useState('text')
   const [formType, setFormType] = React.useState('hint')
   const dispatch = useDispatch();
+  const route = useRoute();
 
   const { newVal } = useSelector((state) => state.setCard)
   const { cards, loading } = useSelector((state) => state.card)
