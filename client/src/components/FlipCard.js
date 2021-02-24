@@ -142,8 +142,8 @@ export default function Flipcard ({navigation, card, willRight, willLeft}) {
 
               {
                 card.type === 'image' && (
-                  <View>
-                    <Card.Cover style={{height: hp("55")}} source={{ uri: `${card.hint}` }} />
+                  <View style={{}}>
+                    <Card.Cover resizeMode="contain" source={{ uri: `${card.hint}` }} />
                   </View>
                 )
               }

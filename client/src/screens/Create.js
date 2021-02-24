@@ -101,6 +101,8 @@ export default function Create({ navigation }) {
       answer: "",
       type: "",
     });
+    setImage("")
+    setSound("")
   }
 
   function createSetCard() {
@@ -209,6 +211,7 @@ export default function Create({ navigation }) {
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       quality: 1,
+      aspect: [3, 4]
     });
     // console.log(result);
     if (!result.cancelled) {
@@ -221,6 +224,7 @@ export default function Create({ navigation }) {
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       quality: 1,
+      aspect: [3, 4]
     });
     // console.log(result);
     if (!result.cancelled) {
