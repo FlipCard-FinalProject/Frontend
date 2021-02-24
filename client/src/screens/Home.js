@@ -85,25 +85,19 @@ export default function Home({ navigation }) {
             <Picker.Item label="Funny" value="funny" />
             <Picker.Item label="Others" value="others" />
           </Picker>
-          {category === ""
-            ? setCards.map((set) => {
-                return (
-                  <SetCard
-                    navigation={navigation}
-                    props={set}
-                    key={set.id}
-                  ></SetCard>
-                );
-              })
-            : setCardsFiltered.map((set) => {
-                return (
-                  <SetCard
-                    navigation={navigation}
-                    props={set}
-                    key={set.id}
-                  ></SetCard>
-                );
-              })}
+
+          {category === '' ? setCards.map((set) => {
+            // console.log(set);
+            return (
+              <SetCard navigation={navigation} props={set} key={set.id}></SetCard>
+            );
+          }) : setCardsFiltered.map((set) => {
+            // console.log(set);
+            return (
+              <SetCard navigation={navigation} props={set} key={set.id}></SetCard>
+            );
+          })}
+
         </View>
       </ScrollView>
       <Appbar navigation={navigation}></Appbar>

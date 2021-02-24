@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Appbar from "../components/Appbar";
 import Header from "../components/Header";
-import SetCard from "../components/SetCard";
+import SetCardEditable from "../components/SetCardAcount";
 import {
   Button,
   StyleSheet,
@@ -36,8 +36,16 @@ export default function Account({ navigation }) {
   const { profile } = useSelector((state) => state.user);
   const { id, email, first_name, last_name } = profile;
   const { setCards, loading, errors } = useSelector((state) => state.setCard);
+  const [listSetCards, setListSetCards] = useState(setCards.filter(set => set.user_id === id));
+  // let filtered = setCardsOrigin.filter(set => set.user_id === id)
+
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    let filtered = setCards.filter(set => set.user_id === id)
+        setListSetCards(filtered)
+  },[setCards])
+  
   useEffect(() => {
     getUserId();
     setFirstName(first_name);
@@ -54,6 +62,8 @@ export default function Account({ navigation }) {
       const access_token = await AsyncStorage.getItem("access_token");
       if (access_token !== null) {
         dispatch(fetchingSetCards(id, access_token));
+        let filtered = setCards.filter(set => set.user_id === id)
+        setListSetCards(filtered)
       }
     } catch (e) {
       // error reading value
@@ -213,14 +223,15 @@ export default function Account({ navigation }) {
             marginBottom: hp("50%"),
           }}
         >
-          {setCards.map((set) => {
+
+          {listSetCards.map((set) => {
             // console.log(set);
             return (
-              <SetCard
+              <SetCardEditable
                 navigation={navigation}
                 props={set}
                 key={set.id}
-              ></SetCard>
+              ></SetCardEditable>
             );
           })}
         </ScrollView>

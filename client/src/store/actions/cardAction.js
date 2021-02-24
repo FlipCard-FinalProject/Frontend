@@ -20,6 +20,7 @@ export const loading = () => {
 };
 
 export const fetchingSuccess = (payload) => {
+  console.log('in action otw fetch');
   return { type: "FETCHING_CARDS", payload };
 };
 
@@ -32,6 +33,8 @@ export const newVal = (payload) => {
 };
 
 export const fetchingCardBySetCardId = (set_card_id) => {
+  console.log(set_card_id);
+  console.log('in action hit fetch');
   return (dispatch) => {
     console.log(set_card_id);
     dispatch(loading(true));
@@ -45,7 +48,8 @@ export const fetchingCardBySetCardId = (set_card_id) => {
       })
       .then(({ data }) => {
         dispatch(loading(false));
-        console.log(data);
+        console.log('data berhasil didapatkan ');
+        // console.log(data);
         dispatch(fetchingSuccess(data));
       })
       .catch((err) => {
@@ -93,11 +97,13 @@ export const insertCard = (set_card_id, payload) => {
           dispatch(fetchingCardBySetCardId(set_card_id, access))
         })
         .catch((err) => {
-
+          dispatch(loading(false));
           console.log(err.response);
           // dispatch(sendError(err.response));
         });
     }
+
+
     if (payload.type === "image") {
       let uri = payload.hint;
       let stringName = uri.split("/");
@@ -123,6 +129,7 @@ export const insertCard = (set_card_id, payload) => {
               dispatch(fetchingCardBySetCardId(set_card_id, access))
             })
             .catch((err) => {
+          dispatch(loading(false));
               console.log(err.response);
               // dispatch(sendError(err.response));
             });
@@ -157,6 +164,7 @@ export const insertCard = (set_card_id, payload) => {
               dispatch(fetchingCardBySetCardId(set_card_id, access))
             })
             .catch((err) => {
+          dispatch(loading(false));
               console.log(err.response);
               // dispatch(sendError(err.response));
             });
@@ -169,16 +177,20 @@ export const insertCard = (set_card_id, payload) => {
   };
 };
 
-export const updateCard = ({ id, payload }) => {
+export const updateCard = ( id, payload, setCardId ) => {
   return (dispatch) => {
-    axios({
-      method: "PUT",
-      url: `https://flip-cards-server.herokuapp.com/${id}`,
-      data: payload,
+    getAccess()
+    .then(access_token => {
+      return axios({
+        method: "PUT",
+        url: `https://flip-cards-server.herokuapp.com/cards/${id}`,
+        data: payload,
+        headers: { access_token }
+      })
     })
       .then(({ data }) => {
         console.log("success update card");
-        dispatch(fetchingCardBySetCardId());
+        dispatch(fetchingCardBySetCardId(setCardId));
         dispatch(newVal(data));
       })
       .catch((err) => {
@@ -188,15 +200,19 @@ export const updateCard = ({ id, payload }) => {
   };
 };
 
-export const deleteCard = (id) => {
+export const deleteCard = (id, setCardId) => {
   return (dispatch) => {
-    axios({
-      method: "DELETE",
-      url: `https://flip-cards-server.herokuapp.com/${id}`,
-    })
+    getAccess()
+      .then(access_token => {
+        return axios({
+          method: "DELETE",
+          url: `https://flip-cards-server.herokuapp.com/cards/${id}`,
+          headers: { access_token }
+        })
+      })
       .then(({ data }) => {
-        console.log(data);
-        dispatch(fetchingCardBySetCardId());
+        // console.log(data);
+        dispatch(fetchingCardBySetCardId(setCardId));
       })
       .catch((err) => {
         console.log(err.response);
