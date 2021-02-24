@@ -10,15 +10,17 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from '@react-native-picker/picker'
 import { Card } from 'react-native-paper'
 import { useRoute } from '@react-navigation/native'
-
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import Loading from "../helpers/Loading";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default function Home({ navigation }) {
-  const {setCards} = useSelector((state) => state.setCard);
-  const {isUpdate} = useSelector((state) => state.setCard);
+  const { setCards, isUpdate, loading, errors } = useSelector(
+    (state) => state.setCard
+  );
   const [setCardsFiltered, setSetCardsFiltered] = useState(setCards);
   const dispatch = useDispatch();
   const [access, setAccess] = useState();
@@ -32,9 +34,9 @@ export default function Home({ navigation }) {
       let filtered = setCards.filter(setCard => setCard.category === category)
       setSetCardsFiltered(filtered)      
     } else {
-      setSetCardsFiltered(setCards)
+      setSetCardsFiltered(setCards);
     }
-  }, [category])
+  }, [category]);
 
   useEffect(() => {
     const getData = async () => {
@@ -54,6 +56,10 @@ export default function Home({ navigation }) {
       dispatch(fetchingSetCards());
     }
   }, [access]);
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <>
@@ -106,10 +112,11 @@ export default function Home({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: '#fff',
     flex: 1,
     flexDirection: "column",
-    marginLeft: wp("5%"),
-    marginRight: wp("5%"),
+    paddingLeft: wp("5%"),
+    paddingRight: wp("5%"),
     justifyContent: 'center'
   },
 });

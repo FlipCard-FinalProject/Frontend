@@ -10,7 +10,7 @@ const CardList = ({ navigation, card, id }) => {
   }
 
   return (
-    <Card style={{ display: 'flex', width: '95%', flexDirection: 'row', justifyContent: 'center', alignSelf: 'center', paddingTop: 10, paddingBottom: 10, paddingLeft: 20, paddingRight: 10, marginBottom: 10, elevation: 5 }}>
+    <Card style={{ display: 'flex', width: '95%', flexDirection: 'row', justifyContent: 'center', alignSelf: 'center', paddingTop: 10, paddingBottom: 10, paddingLeft: 20, paddingRight: 10, marginBottom: 10, marginTop: 10, elevation: 5 }}>
       <View style={{ flexDirection: 'row' }}>
         <View style={{ width: '80%', flexDirection: 'column' }}>
           {card.type === 'text' && <Text style={{ marginBottom: 10 }}>Hint: {card.hint}</Text>}

@@ -1,7 +1,11 @@
 import * as React from 'react';
+import { useState, useEffect } from "react";
 import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
 import { Dimensions, StyleSheet, Text, View } from 'react-native';
 import FlipCard from 'react-native-flip-card'
+import { Audio } from "expo-av";
+import Icon from "react-native-vector-icons/Ionicons";
+import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 
 const windowHeight = Dimensions.get('window').height
 const windowWidth = Dimensions.get('window').width
@@ -11,96 +15,186 @@ import {
 } from "react-native-responsive-screen";
 const LeftContent = props => <Avatar.Icon {...props} icon="folder" />
 const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse blandit semper mattis. Mauris eu fermentum sem. Integer pulvinar dignissim tincidunt. Nulla semper lacus ligula, vel volutpat odio tincidunt eu. Ut elementum lectus non malesuada elementum. Pellentesque mollis erat a velit lacinia, et suscipit mi fringilla.'
-const Flipcard = ({navigation, card, willRight, willLeft}) => (
-  <View style={styles.container}>
-    <FlipCard 
-      style={styles.card}
-      friction={6}
-      perspective={1000}
-      flipHorizontal={true}
-      flipVertical={false}
-      flip={false}
-      clickable={true}
-      onFlipEnd={(isFlipEnd)=>{console.log('isFlipEnd', isFlipEnd)}}
-    >
+export default function Flipcard ({navigation, card, willRight, willLeft}) {
+  const [playbackInstance, setPlaybackInstance] = React.useState(null);
+  const [currentlyPlaying, setCurrentlyPlaying] = React.useState(false);
+  const [isFlip, setIsFlip] = React.useState(true);
 
-      {/* FACE SIDE */}
+  const handlePlaying = () => {
+    if(currentlyPlaying) return false
+    else return true
+  }
 
-      <View style={styles.face}>
-        <Card style={styles.card}>
-          <Card.Content style={styles.cardContent}>
-            {
-              willRight && (
-                <View style={styles.rightText}>
-                  <Text
-                  style={{
-                    fontSize: 30,
-                    color: 'green'
-                  }}>Done</Text>
-                </View>
-              )
-            }
-            {
-              willLeft && (
-                <View style={styles.leftText}>
-                  <Text
-                  style={{
-                    fontSize: 30,
-                    color: 'red'
-                  }}>Repeat</Text>
-                </View>
-              )
-            }
-            <Paragraph
-            style={styles.title}>{card.hint}</Paragraph>
-          </Card.Content>
-          <Card.Cover source={{ uri: `${card.imageURL}` }} />
-        </Card>
-      </View>
+  useEffect(() => {
+    (async () => {
+      if (currentlyPlaying) {
+        try {
+          const playbackInstances = new Audio.Sound();
+          const source = {
+            uri: card.hint,
+          };
 
-      {/* Back Side */}
+          const status = {
+            shouldPlay: currentlyPlaying,
+            volume: 1.0,
+          };
+          await playbackInstances.loadAsync(source, status, false);
+          setPlaybackInstance(playbackInstances);
+        } catch (e) {
+          console.log(e);
+        }
+      } else {
+        setIsFlip(true)
+        currentlyPlaying
+          ? await playbackInstance.playAsync()
+          : await playbackInstance.pauseAsync();
+        // await playbackInstance.pauseAsync()
+      }
+    })();
+  }, [currentlyPlaying]);
 
-      <View style={styles.back}>
-        <Card
-        style={styles.card}>
-          <Card.Content style={styles.cardContent}>
-            {
-              willRight && (
-                <View style={styles.rightText}>
-                  <Text
-                  style={{
-                    fontSize: 30,
-                    color: 'green'
-                  }}>Done</Text>
-                </View>
-              )
-            }
-            {
-              willLeft && (
-                <View style={styles.leftText}>
-                  <Text
-                  style={{
-                    fontSize: 30,
-                    color: 'red'
-                  }}>Repeat</Text>
-                </View>
-              )
-            }
-            <Paragraph
-            style={styles.title}>{card.answer}</Paragraph>
-          </Card.Content>
-          {/* <Card.Cover source={{ uri: 'https://picsum.photos/700' }} /> */}
-          <Card.Actions>
-            {/* <Button>Cancel</Button>
-            <Button>Ok</Button> */}
-          </Card.Actions>
-        </Card>
-      </View>
-    </FlipCard>
-  </View>
-);
+  return (
+    <View style={styles.container}>
+      <FlipCard 
+        style={styles.card}
+        friction={6}
+        perspective={1000}
+        flipHorizontal={true}
+        flipVertical={false}
+        flip={false}
+        clickable={isFlip}
+        onFlipEnd={(isFlipEnd)=>{console.log('isFlipEnd', isFlipEnd)}}
+      >
 
-export default Flipcard;
+        {/* FACE SIDE */}
+
+        <View style={styles.face}>
+          <Card style={styles.card}>
+            <Card.Content style={styles.cardContent}>
+
+              {
+                willRight && (
+                  <View style={styles.rightText}>
+                    <Text
+                    style={{
+                      fontSize: 30,
+                      color: 'green'
+                    }}>Done</Text>
+                  </View>
+                )
+              }
+              {
+                willLeft && (
+                  <View style={styles.leftText}>
+                    <Text
+                    style={{
+                      fontSize: 30,
+                      color: 'red'
+                    }}>Repeat</Text>
+                  </View>
+                )
+              }
+              {/* AUDIO */}
+              {card.type === 'sound' && (
+                          <View>
+                            <TouchableOpacity
+                              style={{
+                                display: "flex",
+                                flexDirection: "row",
+                                height: 100,
+                                justifyContent: "center",
+                                alignItems: "center",
+                              }}
+                              title="camera"
+                              onPress={() => (
+                                setIsFlip(false),
+                                currentlyPlaying === false
+                                  ? setCurrentlyPlaying(true)
+                                  : (
+                                    setCurrentlyPlaying(false)
+                                  )
+                              )
+                              }
+                              onTouchEnd={() => {
+                                setIsFlip(true)
+                              }}
+                            >
+                              <Icon
+                                name={
+                                  currentlyPlaying === false
+                                    ? "play-outline"
+                                    : "stop"
+                                }
+                                size={40}
+                              />
+                            </TouchableOpacity>
+                          </View>
+                        )}
+              {/* AUDIO */}
+              {
+                card.type === 'text' && (
+                  <View>
+                    <Paragraph
+                    style={styles.title}>{card.hint}</Paragraph>
+                  </View>
+                )
+              }
+
+              {
+                card.type === 'image' && (
+                  <View>
+                    <Card.Cover style={{height: hp("55")}} source={{ uri: `${card.hint}` }} />
+                  </View>
+                )
+              }
+
+            </Card.Content>
+          </Card>
+        </View>
+
+        {/* Back Side */}
+
+        <View style={styles.back}>
+          <Card
+          style={styles.card}>
+            <Card.Content style={styles.cardContent}>
+              {
+                willRight && (
+                  <View style={styles.rightText}>
+                    <Text
+                    style={{
+                      fontSize: 30,
+                      color: 'green'
+                    }}>Done</Text>
+                  </View>
+                )
+              }
+              {
+                willLeft && (
+                  <View style={styles.leftText}>
+                    <Text
+                    style={{
+                      fontSize: 30,
+                      color: 'red'
+                    }}>Repeat</Text>
+                  </View>
+                )
+              }
+              <Paragraph
+              style={styles.title}>{card.answer}</Paragraph>
+            </Card.Content>
+            {/* <Card.Cover source={{ uri: 'https://picsum.photos/700' }} /> */}
+            <Card.Actions>
+              {/* <Button>Cancel</Button>
+              <Button>Ok</Button> */}
+            </Card.Actions>
+          </Card>
+        </View>
+      </FlipCard>
+    </View>
+
+  )
+}
 
 const styles = StyleSheet.create({
   container: {

@@ -11,11 +11,11 @@ import {
 
 const LeftContent = (props) => <Avatar.Icon {...props} icon="folder" />;
 
-export default function MyComponent ({ navigation, props }) {
+export default function SetCardEditable ({ navigation, props }) {
   const dispatch = useDispatch();
   const handleClear = () => {
     dispatch(clearCards())
-    navigation.navigate("Flip", { id: props.id })
+    navigation.navigate("Edit", { id: props.id, setCardDetail: {title: props.title, category: props.category} })
   }
   return (
     <Card
@@ -24,22 +24,20 @@ export default function MyComponent ({ navigation, props }) {
     >
       <Card.Content style={styles.cardContentContainer}>
         <View style={styles.topContainer}>
-          
-          <Title
-          style={{
+
+        <Title style={{
             color: '#fff',
             fontSize: 20,
             fontWeight: 'bold',
             marginBottom: 0
             }}>{props.title}</Title>
 
-          <Title
-          style={{
+        <Title style={{
             color: '#fff',
             fontSize: 12,
             fontStyle: 'italic',
             marginTop: 0
-            }}>Category: {props.category}</Title>
+            }}>{props.category}</Title>
 
         </View>
         <View style={{ flexDirection: "row", paddingLeft: wp("4"), paddingTop: hp("2%")}}>

@@ -5,20 +5,20 @@ import { RectButton } from 'react-native-gesture-handler'
 import Flipcard from './FlipCard'
 import { SafeAreaView } from 'react-navigation'
 
-export default function Swipes({cards, currentIndex, handleSwipeRight, handleSwipeLeft}) {
+export default function Swipes({cards, currentIndex, handleSwipeRight, handleSwipeLeft, no}) {
   const [willRight, setWillRight] = useState(false)
   const [willLeft, setWillLeft] = useState(false)
   const renderLeftActions = () => {
     return (
       <RectButton style={styles.container}>
-        <Flipcard card={cards[currentIndex + 1]}></Flipcard>
+        <Flipcard card={cards[currentIndex]}></Flipcard>
       </RectButton>
     )
   }
   const renderRightActions = () => {
     return (
       <RectButton style={styles.container}>
-        <Flipcard card={cards[currentIndex + 1]}></Flipcard>
+        <Flipcard card={cards[currentIndex]}></Flipcard>
       </RectButton>
     )
   }

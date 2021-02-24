@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Appbar from "../components/Appbar";
 import Header from "../components/Header";
-import SetCard from "../components/SetCard";
+import SetCardEditable from "../components/SetCardAcount";
 import {
   Button,
   StyleSheet,
@@ -9,8 +9,9 @@ import {
   View,
   TextInput,
   Dimensions,
+  Image,
 } from "react-native";
-import { Input } from "react-native-elements";
+import { Card, Title } from 'react-native-paper'
 // import { TextInput } from "react-native-paper";
 import Icon from "react-native-vector-icons/Ionicons";
 import { ScrollView } from "react-native-gesture-handler";
@@ -18,6 +19,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch, useSelector } from "react-redux";
 import { logout, getUser, updateUser } from "../store/actions/userAction";
 import { fetchingSetCards } from "../store/actions/setCardAction";
+import Loading from "../helpers/Loading";
 import { getData } from "../helpers/AsyncStorage";
 
 import {
@@ -32,9 +34,17 @@ export default function Account({ navigation }) {
   const [showForm, setShowForm] = useState(false);
   const { profile } = useSelector((state) => state.user);
   const { id, email, first_name, last_name } = profile;
-  const { setCards } = useSelector((state) => state.setCard);
+  const { setCards, loading, errors } = useSelector((state) => state.setCard);
+  const [listSetCards, setListSetCards] = useState(setCards.filter(set => set.user_id === id));
+  // let filtered = setCardsOrigin.filter(set => set.user_id === id)
+
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    let filtered = setCards.filter(set => set.user_id === id)
+        setListSetCards(filtered)
+  },[setCards])
+  
   useEffect(() => {
     getUserId();
     setFirstName(first_name);
@@ -51,6 +61,8 @@ export default function Account({ navigation }) {
       const access_token = await AsyncStorage.getItem("access_token");
       if (access_token !== null) {
         dispatch(fetchingSetCards(id, access_token));
+        let filtered = setCards.filter(set => set.user_id === id)
+        setListSetCards(filtered)
       }
     } catch (e) {
       // error reading value
@@ -58,7 +70,7 @@ export default function Account({ navigation }) {
     }
   };
 
-  console.log(profile, "<<<");
+  // console.log(profile, "<<<");
   // const userlogout = () => {
   //     AsyncStorage.removeItem('access_token')
   //     .then(() => {
@@ -75,7 +87,7 @@ export default function Account({ navigation }) {
     try {
       await AsyncStorage.removeItem("access_token");
       const data = await AsyncStorage.getItem("access_token");
-      console.log(data, "dari logout");
+      // console.log(data, "dari logout");
       dispatch(logout());
 
       navigation.navigate("Login");
@@ -98,121 +110,128 @@ export default function Account({ navigation }) {
     navigation.navigate("Home");
   };
 
+  if (loading) {
+    return <Loading />;
+  }
+
+  // if (errors.length > 0) {
+  //   alert(errors);
+  //   dispatch(sendError([]));
+  // }
+
   return (
     <>
       <Header navigation={navigation}></Header>
-      <View style={{ alignSelf: "center", width: wp("95%") }}>
+      <ScrollView>
+      <View style={styles.container}>
         <View
           style={{
             display: "flex",
             marginBottom: hp("2%"),
             marginTop: hp("2%"),
+            justifyContent: 'center',
+            alignItems: 'center'
           }}
         >
+          <Icon name="person-circle-sharp" color="grey" size={hp("15")}></Icon>
           <View>
             <Text
               style={{
-                fontSize: hp("2%"),
-                fontWeight: "bold",
+                fontSize: hp("3%"),
                 textAlign: "center",
-                marginBottom: hp("2%"),
               }}
             >
               {email}
             </Text>
           </View>
-          <View style={{ flexDirection: "row", justifyContent: "center" }}>
-            <Text
-              style={{
-                fontSize: hp("2%"),
-                textAlign: "center",
-                margin: hp("0.5%"),
-              }}
-            >{`${first_name} ${last_name}`}</Text>
-            <Icon
-              name="create-outline"
-              size={23}
-              onPress={handleShowForm}
-            ></Icon>
-          </View>
         </View>
+        { !showForm ? (
+            <View style={{ flexDirection: "row", justifyContent: "center" }}>
+              <Text
+                style={{
+                  fontSize: hp("2%"),
+                  textAlign: "center",
+                  margin: hp("0.5%"),
+                }}
+              >{`${first_name} ${last_name}`}</Text>
+              <Icon
+                name="create-outline"
+                size={23}
+                onPress={handleShowForm}
+              ></Icon>
+            </View>
+          ):(
+            <View style={{ display: "flex", justifyContent: 'center' }}>
+              <Card style={{elevation: 5, paddingBottom: hp("3"), paddingTop: hp("3")}}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    marginBottom: hp("2%"),
+                    marginTop: hp("2%"),
+                    justifyContent: "space-evenly",
+                  }}
+                >
+                  <View style={{ width: "40%" }}>
+                    <TextInput
+                      style={styles.textInput}
+                      value={firstName}
+                      onChangeText={(text) => {
+                        setFirstName(text);
+                      }}
+                    ></TextInput>
+                  </View>
+
+                  <View style={{ width: wp("40%") }}>
+                    <TextInput
+                      style={styles.textInput}
+                      label="Last name"
+                      value={lastName}
+                      onChangeText={(text) => {
+                        setLastName(text);
+                      }}
+                    ></TextInput>
+                  </View>
+                </View>
+                <View style={styles.saveButtonContainer}>
+                  <Button title="Save" onPress={updateHandle}></Button>
+                </View>
+              </Card>
+            </View>
+          )}
         <View style={styles.logoutButtonContainer}>
-          <Button color="#aa2b1d" title="Logout" onPress={userlogout}></Button>
+          <Button color="#ef4f4f" title="Logout" onPress={userlogout}></Button>
         </View>
-        {showForm && (
-          <View style={{ display: "flex" }}>
-            <View
-              style={{
-                flexDirection: "row",
-                marginBottom: hp("2%"),
-                marginTop: hp("2%"),
-                justifyContent: "space-evenly",
-              }}
-            >
-              <View style={{ width: "45%" }}>
-                <TextInput
-                  style={{
-                    backgroundColor: "#fff",
-                    height: hp("4%"),
-                    borderColor: "gray",
-                    borderWidth: 1,
-                    borderRadius: 5,
-                    paddingLeft: hp("2%"),
-                  }}
-                  value={firstName}
-                  onChangeText={(text) => {
-                    setFirstName(text);
-                  }}
-                ></TextInput>
-              </View>
 
-              <View style={{ width: wp("45%") }}>
-                <TextInput
-                  style={{
-                    backgroundColor: "#fff",
-                    height: hp("4%"),
-                    borderColor: "gray",
-                    borderWidth: 1,
-                    borderRadius: 5,
-                    paddingLeft: 20,
-                  }}
-                  label="Last name"
-                  value={lastName}
-                  onChangeText={(text) => {
-                    setLastName(text);
-                  }}
-                ></TextInput>
-              </View>
-            </View>
-            <View style={styles.saveButtonContainer}>
-              <Button title="Save" onPress={updateHandle}></Button>
-            </View>
-          </View>
-        )}
         {/* ============================= */}
-        {/* <View>
-              <SetCard></SetCard>
-            </View> */}
-
-        <ScrollView
+        
+        {/* <ScrollView
           style={{
             display: "flex",
             flexDirection: "column",
             marginBottom: hp("50%"),
           }}
-        >
-          {setCards.map((set) => {
-            console.log(set);
-            return (
-              <SetCard
-                navigation={navigation}
-                props={set}
-                key={set.id}
-              ></SetCard>
-            );
-          })}
-        </ScrollView>
+        > */}
+        {
+          listSetCards.length === 0 ? (
+              <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                <Image style={{width: wp("30"), height: hp("30")}} source={require("../../assets/empty.png")}></Image>
+              </View>
+          ) : (
+              listSetCards.map((set) => {
+                // console.log(set);
+                return (
+                  <SetCardEditable
+                    navigation={navigation}
+                    props={set}
+                    key={set.id}
+                  ></SetCardEditable>
+                );
+              })
+            )
+        }
+        {/* </ScrollView> */}
       </View>
+      </ScrollView>
       <Appbar navigation={navigation}></Appbar>
     </>
   );
@@ -220,13 +239,13 @@ export default function Account({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: hp("5%"),
-    minHeight: hp("43%"),
-    display: "flex",
+    backgroundColor: '#fff',
+    flex: 1,
     flexDirection: "column",
-    marginLeft: hp("2%"),
-    marginRight: hp("2%"),
-    justifyContent: "space-between",
+    paddingLeft: wp("5%"),
+    paddingRight: wp("5%"),
+    justifyContent: 'center',
+    paddingBottom: hp("10%")
   },
   textContainer: {
     display: "flex",
@@ -235,10 +254,23 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   saveButtonContainer: {
+    marginTop: hp("2%"),
     marginBottom: hp("2%"),
-    width: wp("95%"),
+    width: wp("50"),
+    alignSelf: 'center'
   },
   logoutButtonContainer: {
-  
+    marginTop: hp("2%"),
+    marginBottom: hp("5%"),
+    width: wp("50"),
+    alignSelf: 'center'
+  },
+  textInput: {
+    height: hp("7"),
+    borderColor: 'grey',
+    borderRadius: 15,
+    paddingLeft: wp("5"),
+    backgroundColor: '#fff',
+    elevation: 5,
   },
 });

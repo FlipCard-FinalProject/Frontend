@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 // import { TextInput } from "react-native-paper";
-import { Button, StyleSheet, Text, View, Image, TextInput } from "react-native";
+import { Button, StyleSheet, Text, View, Image, TextInput, ImageBackground, Dimensions } from "react-native";
 import { login, sendError } from "../store/actions/userAction";
 import { useDispatch, useSelector } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -9,18 +9,25 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import Loading from "../helpers/Loading";
+import Modal from "../helpers/ModalError";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { colors } from "react-native-elements";
+const { width, height } = Dimensions.get('window')
 
 const MyComponent = ({ navigation }) => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [isModalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
-  const { errors, access_token } = useSelector((state) => state.user);
+  const { loading, errors, access_token } = useSelector((state) => state.user);
 
   useEffect(() => {
     if (errors.length > 0) {
-      alert(errors);
-      dispatch(sendError([]));
+      setModalVisible(true);
+      // dispatch(sendError([]));
     }
+
     if (access_token) getData();
     if (access_token) navigation.navigate("Home");
   }, [errors, access_token]);
@@ -44,9 +51,15 @@ const MyComponent = ({ navigation }) => {
     dispatch(login(payload));
   };
 
+  if (loading) {
+    return <Loading />;
+  }
+
   return (
     <>
+      <ImageBackground source={{ uri: "https://media.discordapp.net/attachments/811938031786524722/814157796236591126/login-background.png?width=312&height=676"}} style={styles.image}>
       <View style={styles.container}>
+        <Modal isError={isModalVisible} errors={errors} />
         <View>
           <View
             style={{
@@ -91,19 +104,27 @@ const MyComponent = ({ navigation }) => {
             value={password}
             onChangeText={(text) => setPassword(text)}
           />
-          <View style={{flexDirection: 'row', justifyContent: 'space-evenly', marginTop: hp("5%")}}>
+          <View style={{flexDirection: 'row', justifyContent: 'center', marginTop: hp("5%"), display: 'flex' }}>
             <View style={{ marginBottom: hp("5%"), width: wp("40%")}}>
-              <Button
-                color="#444444"
+              <TouchableOpacity
+              style={{ backgroundColor: '#fff', paddingTop: hp("1%"), height: hp("6%"), elevation: 5, borderRadius: 10, width: wp("35"), alignSelf: 'center'}}
                 onPress={() => navigation.navigate("Register")}
-                title="Register"></Button>
+                title="Register">
+                  <Text style={{ textAlign: 'center', color: '#f85f73', fontWeight: 'bold'}}>Register</Text>
+                </TouchableOpacity>
             </View>
             <View style={{marginBottom: hp("5%"), width: wp("40%")}}>
-              <Button onPress={userlogin} title="Login"></Button>
+              <TouchableOpacity
+                style={{ backgroundColor: '#f85f73', height: hp("6%"), elevation: 5, borderRadius: 10, width: wp("35"), alignSelf: 'center' }}
+                onPress={userlogin}
+                title="Login">
+              <Text style={{ textAlign: 'center', marginTop: hp("1%"), color: '#fff', fontWeight: 'bold'}}>Login</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
       </View>
+      </ImageBackground>
     </>
   );
 };
@@ -114,8 +135,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "column",
-    marginLeft: wp("5%"),
-    marginRight: wp("5%"),
-    justifyContent: 'center'
+    paddingLeft: wp("5%"),
+    paddingRight: wp("5%"),
+    justifyContent: 'center',
+  },
+  image: {
+    width: width,
+    height: height,
+    alignItems: 'center'
   },
 });

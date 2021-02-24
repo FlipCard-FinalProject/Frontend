@@ -7,6 +7,10 @@ import { useDispatch } from "react-redux";
 import { findSetCardByTitle } from "../store/actions/setCardAction";
 import { useDebouncedEffect } from '../helpers/debounce'
 import { useRoute } from '@react-navigation/native'
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
 
 const Header = ({navigation}) => {
   const dispatch = useDispatch();
@@ -46,16 +50,16 @@ const Header = ({navigation}) => {
                 onPress={_goBack}/>
               )
             }
-            <Appbar.Content title={route.name}/>
+            <Appbar.Content color="#444444" title={route.name}/>
             <Appbar.Action icon="magnify" onPress={_handleSearch} />
           </Appbar.Header>
         ) : (
           <SearchBar
           onChangeText={text => {setSearchKey(text)}}
           onSubmitEditing={handleOnSubmit}
-          inputStyle={{backgroundColor: 'white', paddingLeft: 20, marginLeft: 20, marginRight: 20, height: 20}}
-          inputContainerStyle={{backgroundColor: '#444444'}}
-          containerStyle={{backgroundColor: '#444444', borderWidth: 0, paddingTop: 22}}
+          containerStyle={styles.searchContainer}
+          inputContainerStyle={styles.searchInputContainer}
+          inputStyle={styles.searchInput}
           placeholder="Type Here..."
           value={searchKey}/>
         ))
@@ -68,8 +72,28 @@ const Header = ({navigation}) => {
 
 const styles = StyleSheet.create({
   header: {
-    backgroundColor: '#444444',
+    backgroundColor: '#fff',
+    paddingRight: wp("5%"),
+    paddingLeft: wp("5%"),
   },
+  searchContainer: {
+    backgroundColor: '#fff',
+    paddingTop: 0,
+    paddingBottom: 0,
+    paddingTop: hp("5%"),
+    paddingBottom: hp("0"),
+    borderBottomWidth: 0
+  },
+  searchInputContainer: {
+    backgroundColor: '#fff'
+  },
+  searchInput: {
+    backgroundColor: 'white',
+    paddingLeft: wp("5%"),
+    marginLeft: 0,
+    marginRight: 0,
+    height: 20
+  }
 });
 
 export default Header;

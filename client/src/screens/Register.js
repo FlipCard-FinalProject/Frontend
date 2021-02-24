@@ -7,36 +7,38 @@ import {
   Text,
   View,
   Image,
-  TextInput
+  TextInput,
+  ImageBackground,
+  Dimensions
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { register, newVal, sendError } from "../store/actions/userAction";
-
+const { width, height } = Dimensions.get('window')
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import Loading from "../helpers/Loading";
+import { TouchableHighlight, TouchableOpacity } from "react-native-gesture-handler";
 
 const MyComponent = ({ navigation }) => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [firstName, setFirstName] = React.useState("");
   const [lastName, setLastName] = React.useState("");
-  const loading = useSelector((state) => state.user.loading);
-  const error = useSelector((state) => state.user.errors);
+  const { loading, errors } = useSelector((state) => state.user);
   const data = useSelector((state) => state.user.newVal);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (error.length > 0) {
-      alert(error);
-      dispatch(sendError([]));
+    if (errors.length > 0) {
+      // dispatch(sendError([]));
     }
     if (data.email) {
       dispatch(newVal({}));
       navigation.navigate("Login");
     }
-  }, [error, newVal]);
+  }, [errors, newVal]);
 
   function userRegister() {
     let payload = {
@@ -49,17 +51,12 @@ const MyComponent = ({ navigation }) => {
   }
 
   if (loading) {
-    return (
-      <View style={styles.container}>
-        <View style={styles.spin}>
-          <ActivityIndicator size={hp("40%")} color="#00ff00" />
-        </View>
-      </View>
-    );
+    return <Loading />;
   }
 
   return (
     <>
+    <ImageBackground source={{ uri: "https://media.discordapp.net/attachments/811938031786524722/814157796236591126/login-background.png?width=312&height=676"}} style={styles.image}>
       <View style={styles.container}>
           <View>
           <KeyboardAwareScrollView
@@ -139,21 +136,29 @@ const MyComponent = ({ navigation }) => {
               }}
               placeholder="Password"
               value={password}
+              secureTextEntry={true}
               onChangeText={(text) => setPassword(text)}/>
               <View style={{flexDirection: 'row', justifyContent: 'space-evenly', marginTop: hp("5%")}}>
                 <View style={{ marginBottom: hp("5%"), width: wp("40%")}}>
-                  <Button
-                    color="#444444"
+                  <TouchableOpacity
+                    style={{ backgroundColor: '#fff', paddingTop: hp("1%"), height: hp("6%"), elevation: 5, borderRadius: 10}}
                     onPress={() => navigation.navigate("Login")}
-                    title="Login"></Button>
+                    title="Login">
+                      <Text style={{ textAlign: 'center', display: 'flex', color: '#f85f73', fontWeight: 'bold'}}>Login</Text>
+                    </TouchableOpacity>
                 </View>
                 <View style={{marginBottom: hp("5%"), width: wp("40%")}}>
-                  <Button onPress={userRegister} title="Register"></Button>
+                  <TouchableOpacity
+                  style={{ backgroundColor: '#f85f73', height: hp("6%"), elevation: 5, borderRadius: 10}}
+                  onPress={userRegister} title="Register">
+                    <Text style={{ textAlign: 'center', display: 'flex', marginTop: hp("1%"), color: '#fff', fontWeight: 'bold'}}>Register</Text>
+                  </TouchableOpacity>
                 </View>
               </View>
           </KeyboardAwareScrollView>
           </View>
       </View>
+      </ImageBackground>
     </>
   );
 };
@@ -164,12 +169,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "column",
-    marginLeft: wp("5%"),
-    marginRight: wp("5%"),
-    justifyContent: 'center'
+    paddingLeft: wp("5%"),
+    paddingRight: wp("5%"),
+    justifyContent: 'center',
   },
-  spin: {
-    justifyContent: "center",
-    alignItems: "center",
+  image: {
+    width: width,
+    height: height,
   },
 });
