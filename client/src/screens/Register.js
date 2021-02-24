@@ -15,27 +15,26 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import Loading from "../helpers/Loading";
 
 const MyComponent = ({ navigation }) => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [firstName, setFirstName] = React.useState("");
   const [lastName, setLastName] = React.useState("");
-  const loading = useSelector((state) => state.user.loading);
-  const error = useSelector((state) => state.user.errors);
+  const { loading, errors } = useSelector((state) => state.user);
   const data = useSelector((state) => state.user.newVal);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (error.length > 0) {
-      alert(error);
-      dispatch(sendError([]));
+    if (errors.length > 0) {
+      // dispatch(sendError([]));
     }
     if (data.email) {
       dispatch(newVal({}));
       navigation.navigate("Login");
     }
-  }, [error, newVal]);
+  }, [errors, newVal]);
 
   function userRegister() {
     let payload = {
@@ -48,13 +47,7 @@ const MyComponent = ({ navigation }) => {
   }
 
   if (loading) {
-    return (
-      <View style={styles.container}>
-        <View style={styles.spin}>
-          <ActivityIndicator size={hp("40%")} color="#00ff00" />
-        </View>
-      </View>
-    );
+    return <Loading />;
   }
 
   return (

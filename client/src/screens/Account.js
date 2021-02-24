@@ -18,6 +18,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch, useSelector } from "react-redux";
 import { logout, getUser, updateUser } from "../store/actions/userAction";
 import { fetchingSetCards } from "../store/actions/setCardAction";
+import Loading from "../helpers/Loading";
 import { getData } from "../helpers/AsyncStorage";
 
 // const windowHeight = Dimensions.get('window').height
@@ -34,9 +35,10 @@ export default function Account({ navigation }) {
   const [showForm, setShowForm] = useState(false);
   const { profile } = useSelector((state) => state.user);
   const { id, email, first_name, last_name } = profile;
-  const { setCards } = useSelector((state) => state.setCard);
+  const { setCards, loading, errors } = useSelector((state) => state.setCard);
   const [listSetCards, setListSetCards] = useState(setCards.filter(set => set.user_id === id));
   // let filtered = setCardsOrigin.filter(set => set.user_id === id)
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -69,7 +71,7 @@ export default function Account({ navigation }) {
     }
   };
 
-  console.log(profile, "<<<");
+  // console.log(profile, "<<<");
   // const userlogout = () => {
   //     AsyncStorage.removeItem('access_token')
   //     .then(() => {
@@ -86,7 +88,7 @@ export default function Account({ navigation }) {
     try {
       await AsyncStorage.removeItem("access_token");
       const data = await AsyncStorage.getItem("access_token");
-      console.log(data, "dari logout");
+      // console.log(data, "dari logout");
       dispatch(logout());
 
       navigation.navigate("Login");
@@ -108,6 +110,15 @@ export default function Account({ navigation }) {
     dispatch(updateUser(id, payload));
     navigation.navigate("Home");
   };
+
+  if (loading) {
+    return <Loading />;
+  }
+
+  // if (errors.length > 0) {
+  //   alert(errors);
+  //   dispatch(sendError([]));
+  // }
 
   return (
     <>
@@ -202,7 +213,9 @@ export default function Account({ navigation }) {
         {/* <View>
               <SetCard></SetCard>
             </View> */}
-
+        <View style={styles.logoutButtonContainer}>
+          <Button color="#aa2b1d" title="Logout" onPress={userlogout}></Button>
+        </View>
         <ScrollView
           style={{
             display: "flex",
@@ -210,6 +223,7 @@ export default function Account({ navigation }) {
             marginBottom: hp("50%"),
           }}
         >
+
           {listSetCards.map((set) => {
             // console.log(set);
             return (
@@ -221,11 +235,8 @@ export default function Account({ navigation }) {
             );
           })}
         </ScrollView>
-
-        <View style={styles.logoutButtonContainer}>
-          <Button color="#aa2b1d" title="Logout" onPress={userlogout}></Button>
-        </View>
       </View>
+
       <Appbar navigation={navigation}></Appbar>
     </>
   );
@@ -253,5 +264,6 @@ const styles = StyleSheet.create({
   },
   logoutButtonContainer: {
     marginTop: hp("2%"),
+    marginBottom: hp("5%"),
   },
 });
