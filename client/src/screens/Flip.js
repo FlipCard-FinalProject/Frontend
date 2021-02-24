@@ -40,9 +40,21 @@ export default function Flip({ route, navigation }) {
     }
   },[id]);
 
-  function handleSwipeRight() {
+  useEffect(() => {
+    console.log(cards.length, ": cards length");
+    console.log(currentIndex, ": cards index");
+  },[cards.length]);
+
+  useEffect(() => {
+    console.log(currentIndex, ": cards index");
+  },[currentIndex]);
+
+  function handleSwipeRight(index, no) {
     console.log("right");
-    nextCard();
+    nextCardStayIndex(currentIndex)
+    cards.splice(currentIndex, 1)
+    setCards([...cards])
+    // nextCard();
   }
   function handleSwipeLeft() {
     console.log("left");
@@ -53,8 +65,17 @@ export default function Flip({ route, navigation }) {
     setModalVisible(!modalVisible)
   }
   function nextCard() {
-    const nextIndex = cards.length - 2 === currentIndex ? 0 : currentIndex + 1;
+    const nextIndex = cards.length - 1 === currentIndex ? 0 : currentIndex + 1;
+    console.log(nextIndex, '<<< next index')
     setCurrentIndex(nextIndex);
+  }
+  function nextCardStayIndex(index) {
+    if (currentIndex === cards.length-1) {
+      setCurrentIndex(0)
+    } else {
+      setCurrentIndex(index)
+    }
+    // setCurrentIndex(index);
   }
 
   if (isLoading) {
@@ -102,21 +123,23 @@ export default function Flip({ route, navigation }) {
         </View>
 
         <View style={styles.swipes}>
-          {cards.length > 1 &&
+          {cards.length >= 1 &&
             cards.map(
               (u, i) =>
                 currentIndex === i && (
                   <Swipes
                     key={i}
+                    no={i}
                     currentIndex={currentIndex}
                     cards={cards}
                     card={cards[currentIndex]}
-                    handleSwipeRight={handleSwipeRight}
+                    handleSwipeRight={(index, no) => handleSwipeRight(index, no)}
                     handleSwipeLeft={handleSwipeLeft}
                     navigation={navigation}
                   ></Swipes>
                 )
             )}
+            {cards.length === 0 && (<Text>kosong</Text>)}
         </View>
       </View>
       <Appbar navigation={navigation}></Appbar>
