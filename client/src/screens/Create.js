@@ -5,6 +5,7 @@ import CardList from "../components/CardList";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 // import { Input } from "react-native-elements";
 import Loading from "../helpers/Loading";
+import Modal from "../helpers/ModalError";
 import {
   Button,
   StyleSheet,
@@ -12,7 +13,8 @@ import {
   View,
   Image,
   Dimensions,
-  TextInput
+  TextInput,
+  ImageBackground
 } from "react-native";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 // import { TextInput } from "react-native-paper";
@@ -21,6 +23,7 @@ import * as ImagePicker from "expo-image-picker";
 import { useDispatch, useSelector } from "react-redux";
 import {
   insertCard,
+  sendError,
   fetchingCardBySetCardId,
   clearForm,
 } from "../store/actions/cardAction";
@@ -29,9 +32,8 @@ import { clearCards } from "../store/actions/cardAction";
 import { Audio } from "expo-av";
 import Icon from "react-native-vector-icons/Ionicons";
 import { Card, Title } from "react-native-paper";
-const windowHeight = Dimensions.get("window").height;
-const windowWidth = Dimensions.get("window").width;
 import { useRoute } from '@react-navigation/native'
+const { width, height } = Dimensions.get('window')
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -40,6 +42,7 @@ import {
 export default function Create({ navigation }) {
   const [setCardId, setSetCardId] = React.useState("");
   const [creating, setCreating] = React.useState(false);
+  const [isModalVisible, setModalVisible] = useState(false);
   const [card, setCard] = React.useState({
     hint: "",
     answer: "",
@@ -60,8 +63,16 @@ export default function Create({ navigation }) {
   const route = useRoute();
 
   const { newVal } = useSelector((state) => state.setCard);
-  const { cards, loading } = useSelector((state) => state.card);
+  const { cards, loading, errors } = useSelector((state) => state.card);
   const { access_token } = useSelector((state) => state.user);
+
+  useEffect(() => {
+    if (errors.length !== 0) {
+      console.log(errors.length, "masuk");
+      setModalVisible(true);
+      // dispatch(sendError([]));
+    }
+  }, [errors]);
 
   // ******************** MEDIA ********************
   useEffect(() => {
@@ -332,29 +343,17 @@ export default function Create({ navigation }) {
     );
   }
 
-  // if (isError) {
-  //     return (
-  //       <Text >Error </Text>
-  //     )
-  // }
-
-  // baru
-  if (loading) {
-    return <Loading />;
-  }
-  // if (error.length > 0) {
-  //   alert(error);
-  //   dispatch(sendError([]));
-  // }
   return (
     <>
       <Header navigation={navigation}></Header>
+      <ImageBackground source={require("../../assets/mainbackground.png")} style={styles.image}>
       <ScrollView
         style={{ display: "flex", flexDirection: "column" }}>
         <KeyboardAwareScrollView
             enableOnAndroid={true}
             extraScrollHeight={hp("50")}>
         <View style={styles.container}>
+        <Modal isError={isModalVisible} errors={errors} />
           <Text
             style={{
               fontSize: 20,
@@ -797,6 +796,7 @@ export default function Create({ navigation }) {
         </View>
         </KeyboardAwareScrollView>
       </ScrollView>
+      </ImageBackground>
       <Appbar navigation={navigation}></Appbar>
     </>
   );
@@ -805,18 +805,19 @@ export default function Create({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    minHeight: hp("100%"),
+    minHeight: hp("90%"),
     flexDirection: "column",
     paddingLeft: wp("5%"),
     paddingRight: wp("5%"),
     justifyContent: 'center',
-    backgroundColor: '#fff'
+    paddingBottom: hp("15")
   },
   textInput: {
     height: hp("7"),
     borderColor: 'grey',
     borderRadius: 5,
     paddingLeft: wp("5"),
+    paddingRight: wp("5"),
     backgroundColor: '#fff',
     elevation: 5,
   },
@@ -824,5 +825,9 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     marginBottom: hp("5")
-  }
+  },
+  image: {
+    width: width,
+    height: height,
+  },
 });

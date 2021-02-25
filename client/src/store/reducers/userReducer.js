@@ -35,10 +35,8 @@ function userReducer(state = init, action) {
         ...state,
         newVal: action.payload,
       };
-    case "LOADING_USER_START":
-      return { ...state, loading: true };
-    case "LOADING_USER_END":
-      return { ...state, loading: false };
+    case "LOADING":
+      return { ...state, loading: action.payload };
     case "ERROR_USER":
       return {
         ...state,

@@ -3,14 +3,13 @@ import Appbar from "../components/Appbar";
 import Header from "../components/Header";
 import Flipcard from "../components/FlipCard";
 
-import { StyleSheet, View, Dimensions, Modal, Text, Image, Button } from "react-native";
+import { StyleSheet, View, Dimensions, Modal, Text, Image, Button, ImageBackground } from "react-native";
 import {
   ScrollView,
   TouchableHighlight,
   TouchableOpacity,
 } from "react-native-gesture-handler";
-const windowHeight = Dimensions.get("window").height;
-const windowWidth = Dimensions.get("window").width;
+const { width, height } = Dimensions.get('window')
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import { RectButton } from "react-native-gesture-handler";
 import Swipes from "../components/Swipes";
@@ -119,6 +118,7 @@ export default function Flip({ route, navigation }) {
   return (
     <>
       <Header navigation={navigation}></Header>
+      <ImageBackground source={require("../../assets/mainbackground.png")} style={styles.image}>
       <View style={styles.container}>
         <View>
           <Modal
@@ -178,6 +178,7 @@ export default function Flip({ route, navigation }) {
             )}
         </View>
       </View>
+      </ImageBackground>
       <Appbar navigation={navigation}></Appbar>
     </>
   );
@@ -185,7 +186,6 @@ export default function Flip({ route, navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#fff",
     flex: 1,
     flexDirection: "column",
     height: hp("100%"),
@@ -200,7 +200,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   swipes: {
-    backgroundColor: "#fff",
     height: hp("90%"),
     width: wp("100%"),
     justifyContent: 'center',
@@ -240,5 +239,9 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: "center",
+  },
+  image: {
+    width: width,
+    height: height,
   },
 });

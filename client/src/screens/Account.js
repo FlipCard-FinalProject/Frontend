@@ -10,8 +10,10 @@ import {
   TextInput,
   Dimensions,
   Image,
+  ImageBackground
 } from "react-native";
 import { Card, Title } from 'react-native-paper'
+const { width, height } = Dimensions.get('window')
 // import { TextInput } from "react-native-paper";
 import Icon from "react-native-vector-icons/Ionicons";
 import { ScrollView } from "react-native-gesture-handler";
@@ -122,6 +124,7 @@ export default function Account({ navigation }) {
   return (
     <>
       <Header navigation={navigation}></Header>
+      <ImageBackground source={require("../../assets/mainbackground.png")} style={styles.image}>
       <ScrollView>
       <View style={styles.container}>
         <View
@@ -133,7 +136,7 @@ export default function Account({ navigation }) {
             alignItems: 'center'
           }}
         >
-          <Icon name="person-circle-sharp" color="grey" size={hp("15")}></Icon>
+          <Icon name="person-circle-sharp" color="#444444" size={hp("15")}></Icon>
           <View>
             <Text
               style={{
@@ -232,6 +235,7 @@ export default function Account({ navigation }) {
         {/* </ScrollView> */}
       </View>
       </ScrollView>
+      </ImageBackground>
       <Appbar navigation={navigation}></Appbar>
     </>
   );
@@ -239,13 +243,12 @@ export default function Account({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
     flex: 1,
     flexDirection: "column",
     paddingLeft: wp("5%"),
     paddingRight: wp("5%"),
     justifyContent: 'center',
-    paddingBottom: hp("10%")
+    paddingBottom: hp("15%")
   },
   textContainer: {
     display: "flex",
@@ -272,5 +275,9 @@ const styles = StyleSheet.create({
     paddingLeft: wp("5"),
     backgroundColor: '#fff',
     elevation: 5,
+  },
+  image: {
+    width: width,
+    height: height,
   },
 });

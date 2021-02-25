@@ -100,8 +100,8 @@ export default function Flipcard ({navigation, card, willRight, willLeft}) {
                             <TouchableOpacity
                               style={{
                                 display: "flex",
-                                flexDirection: "row",
-                                height: 100,
+                                flexDirection: "column",
+                                height: hp("20"),
                                 justifyContent: "center",
                                 alignItems: "center",
                               }}
@@ -125,8 +125,9 @@ export default function Flipcard ({navigation, card, willRight, willLeft}) {
                                     ? "play-outline"
                                     : "stop"
                                 }
-                                size={40}
+                                size={hp("15")}
                               />
+                              <Text style={{fontWeight: 'bold', marginTop: hp("1")}}>Press the button to play</Text> 
                             </TouchableOpacity>
                           </View>
                         )}

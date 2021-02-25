@@ -44,6 +44,7 @@ export const fetchingSetCards = () => {
 
 export const fetchByCategory = () => {
   return (dispatch) => {
+    dispatch(loading(true))
     let access = "";
     getAccess()
       .then((access_token) => {
@@ -55,9 +56,11 @@ export const fetchByCategory = () => {
         });
       })
       .then(({ data }) => {
+        dispatch(loading(false))
         dispatch(fetchingSuccess(data));
       })
       .catch((err) => {
+        dispatch(loading(false))
         console.log(err);
         dispatch(sendError(err.response));
       });
@@ -66,6 +69,7 @@ export const fetchByCategory = () => {
 
 export const insertSetCard = (payload) => {
   return (dispatch) => {
+    dispatch(loading(true))
     let access = "";
     getAccess()
       .then((access_token) => {
@@ -78,11 +82,13 @@ export const insertSetCard = (payload) => {
         });
       })
       .then(({ data }) => {
+        dispatch(loading(false))
         console.log('success add set card')
         dispatch(newVal(data));
         dispatch(fetchingSetCards(access));
       })
       .catch((err) => {
+        dispatch(loading(false))
         console.log(err);
         dispatch(sendError(err.response));
       });
@@ -114,6 +120,7 @@ export const findSetCardByTitle = (query) => {
 
 export const updateSetCard = ( id, payload ) => {
   return dispatch => {
+    dispatch(loading(true))
     getAccess()
       .then(access_token => {
         return axios({
@@ -124,10 +131,12 @@ export const updateSetCard = ( id, payload ) => {
         })
       })
       .then(({ data }) => {
+        dispatch(loading(false))
         dispatch(fetchingSetCards());
         dispatch(newVal(data));
       })
       .catch((err) => {
+        dispatch(loading(false))
         console.log(err);
         dispatch(sendError(err.response));
       });
@@ -136,6 +145,7 @@ export const updateSetCard = ( id, payload ) => {
 
 export const deleteSetCard = (id) => {
   return (dispatch) => {
+    dispatch(loading(true))
     getAccess()
     .then(access_token => {
       return axios({
@@ -145,9 +155,11 @@ export const deleteSetCard = (id) => {
       })
     })
       .then(({ data }) => {
+        dispatch(loading(false))
         dispatch(fetchingSetCards());
       })
       .catch((err) => {
+        dispatch(loading(false))
         console.log(err);
         dispatch(sendError(err.response));
       });

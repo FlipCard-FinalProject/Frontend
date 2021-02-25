@@ -3,7 +3,7 @@ import Appbar from '../components/Appbar'
 import Header from '../components/Header'
 import CardList from '../components/CardList'
 // import { Input } from 'react-native-elements';
-import { Button, StyleSheet, Text, View, Image, Dimensions, TextInput } from 'react-native';
+import { Button, StyleSheet, Text, View, Image, Dimensions, TextInput, ImageBackground } from 'react-native';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
@@ -17,10 +17,15 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import Loading from "../helpers/Loading";
+import Modal from "../helpers/ModalError";
+const { width, height } = Dimensions.get('window')
 
 export default function Edit({ navigation, route }) {
   const [playbackInstance, setPlaybackInstance] = React.useState(null);
-  const { cards } = useSelector((state) => state.card)
+  const { cards, loading, errors } = useSelector((state) => state.card)
+  const [isModalVisible, setModalVisible] = useState(false);
+
   const dispatch = useDispatch();
   console.log(route.params);
   // console.log(cards, 'awalll ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,');
@@ -50,6 +55,20 @@ export default function Edit({ navigation, route }) {
   const { newVal } = useSelector((state) => state.setCard)
   const [listCards, setListCards] = React.useState(cards)
   const [activeIdForm, setActiveIdForm] = React.useState(null)
+
+  useEffect(() => {
+    if (errors.length > 0) {
+      setModalVisible(true);
+      console.log(errors);
+      // dispatch(sendError([]));
+    }
+  }, [errors]);
+  
+  if (loading) {
+    return (
+      <Loading />
+    );
+  }
 
   useEffect(() => {
     (async () => {
@@ -397,8 +416,10 @@ export default function Edit({ navigation, route }) {
   return (
     <>
       <Header navigation={navigation}></Header>
+      <ImageBackground source={require("../../assets/mainbackground.png")} style={styles.image}>
       <ScrollView style={{ display: 'flex', flexDirection: 'column', marginBottom: 100 }}>
         <View style={styles.container}>
+        <Modal isError={isModalVisible} errors={errors} />
         <Text
             style={{
               fontSize: 20,
@@ -406,7 +427,7 @@ export default function Edit({ navigation, route }) {
               marginTop: hp("4"),
               marginBottom: hp("2"),
               textAlign: "center",
-              color: "#444444",
+              color: "#fff",
             }}
           >
             Edit Flipcard
@@ -703,6 +724,7 @@ export default function Edit({ navigation, route }) {
             </View> */}
         </View>
       </ScrollView>
+        </ImageBackground>
         <Appbar navigation={navigation}></Appbar>
     </>
   )
@@ -716,8 +738,7 @@ const styles = StyleSheet.create({
     paddingLeft: wp("5%"),
     paddingRight: wp("5%"),
     justifyContent: 'center',
-    backgroundColor: '#fff',
-    paddingBottom: hp("0")
+    paddingBottom: hp("10")
   },
   textInput: {
     height: hp("7"),
@@ -731,5 +752,9 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     marginBottom: hp("5")
-  }
+  },
+  image: {
+    width: width,
+    height: height,
+  },
 });

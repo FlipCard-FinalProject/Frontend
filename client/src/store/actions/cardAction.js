@@ -15,8 +15,8 @@ export const clearForm = () => {
   }
 };
 
-export const loading = () => {
-  return { type: "LOADING_CARDS" };
+export const loading = (payload) => {
+  return { type: "LOADING", payload };
 };
 
 export const fetchingSuccess = (payload) => {
@@ -89,17 +89,22 @@ export const insertCard = (set_card_id, payload) => {
             headers: { access_token },
             data: payload
           })
-        })
-        .then(res => {
-          dispatch(loading(false));
-          console.log('success add card below this is the data')
-          console.log(res.data);
-          dispatch(fetchingCardBySetCardId(set_card_id, access))
+          .then(res => {
+            dispatch(loading(false));
+            console.log('success add card below this is the data')
+            console.log(res.data);
+            dispatch(fetchingCardBySetCardId(set_card_id, access))
+          })
+          .catch((err) => {
+            dispatch(loading(false));
+            console.log(err.response.data.errors);
+            dispatch(sendError(err.response.data.errors));
+          })
         })
         .catch((err) => {
           dispatch(loading(false));
           console.log(err.response);
-          // dispatch(sendError(err.response));
+          dispatch(sendError(err.response));
         });
     }
 
@@ -131,10 +136,12 @@ export const insertCard = (set_card_id, payload) => {
             .catch((err) => {
           dispatch(loading(false));
               console.log(err.response);
-              // dispatch(sendError(err.response));
+              dispatch(sendError(err.response));
             });
         })
         .catch((error) => {
+          dispatch(sendError(["fail to upload"]))
+          dispatch(loading(false));
           console.log('error', error);
         })
       console.log('tembus sini');
@@ -164,12 +171,14 @@ export const insertCard = (set_card_id, payload) => {
               dispatch(fetchingCardBySetCardId(set_card_id, access))
             })
             .catch((err) => {
-          dispatch(loading(false));
+              dispatch(loading(false));
               console.log(err.response);
-              // dispatch(sendError(err.response));
+              dispatch(sendError(err.response));
             });
         })
         .catch((error) => {
+          dispatch(loading(false))
+          dispatch(sendError(["fail to upload"]))
           console.log("error", error);
         });
       console.log("tembus sini");
@@ -179,6 +188,7 @@ export const insertCard = (set_card_id, payload) => {
 
 export const updateCard = ( id, payload, setCardId ) => {
   return (dispatch) => {
+    dispatch(loading(true))
     getAccess()
     .then(access_token => {
       return axios({
@@ -189,11 +199,13 @@ export const updateCard = ( id, payload, setCardId ) => {
       })
     })
       .then(({ data }) => {
+        dispatch(loading(false))
         console.log("success update card");
         dispatch(fetchingCardBySetCardId(setCardId));
         dispatch(newVal(data));
       })
       .catch((err) => {
+        dispatch(loading(false));
         console.log(err.response);
         dispatch(sendError(err.response));
       });
@@ -202,6 +214,7 @@ export const updateCard = ( id, payload, setCardId ) => {
 
 export const deleteCard = (id, setCardId) => {
   return (dispatch) => {
+    dispatch(loading(true))
     getAccess()
       .then(access_token => {
         return axios({
@@ -211,10 +224,11 @@ export const deleteCard = (id, setCardId) => {
         })
       })
       .then(({ data }) => {
-        // console.log(data);
+        dispatch(loading(false))
         dispatch(fetchingCardBySetCardId(setCardId));
       })
       .catch((err) => {
+        dispatch(loading(false))
         console.log(err.response);
         dispatch(sendError(err.response));
       });

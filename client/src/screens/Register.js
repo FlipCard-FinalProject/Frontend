@@ -32,7 +32,7 @@ const MyComponent = ({ navigation }) => {
 
   useEffect(() => {
     if (errors.length > 0) {
-      // dispatch(sendError([]));
+      dispatch(sendError([]));
     }
     if (data.email) {
       dispatch(newVal({}));
@@ -56,7 +56,7 @@ const MyComponent = ({ navigation }) => {
 
   return (
     <>
-    <ImageBackground source={{ uri: "https://media.discordapp.net/attachments/811938031786524722/814157796236591126/login-background.png?width=312&height=676"}} style={styles.image}>
+    <ImageBackground source={require("../../assets/background.png")} style={styles.image}>
       <View style={styles.container}>
           <View>
           <KeyboardAwareScrollView
@@ -72,7 +72,7 @@ const MyComponent = ({ navigation }) => {
                 marginRight: wp("1%")
               }}
             >
-              <Image source={require("../../assets/Flipcard.png")}></Image>
+              <Image source={require("../../assets/logo.png")}></Image>
             </View>
             <TextInput
               style={{

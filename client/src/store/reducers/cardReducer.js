@@ -33,10 +33,10 @@ function cardReducer(state = init, action) {
         ...state,
         newVal: action.payload,
       };
-    case "LOADING_CARDS":
+    case "LOADING":
       return {
         ...state,
-        loading: true,
+        loading: action.payload,
       };
     case "ERROR_CARDS":
       return {

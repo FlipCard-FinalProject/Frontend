@@ -4,16 +4,18 @@ import Appbar from "../components/Appbar";
 import Header from "../components/Header";
 import SetCard from "../components/SetCard";
 import { fetchingSetCards } from "../store/actions/setCardAction";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, ImageBackground, Dimensions } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from '@react-native-picker/picker'
 import { Card } from 'react-native-paper'
 import { useRoute } from '@react-navigation/native'
+import Modal from "../helpers/ModalError";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+const { width, height } = Dimensions.get('window')
 import Loading from "../helpers/Loading";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
@@ -25,7 +27,15 @@ export default function Home({ navigation }) {
   const dispatch = useDispatch();
   const [access, setAccess] = useState();
   const [category, setCategory] = useState('');
+  const [isModalVisible, setModalVisible] = useState(false);
   const route = useRoute();
+
+  useEffect(() => {
+    if (errors.length > 0) {
+      setModalVisible(true);
+      dispatch(sendError([]));
+    }
+  }, [errors]);
 
   useEffect(() => {
     dispatch(fetchingSetCards());
@@ -64,8 +74,10 @@ export default function Home({ navigation }) {
   return (
     <>
       <Header navigation={navigation}></Header>
+      <ImageBackground source={require("../../assets/mainbackground.png")} style={styles.image}>
       <ScrollView >
         <View style={styles.container}>
+        <Modal isError={isModalVisible} errors={errors} />
           <View style={{ alignSelf: 'center', width: '95%' }}>
               <Card style={{ marginTop: hp("2%"), marginBottom: hp("2%"), elevation: 5 }}>
                 <View>
@@ -105,6 +117,7 @@ export default function Home({ navigation }) {
           </View>
         </View>
       </ScrollView>
+      </ImageBackground>
       <Appbar navigation={navigation}></Appbar>
     </>
   );
@@ -112,11 +125,15 @@ export default function Home({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
     flex: 1,
     flexDirection: "column",
     paddingLeft: wp("5%"),
     paddingRight: wp("5%"),
-    justifyContent: 'center'
+    justifyContent: 'center',
+    paddingBottom: hp("25")
+  },
+  image: {
+    width: width,
+    height: height,
   },
 });

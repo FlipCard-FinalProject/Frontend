@@ -43,7 +43,7 @@ export default function MyComponent ({ navigation, props }) {
 
         </View>
         <View style={{ flexDirection: "row", paddingLeft: wp("4"), paddingTop: hp("2%")}}>
-          <Icon name="person-circle-sharp" color="grey" size={30}></Icon>
+          <Icon name="person-circle-sharp" color="#444444" size={30}></Icon>
           <Paragraph style={styles.author}>{props.User.first_name} {props.User.last_name}</Paragraph>
         </View>
       </Card.Content>
@@ -72,7 +72,10 @@ const styles = StyleSheet.create({
     paddingTop: 0
   },
   topContainer: {
-    backgroundColor: '#0d6efd',
+    // backgroundColor: '#583d72',
+    backgroundColor: '#1a508b',
+    // backgroundColor: '#9a8194',
+
     paddingTop: hp("1%"),
     borderTopStartRadius: 15,
     borderTopEndRadius: 15,
