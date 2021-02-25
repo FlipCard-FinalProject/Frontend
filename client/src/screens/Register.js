@@ -32,7 +32,7 @@ const MyComponent = ({ navigation }) => {
 
   useEffect(() => {
     if (errors.length > 0) {
-      dispatch(sendError([]));
+      // dispatch(sendError([]));
     }
     if (data.email) {
       dispatch(newVal({}));

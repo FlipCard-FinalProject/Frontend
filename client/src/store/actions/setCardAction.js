@@ -36,7 +36,7 @@ export const fetchingSetCards = () => {
         dispatch(loading(false));
       })
       .catch((err) => {
-        dispatch(sendError(err.response));
+        dispatch(sendError(err.response.data.errors));
         dispatch(loading(false));
       });
   };
@@ -62,7 +62,7 @@ export const fetchByCategory = () => {
       .catch((err) => {
         dispatch(loading(false))
         console.log(err);
-        dispatch(sendError(err.response));
+        dispatch(sendError(err.response.data.errors));
       });
   };
 };
@@ -90,7 +90,7 @@ export const insertSetCard = (payload) => {
       .catch((err) => {
         dispatch(loading(false))
         console.log(err);
-        dispatch(sendError(err.response));
+        dispatch(sendError(err.response.data.errors));
       });
   };
 };
@@ -112,7 +112,7 @@ export const findSetCardByTitle = (query) => {
       })
       .catch((err) => {
         console.log(err.response);
-        dispatch(sendError(err.response));
+        dispatch(sendError(err.response.data.errors));
       });
   };
 };
@@ -138,7 +138,7 @@ export const updateSetCard = ( id, payload ) => {
       .catch((err) => {
         dispatch(loading(false))
         console.log(err);
-        dispatch(sendError(err.response));
+        dispatch(sendError(err.response.data.errors));
       });
   };
 };
@@ -161,7 +161,7 @@ export const deleteSetCard = (id) => {
       .catch((err) => {
         dispatch(loading(false))
         console.log(err);
-        dispatch(sendError(err.response));
+        dispatch(sendError(err.response.data.errors));
       });
   };
 };

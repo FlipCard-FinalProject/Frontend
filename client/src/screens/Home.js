@@ -10,7 +10,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from '@react-native-picker/picker'
 import { Card } from 'react-native-paper'
 import { useRoute } from '@react-navigation/native'
-import Modal from "../helpers/ModalError";
+// import Modal from "../helpers/ModalError";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -27,15 +27,15 @@ export default function Home({ navigation }) {
   const dispatch = useDispatch();
   const [access, setAccess] = useState();
   const [category, setCategory] = useState('');
-  const [isModalVisible, setModalVisible] = useState(false);
+  // const [isModalVisible, setModalVisible] = useState(false);
   const route = useRoute();
 
-  useEffect(() => {
-    if (errors.length > 0) {
-      setModalVisible(true);
-      dispatch(sendError([]));
-    }
-  }, [errors]);
+  // useEffect(() => {
+  //   if (errors.length > 0) {
+  //     setModalVisible(true);
+  //     dispatch(sendError([]));
+  //   }
+  // }, [errors]);
 
   useEffect(() => {
     dispatch(fetchingSetCards());
@@ -77,7 +77,7 @@ export default function Home({ navigation }) {
       <ImageBackground source={require("../../assets/mainbackground.png")} style={styles.image}>
       <ScrollView >
         <View style={styles.container}>
-        <Modal isError={isModalVisible} errors={errors} />
+        {/* <Modal isError={isModalVisible} errors={errors} /> */}
           <View style={{ alignSelf: 'center', width: '95%' }}>
               <Card style={{ marginTop: hp("2%"), marginBottom: hp("2%"), elevation: 5 }}>
                 <View>
