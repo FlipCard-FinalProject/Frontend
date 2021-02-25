@@ -131,12 +131,15 @@ export default function Account({ navigation }) {
           style={{
             display: "flex",
             marginBottom: hp("2%"),
-            marginTop: hp("2%"),
+            marginTop: hp("5%"),
             justifyContent: 'center',
-            alignItems: 'center'
+            alignItems: 'center',
           }}
         >
-          <Icon name="person-circle-sharp" color="#444444" size={hp("15")}></Icon>
+          <View>
+            <Image style={{width: 80, height: 80, marginBottom: hp("3")}} source={require("../../assets/user.png")}></Image>
+            {/* <Icon name="person-circle" color="#444444" size={hp("15")}></Icon> */}
+          </View>
           <View>
             <Text
               style={{
