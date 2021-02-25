@@ -82,11 +82,11 @@ export default function Edit({ navigation, route }) {
 
 
   
-  if (loading) {
-    return (
-      <Loading />
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <Loading />
+  //   );
+  // }
 
   useEffect(() => {
     (async () => {
