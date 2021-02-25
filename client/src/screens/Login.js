@@ -13,6 +13,7 @@ import Loading from "../helpers/Loading";
 import Modal from "../helpers/ModalError";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { colors } from "react-native-elements";
+import { fetchingSetCards } from "../store/actions/setCardAction";
 const { width, height } = Dimensions.get('window')
 
 const MyComponent = ({ navigation }) => {
@@ -49,6 +50,7 @@ const MyComponent = ({ navigation }) => {
       password,
     };
     dispatch(login(payload));
+    dispatch(fetchingSetCards())
   };
 
   if (loading) {

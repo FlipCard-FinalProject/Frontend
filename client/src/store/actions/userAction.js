@@ -10,7 +10,7 @@ export const fetchingProfile = (payload) => {
   return { type: "FETCHING_PROFILE", payload };
 };
 
-export const newVal = (payload) => {
+export const setNewVal = (payload) => {
   return { type: "NEW_VAL_USER", payload };
 };
 
@@ -35,12 +35,12 @@ export const register = (payload) => {
       data: payload,
     })
       .then(({ data }) => {
-        dispatch(newVal(data));
         dispatch(loading(false))
+        dispatch(setNewVal(data));
       })
       .catch((err) => {
-        dispatch(sendError(err.response.data.errors));
         dispatch(loading(false))
+        dispatch(sendError(err.response.data.errors));
       });
   };
 };
@@ -68,9 +68,9 @@ export const login = (payload) => {
         console.log("passed away, userAction: ln 69");
       })
       .catch((err) => {
+        dispatch(loading(false))
         console.log(err.response.data.errors);
         dispatch(sendError(err.response.data.errors));
-        dispatch(loading(false))
       });
   };
 };

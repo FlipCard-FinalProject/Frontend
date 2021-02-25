@@ -23,7 +23,7 @@ const { width, height } = Dimensions.get('window')
 
 export default function Edit({ navigation, route }) {
   const [playbackInstance, setPlaybackInstance] = React.useState(null);
-  const { cards, loading, errors } = useSelector((state) => state.card)
+  const { cards, errors } = useSelector((state) => state.card)
   const [isModalVisible, setModalVisible] = useState(false);
 
   const dispatch = useDispatch();
@@ -46,23 +46,41 @@ export default function Edit({ navigation, route }) {
   const [image, setImage] = useState('');
   const [sound, setSound] = React.useState('');
   const [recording, setRecording] = React.useState();
-
   const [currentlyRecording, setCurrentlyRecording] = React.useState(false);
   const [currentlyPlaying, setCurrentlyPlaying] = React.useState(false)
   const [inputType, setInputType] = React.useState('text')
   const [formType, setFormType] = React.useState('hint')
-
-  const { newVal } = useSelector((state) => state.setCard)
+  const { newVal, loading } = useSelector((state) => state.setCard)
   const [listCards, setListCards] = React.useState(cards)
   const [activeIdForm, setActiveIdForm] = React.useState(null)
-
   useEffect(() => {
-    if (errors.length > 0) {
-      setModalVisible(true);
-      console.log(errors);
-      // dispatch(sendError([]));
-    }
-  }, [errors]);
+    (async () => {
+      if (currentlyPlaying) {
+        try {
+          const playbackInstances = new Audio.Sound();
+          const source = {
+            uri: sound,
+          };
+
+          const status = {
+            shouldPlay: currentlyPlaying,
+            volume: 1.0,
+          };
+          await playbackInstances.loadAsync(source, status, false);
+          setPlaybackInstance(playbackInstances);
+        } catch (e) {
+          console.log(e);
+        }
+      } else {
+        currentlyPlaying
+          ? await playbackInstance.playAsync()
+          : await playbackInstance.pauseAsync();
+        // await playbackInstance.pauseAsync()
+      }
+    })();
+  }, [currentlyPlaying]);
+
+
   
   if (loading) {
     return (
@@ -72,57 +90,26 @@ export default function Edit({ navigation, route }) {
 
   useEffect(() => {
     (async () => {
-      //   let urlSound = sound
-      if (currentlyPlaying) {
-        // try {
-        //   SoundPlayer.playUrl(sound !== '' ? sound : 'https://example.com/music.mp3')
-        // } catch (e) {
-        //   console.log(`cannot play the sound file`, e)
-        // }
-        // if (sound !== '') {
-        //    urlSound = 'https://example.com/music.mp3'
-        // } else {
-        //    urlSound = sound
-        // }
-        // console.log('Loading Sound');
-        // const { sound } = await Audio.Sound.createAsync(
-        //   require(urlSound)
-        // );
-        // setSound(sound);
-
-        // console.log('Playing Sound');
-        // await sound.playAsync();
-        // new Player(sound).play();
-        // console.log('Loading Sound');
-        // const soundPlay = new Audio.Sound();
-        // try {
-        //   await soundPlay.loadAsync(require(sound));
-        //   await soundPlay.playAsync();
-        //   // Your sound is playing!
-        // } catch (error) {
-        // An error occurred!
-        // }
-        try {
-          const playbackInstances = new Audio.Sound()
-          const source = {
-            uri: sound
-          }
-
-          const status = {
-            shouldPlay: currentlyPlaying,
-            volume: 1.0
-          }
-          await playbackInstances.loadAsync(source, status, false)
-          setPlaybackInstance(playbackInstances)
-        } catch (e) {
-          console.log(e)
+      if (Platform.OS !== 'web') {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') {
+          alert('Sorry, we need camera roll permissions to make this work!');
         }
-      } else {
-        currentlyPlaying ? await playbackInstance.playAsync() : await playbackInstance.pauseAsync()
-        // await playbackInstance.pauseAsync() 
       }
     })();
-  }, [currentlyPlaying]);
+  }, [pickImage]);
+
+  useEffect(() => {
+    (async () => {
+      if (Platform.OS !== 'web') {
+        const { status } = await ImagePicker.requestCameraPermissionsAsync();
+        if (status !== 'granted') {
+          alert('Sorry, we need camera permissions to make this work!');
+        }
+      }
+    })();
+  }, [pickPhoto]);
+  
 
   useEffect(() => {
     setListCards(cards)
@@ -132,6 +119,11 @@ export default function Edit({ navigation, route }) {
     dispatch(fetchingCardBySetCardId(id))
   }, [])
 
+  useEffect(() => {
+    if (newVal.id !== undefined) {
+      setSetCardId(newVal.id)
+    }
+  }, [newVal.id])
   // ******************** MEDIA ********************
   const getName = (name) => {
     let stringName = name.split("/");
@@ -141,11 +133,6 @@ export default function Edit({ navigation, route }) {
 
   // console.log(cards, 'akhir ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,');
 
-  useEffect(() => {
-    if (newVal.id !== undefined) {
-      setSetCardId(newVal.id)
-    }
-  }, [newVal.id])
 
 // ================================================
 
@@ -249,27 +236,6 @@ export default function Edit({ navigation, route }) {
     navigation.navigate('Home')
   }
 
-  useEffect(() => {
-    (async () => {
-      if (Platform.OS !== 'web') {
-        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (status !== 'granted') {
-          alert('Sorry, we need camera roll permissions to make this work!');
-        }
-      }
-    })();
-  }, [pickImage]);
-
-  useEffect(() => {
-    (async () => {
-      if (Platform.OS !== 'web') {
-        const { status } = await ImagePicker.requestCameraPermissionsAsync();
-        if (status !== 'granted') {
-          alert('Sorry, we need camera permissions to make this work!');
-        }
-      }
-    })();
-  }, [pickPhoto]);
 
   const pickImage = async () => {
     console.log('here');
@@ -413,6 +379,15 @@ export default function Edit({ navigation, route }) {
 
   // baru
   // console.log('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<', cards);
+
+  useEffect(() => {
+    if (errors.length > 0) {
+      setModalVisible(true);
+      console.log(errors);
+      // dispatch(sendError([]));
+    }
+  }, [errors]);
+
   return (
     <>
       <Header navigation={navigation}></Header>
@@ -566,8 +541,9 @@ export default function Edit({ navigation, route }) {
                                     justifyContent: "center",
                                     alignItems: "center",
                                   }}
-                                  title="camera"
-                                  onPress={() => currentlyPlaying === false ? setCurrentlyPlaying(true) : setCurrentlyPlaying(false)}>
+                                  title="mic"
+                                  onPress={() => currentlyPlaying === false ? setCurrentlyPlaying(true) : setCurrentlyPlaying(false)}
+                                  >
                                   <Icon name={currentlyPlaying === false ? "play-outline" : "stop"} size={hp("8")} />
                                 </TouchableOpacity>
                               </View>

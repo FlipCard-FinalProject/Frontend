@@ -12,7 +12,7 @@ import {
   Dimensions
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { register, newVal, sendError } from "../store/actions/userAction";
+import { register, sendError , setNewVal} from "../store/actions/userAction";
 const { width, height } = Dimensions.get('window')
 import {
   widthPercentageToDP as wp,
@@ -26,16 +26,15 @@ const MyComponent = ({ navigation }) => {
   const [password, setPassword] = React.useState("");
   const [firstName, setFirstName] = React.useState("");
   const [lastName, setLastName] = React.useState("");
-  const { loading, errors } = useSelector((state) => state.user);
-  const data = useSelector((state) => state.user.newVal);
+  const { loading, errors, newVal } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (errors.length > 0) {
       // dispatch(sendError([]));
     }
-    if (data.email) {
-      dispatch(newVal({}));
+    if (newVal.email) {
+      dispatch(setNewVal({}));
       navigation.navigate("Login");
     }
   }, [errors, newVal]);
