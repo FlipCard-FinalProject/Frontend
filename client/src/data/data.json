@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "hint": "In Star Wars, what do they call the invisible power that binds the galaxy together?",
+    "answer": "The Force",
+    "imageURL": "https://static.wikia.nocookie.net/starwars/images/5/5a/The_Force.png/revision/latest?cb=20130205053900"
+  },
+  {
+    "id": 2,
+    "hint": "C-3P0 is fluent in how many languages?",
+    "answer": "Over 60 million languages",
+    "imageURL": "https://img.cinemablend.com/filter:scale/quill/7/e/9/b/6/f/7e9b6f625b1f06b8c70fe19107bf62bc0f44b6eb.jpg?mw=600"
+  },
+  {
+    "id": 3,
+    "hint": "Who is Chancellor Palpatine’s Sith alter-ego?",
+    "answer": "Darth Sidious",
+    "imageURL": "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/palpatine-family-children-1576775874.jpg?crop=0.488xw:0.976xh;0.512xw,0&resize=640:*"
+  },
+  {
+    "id": 4,
+    "hint": "Who is the bounty hunter who catches Han Solo?",
+    "answer": "Boba Fett",
+    "imageURL": "https://akcdn.detik.net.id/visual/2018/01/17/5a76a51c-f2d7-4cca-a409-e47082ef35d5_169.jpeg?w=650"
+  },
+  {
+    "id": 5,
+    "hint": "Who built C-3P0?",
+    "answer": "Anakin Skywalker",
+    "imageURL": "https://img.cinemablend.com/quill/7/c/f/8/0/7/7cf807bf58f88c639eddc8fbe6fa65fb9463d9bd.png"
+  },
+  {
+    "id": 6,
+    "hint": "How old is Yoda when he dies?",
+    "answer": "900 years old",
+    "imageURL": "https://fastly.syfy.com/sites/syfy/files/wire/legacy/dying-yoda-return-of-the-jedi-1280jpg-8849f9_1280w.jpg"
+  },
+  {
+    "id": 7,
+    "hint": "Who killed Han Solo?",
+    "answer": "Kylo Ren",
+    "imageURL": "https://d13ezvd6yrslxm.cloudfront.net/wp/wp-content/images/Star-Wars-The-Force-Awakens-han-solo-2-700x293.jpg"
+  },
+  {
+    "id": 8,
+    "hint": "Who is Luke Skywalker’s most loyal friend, which is also his first mate?",
+    "answer": "Chewie the Wookie",
+    "imageURL": "https://images2.minutemediacdn.com/image/fetch/w_2000,h_2000,c_fit/https%3A%2F%2Fdorksideoftheforce.com%2Ffiles%2F2021%2F01%2FLuke-Skywalker-Return-of-the-Jedi.jpg"
+  },
+  {
+    "id": 9,
+    "hint": "Which planet did Luke Skywalker go for his self-imposed exile?",
+    "answer": "Ach-TO",
+    "imageURL": "https://www.tvovermind.com/wp-content/uploads/2017/04/Star-Wars-The-Force-Awakens-Luke-Skywalker-640x320.jpg"
+  },
+  {
+    "id": 10,
+    "hint": "Who is Luke and Leia’s mother?",
+    "answer": "Padmé Amidala",
+    "imageURL": "https://imgix.bustle.com/uploads/image/2020/5/15/7181033e-9e2e-49a7-a0c2-cd0937308d4e-luke-leia-star-wars.jpg?w=1200&h=630&fit=crop&crop=faces&fm=jpg"
+  }
+]
